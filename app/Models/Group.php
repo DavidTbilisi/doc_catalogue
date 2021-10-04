@@ -9,8 +9,12 @@ class Group extends Model
 {
     use HasFactory;
 
-    public function user()
+    public function users()
     {
         return $this->hasMany(User::class);
+    }
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class);
     }
 }

@@ -5,7 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class PermissionSeeder extends Seeder
+
+class GroupSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,19 +15,18 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('permissions')->insert([
+        DB::table('groups')->insert([
             'name' => "Admin",
-            'description' => "Can do anything",
+            'description' => "The administrator of the website",
         ]);
-        DB::table('permissions')->insert([
+        DB::table('groups')->insert([
             'name' => "Editor",
-            'description' => "Can do something",
+            'description' => "The editor of the website",
         ]);
-        DB::table('permissions')->insert([
+        DB::table('groups')->insert([
             'name' => "User",
-            'description' => "Can do nothing",
+            'description' => "The user of the website",
         ]);
-
 
     }
 }

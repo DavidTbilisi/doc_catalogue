@@ -9,14 +9,13 @@ class Permission extends Model
 {
     use HasFactory;
 
-    public function user()
+    public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class);
 
     }
-    public function group()
+    public function groups()
     {
-        return $this->hasMany(Group::class);
-
+        return $this->belongsToMany(Group::class);
     }
 }

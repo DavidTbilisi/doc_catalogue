@@ -16,10 +16,13 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+//            $table->integer('group_id');
+            $table->foreignId('group_id')->constrained('groups');
+
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-
+//            $table->foreign('group_id')->references('id')->on('groups');
             $table->rememberToken();
             $table->timestamps();
         });
