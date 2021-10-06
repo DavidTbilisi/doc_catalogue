@@ -10,27 +10,31 @@
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Styles -->
-    <!-- UIkit CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.7.5/dist/css/uikit.min.css" />
 
-    <!-- UIkit JS -->
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.7.5/dist/js/uikit.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.7.5/dist/js/uikit-icons.min.js"></script>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <style>
+        .material-icons {
+            vertical-align:middle;
+        }
+    </style>
 </head>
-<body class="font-sans antialiased">
-<div class="min-h-screen bg-gray-100">
+<body>
+<div >
     @include('admin.nav')
-    <div class="container mx-auto">
-        <div class="grid grid-cols-12">
-            <div class="col-span-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
                 @include('admin.sidenav')
             </div>
-            <div class="col-span-10">
+            <div class="col-9">
                     @section("body")
                     @show
             </div>
