@@ -16,15 +16,18 @@ class GroupSeeder extends Seeder
     public function run()
     {
         DB::table('groups')->insert([
-            'name' => "Admin",
+            'name' => "admin",
+            'alias' => "Admin",
             'description' => "The administrator of the website",
         ]);
         DB::table('groups')->insert([
-            'name' => "Editor",
+            'name' => "editor",
+            'alias' => "Editor",
             'description' => "The editor of the website",
         ]);
         DB::table('groups')->insert([
-            'name' => "User",
+            'name' => "user",
+            'alias' => "User",
             'description' => "The user of the website",
         ]);
 

@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Administration;
 
-use App\Models\User;
-use Debugbar;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
-class AdminController extends Controller
+class PermissionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +14,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $user = User::with("group")->where("id", Auth::id() )->first();
-
-        return view('admin.dashboard', compact('user',$user));
+        //
     }
 
     /**

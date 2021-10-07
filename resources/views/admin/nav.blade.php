@@ -44,15 +44,37 @@
                 </div>
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="profile" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{$user->name}}
+                        {{\Illuminate\Support\Facades\Auth::user()->name}}
                         <span class="material-icons md-light">account_circle</span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="profile">
                         <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Log out</a></li>
+                        <li><a class="dropdown-item" onclick="logout()" href="#">Log out</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 </nav>
+
+
+<script>
+
+    function logout() {
+        axios({
+            method:"post",
+            url: "{{ route('logout') }}",
+            data: {
+                "csrf-token": "{{ csrf_token()}}"
+            }
+        }).then((response)=>{
+            console.log(response)
+            location.reload()
+        }).catch((err)=>{
+            console.log(err)
+        })
+    }
+
+
+
+</script>

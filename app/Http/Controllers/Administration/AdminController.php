@@ -1,10 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Administration;
 
+use App\Models\User;
+use App\Http\Controllers\Controller;
+use Debugbar;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class PermissionController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +17,9 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        //
+        $user = User::with("group")->where("id", Auth::id() )->first();
+
+        return view('admin.dashboard', compact('user',$user));
     }
 
     /**
@@ -47,6 +53,15 @@ class PermissionController extends Controller
     {
         //
     }
+
+
+    public function list()
+    {
+        $users = User::with("group")->get();
+        return view('admin.user_list', compact('users',$users));
+
+    }
+
 
     /**
      * Show the form for editing the specified resource.

@@ -18,12 +18,15 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard',[\App\Http\Controllers\AdminController::class, 'index'])->name('dashboard');
     Route::prefix("admin")->group(function (){
-        Route::get('/users',[\App\Http\Controllers\AdminController::class, 'index'])->name('users');
-        Route::get('/groups',[\App\Http\Controllers\GroupController::class, 'index'])->name('groups');
-        Route::get('/permissions',[\App\Http\Controllers\PermissionController::class, 'index'])->name('permissions');
+        Route::get('/users',[\App\Http\Controllers\Administration\AdminController::class, 'list'])->name('users');
+        Route::get('/groups',[\App\Http\Controllers\Administration\GroupController::class, 'index'])->name('groups');
+        Route::get('/permissions',[\App\Http\Controllers\Administration\PermissionController::class, 'index'])->name('permissions');
     });
+
+
+    Route::get('/dashboard',[\App\Http\Controllers\Administration\AdminController::class, 'index'])->name('dashboard');
+
 });
 
 require __DIR__.'/auth.php';
