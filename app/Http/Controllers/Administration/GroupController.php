@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Administration;
 
+use App\Models\Group;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -14,7 +15,8 @@ class GroupController extends Controller
      */
     public function index()
     {
-        //
+        $groups = Group::with("users")->get();
+        return view('admin.group_list', compact('groups',$groups));
     }
 
     /**
