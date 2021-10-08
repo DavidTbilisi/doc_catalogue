@@ -36,4 +36,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard',[AdminController::class, 'index'])->name('dashboard');
 });
 
+Route::prefix("test")->group(function (){
+Route::get('/login', function () {
+   return view("authoverride.login");
+});
+
+    Route::get('/register', function () {
+        return view("authoverride.register");
+    });
+});
+
 require __DIR__.'/auth.php';
