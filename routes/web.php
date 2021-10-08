@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Administration\AdminController;
+use App\Http\Controllers\Administration\GroupController;
+use App\Http\Controllers\Administration\PermissionController;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,14 +21,19 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix("admin")->group(function (){
-        Route::get('/users',[\App\Http\Controllers\Administration\AdminController::class, 'list'])->name('users');
-        Route::get('/groups',[\App\Http\Controllers\Administration\GroupController::class, 'index'])->name('groups');
-        Route::get('/permissions',[\App\Http\Controllers\Administration\PermissionController::class, 'index'])->name('permissions');
+        Route::get('/users/{id?}',[AdminController::class, 'index'])
+            ->where('id', "[0-9]+")
+            ->name('users');
+
+        Route::get('/groups/{id?}',[GroupController::class, 'index'])
+            ->where('id', "[0-9]+")
+            ->name('groups');
+
+        Route::get('/permissions/{id?}',[PermissionController::class, 'index'])
+            ->where('id', "[0-9]+")
+            ->name('permissions');
     });
-
-
-    Route::get('/dashboard',[\App\Http\Controllers\Administration\AdminController::class, 'index'])->name('dashboard');
-
+    Route::get('/dashboard',[AdminController::class, 'index'])->name('dashboard');
 });
 
 require __DIR__.'/auth.php';

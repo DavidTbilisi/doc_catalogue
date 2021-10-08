@@ -3,22 +3,25 @@
 
 @section('body')
 <div class="container pt-4">
+    <p class="h1">Permissions List</p>
     <table class="table table-striped">
         <thead>
         <tr>
             <th scope="col">#</th>
             <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Group</th>
+            <th scope="col">Description</th>
         </tr>
         </thead>
         <tbody>
-        @foreach($users as $user)
+        @foreach($permissions as $index => $permission)
         <tr>
-            <th scope="row">1</th>
-            <td>{{$user->name}}</td>
-            <td>{{$user->email}}</td>
-            <td>{{$user->group->alias}}</td>
+            <th scope="row"> {{$index + 1}} </th>
+            <td>
+                <a href="{{ route("permissions", ['id'=>$permission->id]) }}">
+                    {{$permission->name}}
+                </a>
+            </td>
+            <td>{{$permission->description}}</td>
         </tr>
         @endforeach
         </tbody>

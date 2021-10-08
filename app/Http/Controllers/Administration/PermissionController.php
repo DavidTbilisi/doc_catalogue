@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Administration;
 
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -12,9 +13,15 @@ class PermissionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id = null)
     {
-        //
+        if ($id != null) {
+            $permission = Permission::where("id", $id)->firstOrFail();
+            return view("admin.permission", compact('permission', $permission));
+        } else {
+            $permissions = Permission::all();
+            return view("admin.permission_list", compact('permissions', $permissions));
+        }
     }
 
     /**

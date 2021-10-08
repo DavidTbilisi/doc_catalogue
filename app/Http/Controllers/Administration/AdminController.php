@@ -13,13 +13,18 @@ class AdminController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param null $id
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id=null)
     {
-        $user = User::with("group")->where("id", Auth::id() )->first();
-
-        return view('admin.dashboard', compact('user',$user));
+        if($id!=null) {
+            $user = User::with("group")->where("id", $id )->firstOrFail();
+            return view('admin.user', compact('user',$user));
+        } else {
+            $users = User::with("group")->get();
+            return view('admin.user_list', compact('users',$users));
+        }
     }
 
     /**
@@ -51,15 +56,20 @@ class AdminController extends Controller
      */
     public function show($id)
     {
-        //
+
     }
 
+
+    public function profile()
+    {
+        $user = User::with("group")->where("id", Auth::id() )->first();
+        return view('admin.dashboard', compact('user',$user));
+    }
 
     public function list()
     {
         $users = User::with("group")->get();
         return view('admin.user_list', compact('users',$users));
-
     }
 
 

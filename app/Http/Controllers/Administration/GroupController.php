@@ -11,12 +11,18 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param null $id
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id=null)
     {
-        $groups = Group::with("users")->get();
-        return view('admin.group_list', compact('groups',$groups));
+        if ($id != null) {
+            $group = Group::with("users")->where("id", $id)->firstOrFail();
+            return view("admin.group", compact('group', $group));
+        } else {
+            $groups = Group::with("users")->get();
+            return view('admin.group_list', compact('groups',$groups));
+        }
     }
 
     /**

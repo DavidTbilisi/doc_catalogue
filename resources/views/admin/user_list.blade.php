@@ -3,6 +3,7 @@
 
 @section('body')
 <div class="container pt-4">
+    <p class="h1">Users List</p>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -13,10 +14,14 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($users as $user)
+        @foreach($users as $index => $user)
         <tr>
-            <th scope="row">1</th>
-            <td>{{$user->name}}</td>
+            <th scope="row"> {{$index + 1}} </th>
+            <td>
+                <a href="{{route("users", ['id'=>$user->id])}}">
+                    {{$user->name}}
+                </a>
+            </td>
             <td>{{$user->email}}</td>
             <td>{{$user->group->alias}}</td>
         </tr>
