@@ -17,14 +17,17 @@ class PermissionSeeder extends Seeder
         DB::table('permissions')->insert([
             'name' => "Admin",
             'description' => "Can do anything",
+            'power' => 1,
         ]);
         DB::table('permissions')->insert([
             'name' => "Editor",
             'description' => "Can do something",
+            'power' => 2,
         ]);
         DB::table('permissions')->insert([
             'name' => "User",
             'description' => "Can do nothing",
+            'power' => 3,
         ]);
 
 

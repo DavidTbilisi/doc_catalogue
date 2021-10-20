@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name("welcome");
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','perms'])->group(function () {
     Route::prefix("admin")->group(function (){
         Route::get('/users/{id?}',[AdminController::class, 'index'])
             ->where('id', "[0-9]+")
