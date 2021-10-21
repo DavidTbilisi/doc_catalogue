@@ -10,6 +10,7 @@
             <th scope="col">#</th>
             <th scope="col">Name</th>
             <th scope="col">Members</th>
+            <th scope="col">Permissions</th>
         </tr>
         </thead>
         <tbody>
@@ -22,6 +23,11 @@
                 </a>
             </td>
             <td>{{$group->users->count()}}</td>
+            <td>
+                @foreach($group->permissions as $perm)
+                   <span>{{$perm->name}}</span>
+                @endforeach
+            </td>
         </tr>
         @endforeach
         </tbody>

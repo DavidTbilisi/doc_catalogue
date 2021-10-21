@@ -15,7 +15,7 @@
             </div>
             <div class="mb-3">
                 <button class="btn btn-success">Save</button>
-                <a class="btn btn-danger">Back</a>
+                <a class="btn btn-danger" href="{{url()->previous()}}">Back</a>
             </div>
         </div>
     </div>

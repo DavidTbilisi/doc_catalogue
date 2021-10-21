@@ -11,6 +11,7 @@
             <th scope="col">Name</th>
             <th scope="col">Email</th>
             <th scope="col">Group</th>
+            <th scope="col">Permissions</th>
         </tr>
         </thead>
         <tbody>
@@ -24,6 +25,11 @@
             </td>
             <td>{{$user->email}}</td>
             <td>{{$user->group->alias}}</td>
+            <td>
+                @foreach($user->permissions as $perm)
+                    <span>{{$perm->name}}</span>
+                @endforeach
+            </td>
         </tr>
         @endforeach
         </tbody>
