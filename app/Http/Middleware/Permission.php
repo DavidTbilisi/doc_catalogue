@@ -41,7 +41,11 @@ class Permission
 
         if ($groupPerm == false && $userPerms == false) {
 //            dd($request->route());
-            return redirect(route("welcome"))->with("message", "You have not permission to view {$request->route()->uri}");
+            return redirect(route("welcome"))
+                ->with(
+                    "message",
+                    "You have not permission to view {$request->route()->uri}"
+                );
         }
 
         return $next($request);
