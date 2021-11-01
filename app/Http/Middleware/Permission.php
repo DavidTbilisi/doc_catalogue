@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Authroutes;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
@@ -20,12 +21,16 @@ class Permission
     {
         $user = User::with('group')
             ->with('permissions')
+            ->with('routes')
             ->where('id',Auth::id())
             ->first();
 
+
+        $routePerms = Authroutes::with('users')->where('url',$request->route()->uri())->first();
         $userPerms = false;
         $groupPerm = false;
 
+        dump($routePerms);
 
         foreach ($user->permissions as $permission) {
             if ($permission->power <= 3) {
@@ -40,7 +45,6 @@ class Permission
 
 
         if ($groupPerm == false && $userPerms == false) {
-//            dd($request->route());
             return redirect(route("welcome"))
                 ->with(
                     "message",

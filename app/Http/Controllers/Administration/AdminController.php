@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Debugbar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 class AdminController extends Controller
 {
@@ -23,7 +24,7 @@ class AdminController extends Controller
             return view('admin.user', compact('user',$user));
         } else {
             $users = User::with("group")->get();
-            return view('admin.user_list', compact('users',$users));
+            return view('admin.user_list', ['users'=>$users, ]);
         }
     }
 

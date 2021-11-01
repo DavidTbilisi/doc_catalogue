@@ -54,4 +54,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Permission::class);
     }
+
+    public function routes()
+    {
+        return $this->belongsToMany(Authroutes::class, 'user_authroutes');
+    }
 }

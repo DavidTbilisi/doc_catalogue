@@ -21,6 +21,9 @@ class DatabaseSeeder extends Seeder
 
             PermissionUserSeeder::class,
             GroupPermissionSeeder::class,
+            AuthroutesSeeder::class,
+            UserAuthSeeder::class,
+            GroutAuthSeeder::class,
         ]);
     }
 }

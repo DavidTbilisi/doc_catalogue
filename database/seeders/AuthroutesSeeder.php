@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 class AuthroutesSeeder extends Seeder
 {
@@ -13,6 +15,18 @@ class AuthroutesSeeder extends Seeder
      */
     public function run()
     {
-        //
+
+        $allRoutes = Route::getRoutes()->get();
+
+        foreach ($allRoutes as $route){
+            if (!str_contains($route->uri(), 'debugbar') && !str_contains($route->uri(), 'ignition')) {
+                DB::table('authroutes')->insert([
+                    'url' => $route->uri(),
+                    'user' => 1,
+                    'group' => 1,
+                    'other' => 1,
+                ]);
+            }
+        }
     }
 }
