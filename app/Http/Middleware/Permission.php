@@ -20,26 +20,21 @@ class Permission
     public function handle(Request $request, Closure $next)
     {
         $user = User::with('group')
-            ->with('permissions')
             ->with('routes')
             ->where('id',Auth::id())
             ->first();
 
 
-        $routePerms = Authroutes::with('users')->where('url',$request->route()->uri())->first();
+//        $routePerms = Authroutes::with('users')->where('url',$request->route()->uri())->first();
         $userPerms = false;
         $groupPerm = false;
 
-        dump($routePerms);
 
-        foreach ($user->permissions as $permission) {
-            if ($permission->power <= 3) {
+        foreach ($user->routes as $routes) {
+            if($routes->url == $request->route()->uri() ){
+//                $request->isMethod('post')
+                dump($routes->pivot->permission_id);
                 $userPerms = True;
-            }
-        }
-        foreach ($user->group->permissions as $permission) {
-            if ($permission->power <= 1) {
-                $groupPerm = True;
             }
         }
 

@@ -12,7 +12,7 @@ class Authroutes extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_authroutes');
+        return $this->belongsToMany(User::class, 'permission_user');
     }
 
     public function groups()

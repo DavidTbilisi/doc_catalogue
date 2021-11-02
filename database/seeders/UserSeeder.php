@@ -21,5 +21,26 @@ class UserSeeder extends Seeder
             'password' => Hash::make("123456789"),
             'group_id' => 1
         ]);
+
+        DB::table('users')->insert([
+            'name' => "Administrator",
+            'email' => "admin@archive.gov.ge",
+            'password' => Hash::make("123456789"),
+            'group_id' => 1
+        ]);
+
+        DB::table('users')->insert([
+            'name' => "Editor",
+            'email' => "editor@archive.gov.ge",
+            'password' => Hash::make("123456789"),
+            'group_id' => 2
+        ]);
+
+        DB::table('users')->insert([
+            'name' => "User",
+            'email' => "user@archive.gov.ge",
+            'password' => Hash::make("123456789"),
+            'group_id' => 3
+        ]);
     }
 }

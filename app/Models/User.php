@@ -57,6 +57,6 @@ class User extends Authenticatable
 
     public function routes()
     {
-        return $this->belongsToMany(Authroutes::class, 'user_authroutes');
+        return $this->belongsToMany(Authroutes::class, 'permission_user')->withPivot('permission_id');
     }
 }

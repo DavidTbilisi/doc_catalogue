@@ -15,19 +15,19 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         DB::table('permissions')->insert([
-            'name' => "Admin",
+            'name' => "Read",
             'description' => "Can do anything",
             'power' => 1,
         ]);
         DB::table('permissions')->insert([
-            'name' => "Editor",
+            'name' => "Change",
             'description' => "Can do something",
             'power' => 2,
         ]);
         DB::table('permissions')->insert([
-            'name' => "User",
+            'name' => "Something else",
             'description' => "Can do nothing",
-            'power' => 3,
+            'power' => 0,
         ]);
 
 
