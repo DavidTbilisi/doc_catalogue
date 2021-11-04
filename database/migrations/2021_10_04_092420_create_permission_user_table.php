@@ -17,7 +17,6 @@ class CreatePermissionUserTable extends Migration
             $table->id();
             $table->foreignId('permission_id')->constrained();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('authroutes_id')->constrained();
             $table->timestamps();
         });
     }

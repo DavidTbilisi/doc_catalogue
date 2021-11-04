@@ -19,25 +19,27 @@ class Permission
      */
     public function handle(Request $request, Closure $next)
     {
-        $user = User::with('group')
-            ->with('routes')
+        $user = User::with('group')->with('permissions')
             ->where('id',Auth::id())
             ->first();
 
-
-//        $routePerms = Authroutes::with('users')->where('url',$request->route()->uri())->first();
-        $userPerms = false;
-        $groupPerm = false;
+        $userPerms = 1;
+        $groupPerm = 1;
 
 
-        foreach ($user->routes as $routes) {
-            if($routes->url == $request->route()->uri() ){
-//                $request->isMethod('post')
-                dump($routes->pivot->permission_id);
-                $userPerms = True;
+        foreach($user->permissions as $up) {
+            if(!empty($up)) {
+                $userPerms = $userPerms < $up->power? $up->power : $userPerms;
             }
         }
 
+        foreach($user->group->permissions as $gp) {
+            if(!empty($gp)) {
+                $groupPerm = $groupPerm < $gp->power? $gp->power : $groupPerm;
+            }
+        }
+
+        session()->put("perms", "{$userPerms},{$groupPerm}");
 
         if ($groupPerm == false && $userPerms == false) {
             return redirect(route("welcome"))

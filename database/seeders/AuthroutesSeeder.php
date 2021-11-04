@@ -22,6 +22,7 @@ class AuthroutesSeeder extends Seeder
             if (!str_contains($route->uri(), 'debugbar') && !str_contains($route->uri(), 'ignition')) {
                 DB::table('authroutes')->insert([
                     'url' => $route->uri(),
+                    'method'=> $route->methods()[0],
                     'user' => 1,
                     'group' => 1,
                     'other' => 1,

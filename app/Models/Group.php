@@ -18,8 +18,5 @@ class Group extends Model
         return $this->belongsToMany(Permission::class);
     }
 
-    public function routes()
-    {
-        return $this->hasMany(Authroutes::class);
-    }
+
 }
