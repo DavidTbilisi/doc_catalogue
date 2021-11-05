@@ -21,17 +21,31 @@ Route::get('/', function () {
 
 Route::middleware(['auth','perms'])->group(function () {
     Route::prefix("admin")->group(function (){
+
         Route::get('/users/{id?}',[AdminController::class, 'index'])
             ->where('id', "[0-9]+")
             ->name('users');
+
+        Route::get('/user/add',[AdminController::class, 'create'])
+            ->name('adduser');
+
+        Route::post('/user/add',[AdminController::class, 'store'])
+            ->name('storeuser');
 
         Route::get('/groups/{id?}',[GroupController::class, 'index'])
             ->where('id', "[0-9]+")
             ->name('groups');
 
+        Route::get('/group/add',[AdminController::class, 'creategroup'])
+            ->name('addgroup');
+
+        Route::post('/groups/add',[GroupController::class, 'storegroup'])
+            ->name('storegroup');
+
         Route::get('/permissions/{id?}',[PermissionController::class, 'index'])
             ->where('id', "[0-9]+")
             ->name('permissions');
+
     });
     Route::get('/dashboard',[AdminController::class, 'index'])->name('dashboard');
 });
