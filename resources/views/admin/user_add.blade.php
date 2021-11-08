@@ -12,15 +12,11 @@
             </div>
         @endif
 
-        @if (session()->has("message"))
-            <div class="alert alert-info">
-                {{session()->get("message")}}
-            </div>
-        @endif
 
 
         <div class="mt-3">
             <p class="h1"> მომხმარებლის დამატება </p>
+
             <form action="{{route("storeuser")}}" method="post">
             @csrf
             <div class="mb-3">

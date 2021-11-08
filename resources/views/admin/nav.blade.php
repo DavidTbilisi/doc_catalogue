@@ -48,7 +48,7 @@
                         <span class="material-icons md-light">account_circle</span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="profile">
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><a class="dropdown-item" href="{{route('profile')}}">Profile</a></li>
                         <li><a class="dropdown-item" onclick="logout()" href="#">Log out</a></li>
                     </ul>
                 </div>

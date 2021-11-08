@@ -22,32 +22,55 @@ Route::get('/', function () {
 Route::middleware(['auth','perms'])->group(function () {
     Route::prefix("admin")->group(function (){
 
+// USER
         Route::get('/users/{id?}',[AdminController::class, 'index'])
             ->where('id', "[0-9]+")
             ->name('users');
 
-        Route::get('/user/add',[AdminController::class, 'create'])
+        Route::get('/users/add',[AdminController::class, 'create'])
             ->name('adduser');
 
-        Route::post('/user/add',[AdminController::class, 'store'])
+        Route::post('/users/add',[AdminController::class, 'store'])
             ->name('storeuser');
 
+        Route::get('/users/edit/{id?}',[AdminController::class, 'edit'])
+            ->where('id', "[0-9]+")
+            ->name('edituser');
+
+        Route::post('/users/edit/{id?}',[AdminController::class, 'update'])
+            ->where('id', "[0-9]+")
+            ->name('updateuser');
+
+
+
+// GROUP
         Route::get('/groups/{id?}',[GroupController::class, 'index'])
             ->where('id', "[0-9]+")
             ->name('groups');
 
-        Route::get('/group/add',[AdminController::class, 'creategroup'])
+        Route::get('/groups/add',[GroupController::class, 'create'])
             ->name('addgroup');
 
-        Route::post('/groups/add',[GroupController::class, 'storegroup'])
+        Route::post('/groups/add',[GroupController::class, 'store'])
             ->name('storegroup');
 
+        Route::get('/groups/edit/{id?}',[GroupController::class, 'edit'])
+            ->where('id', "[0-9]+")
+            ->name('editgroup');
+
+        Route::post('/groups/edit/{id?}',[GroupController::class, 'update'])
+            ->where('id', "[0-9]+")
+            ->name('updategroup');
+
+
+// PERMISSION
         Route::get('/permissions/{id?}',[PermissionController::class, 'index'])
             ->where('id', "[0-9]+")
             ->name('permissions');
 
     });
     Route::get('/dashboard',[AdminController::class, 'index'])->name('dashboard');
+    Route::get('/profile',[AdminController::class, 'profile'])->name('profile');
 });
 
 Route::prefix("test")->group(function (){
