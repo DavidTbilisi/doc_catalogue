@@ -23,52 +23,90 @@ Route::middleware(['auth','perms'])->group(function () {
     Route::prefix("admin")->group(function (){
 
 // USER
-        Route::get('/users/{id?}',[AdminController::class, 'index'])
-            ->where('id', "[0-9]+")
-            ->name('users');
+        Route::prefix("users")->group(function (){
+            Route::name('users.')->group(function () {
 
-        Route::get('/users/add',[AdminController::class, 'create'])
-            ->name('adduser');
+                Route::get('/{id?}',[AdminController::class, 'index'])
+                    ->where('id', "[0-9]+")
+                    ->name('index');
 
-        Route::post('/users/add',[AdminController::class, 'store'])
-            ->name('storeuser');
+                Route::get('/add',[AdminController::class, 'create'])
+                    ->name('add');
 
-        Route::get('/users/edit/{id?}',[AdminController::class, 'edit'])
-            ->where('id', "[0-9]+")
-            ->name('edituser');
+                Route::post('/add',[AdminController::class, 'store'])
+                    ->name('store');
 
-        Route::post('/users/edit/{id?}',[AdminController::class, 'update'])
-            ->where('id', "[0-9]+")
-            ->name('updateuser');
+                Route::get('/edit/{id?}',[AdminController::class, 'edit'])
+                    ->where('id', "[0-9]+")
+                    ->name('edit');
 
+                Route::post('/edit/{id?}',[AdminController::class, 'update'])
+                    ->where('id', "[0-9]+")
+                    ->name('update');
 
+                Route::post('/delete/{id?}',[AdminController::class, 'destroy'])
+                    ->where('id', "[0-9]+")
+                    ->name('delete');
+
+            });
+        });
 
 // GROUP
-        Route::get('/groups/{id?}',[GroupController::class, 'index'])
-            ->where('id', "[0-9]+")
-            ->name('groups');
+        Route::prefix("groups")->group(function (){
+            Route::name('groups.')->group(function () {
+                Route::get('/{id?}',[GroupController::class, 'index'])
+                    ->where('id', "[0-9]+")
+                    ->name('index');
 
-        Route::get('/groups/add',[GroupController::class, 'create'])
-            ->name('addgroup');
+                Route::get('/add',[GroupController::class, 'create'])
+                    ->name('add');
 
-        Route::post('/groups/add',[GroupController::class, 'store'])
-            ->name('storegroup');
+                Route::post('/add',[GroupController::class, 'store'])
+                    ->name('store');
 
-        Route::get('/groups/edit/{id?}',[GroupController::class, 'edit'])
-            ->where('id', "[0-9]+")
-            ->name('editgroup');
+                Route::get('/edit/{id?}',[GroupController::class, 'edit'])
+                    ->where('id', "[0-9]+")
+                    ->name('edit');
 
-        Route::post('/groups/edit/{id?}',[GroupController::class, 'update'])
-            ->where('id', "[0-9]+")
-            ->name('updategroup');
+                Route::post('/edit/{id?}',[GroupController::class, 'update'])
+                    ->where('id', "[0-9]+")
+                    ->name('update');
+
+                Route::post('/delete/{id?}',[GroupController::class, 'destroy'])
+                    ->where('id', "[0-9]+")
+                    ->name('delete');
+            });
+        });
 
 
 // PERMISSION
-        Route::get('/permissions/{id?}',[PermissionController::class, 'index'])
-            ->where('id', "[0-9]+")
-            ->name('permissions');
+
+        Route::prefix("permissions")->group(function (){
+            Route::name('permissions.')->group(function () {
+                Route::get('/{id?}',[PermissionController::class, 'index'])
+                    ->where('id', "[0-9]+")
+                    ->name('index');
+
+                Route::post('/add',[PermissionController::class, 'create'])
+                    ->name('add');
+
+                Route::get('/edit/{id?}',[PermissionController::class, 'edit'])
+                    ->where('id', "[0-9]+")
+                    ->name('edit');
+
+                Route::post('/edit/{id?}',[PermissionController::class, 'update'])
+                    ->where('id', "[0-9]+")
+                    ->name('update');
+
+                Route::post('/delete/{id?}',[PermissionController::class, 'destroy'])
+                    ->where('id', "[0-9]+")
+                    ->name('delete');
+            });
+        });
+
 
     });
+
     Route::get('/dashboard',[AdminController::class, 'index'])->name('dashboard');
     Route::get('/profile',[AdminController::class, 'profile'])->name('profile');
 });

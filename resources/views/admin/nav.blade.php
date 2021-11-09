@@ -36,9 +36,9 @@
                             <span class="material-icons md-light">settings_applications</span>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item" href="{{route('users')}}">Users</a></li>
-                            <li><a class="dropdown-item" href="{{route('groups')}}">Groups</a></li>
-                            <li><a class="dropdown-item" href="{{route('permissions')}}">Permissions</a></li>
+                            <li><a class="dropdown-item" href="{{route('users.index')}}">Users</a></li>
+                            <li><a class="dropdown-item" href="{{route('groups.index')}}">Groups</a></li>
+                            <li><a class="dropdown-item" href="{{route('permissions.index')}}">Permissions</a></li>
                         </ul>
                     </div>
                 </div>

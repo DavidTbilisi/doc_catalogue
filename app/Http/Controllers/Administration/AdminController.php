@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Models\Group;
+use App\Models\Permission;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Debugbar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -83,22 +85,52 @@ class AdminController extends Controller
             ->where("id", $id )
             ->firstOrFail();
         $groups = Group::all();
+        $permissions = Permission::all();
 
-        return view('admin.user', ['user' => $user, 'groups' => $groups]);
+
+        $up = [];
+        foreach ($user->permissions as $perm):
+            $up[$perm->name] = $perm->id;
+        endforeach;
+
+
+        return view('admin.user', ['user' => $user, 'groups' => $groups, 'permissions' => $permissions, 'up'=>collect($up)]);
     }
 
     public function update(Request $request, $id)
     {
-        $user = User::where("id", $id)->firstOrFail();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->group_id = $request->group_id;
-        $user->save();
+
+        DB::transaction(function() use ($request, $id){
+
+            $user = User::findOrFail($id);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->group_id = $request->group_id;
+            $user->save();
+
+            DB::table("permission_user")->where('user_id', '=', $id)->delete();
+
+            foreach($request->permissions as $permission_id):
+                DB::table("permission_user")->insert([
+                    "user_id" => $id,
+                    "permission_id" => $permission_id,
+                    "updated_at" => now(),
+                ]);
+            endforeach;
+
+        });
         return redirect(route("users"));
+
     }
 
     public function destroy($id)
     {
-        //
+        DB::transaction(function() use ( $id){
+            DB::table("permission_user")->where('user_id', '=', $id)->delete();
+            DB::table('users')->where('id', '=', $id)->delete();
+        });
+
+        return redirect(route("users"));
     }
+
 }

@@ -17,7 +17,7 @@
         <tr>
             <th scope="row"> {{$index + 1}} </th>
             <td>
-                <a href="{{ route("permissions", ['id'=>$permission->id]) }}">
+                <a href="{{ route("permissions.index", ['id'=>$permission->id]) }}">
                     {{$permission->name}}
                 </a>
             </td>

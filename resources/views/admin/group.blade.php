@@ -15,7 +15,7 @@
 
             <p class="h1"> {{$group->alias}}</p>
             <small class="text-muted">{{$group->description}}</small>
-            <form action="{{route('updategroup', ['id'=>$group->id])}}" method="post">
+            <form action="{{route('groups.update', ['id'=>$group->id])}}" method="post">
             @csrf
             <div class="mb-3">
                 <label for="alias" class="form-label">ჯგუფის სახელი</label>
@@ -48,9 +48,19 @@
 
             <div class="mb-3">
                 <button class="btn btn-success">Save</button>
-                <a class="btn btn-danger" href="{{url()->previous()}}">Back</a>
+                <a class="btn btn-primary" href="{{route("groups.index")}}">Back</a>
             </div>
             </form>
+
+            <form action="{{route('groups.delete', ['id'=>$group->id])}}" method="POST">
+                @csrf
+                <button onclick="return confirm('Are you sure you want to delete?')"
+                        class="btn btn-danger">
+                    Delete
+                </button>
+            </form>
+
+
         </div>
     </div>
 @endsection

@@ -17,7 +17,7 @@
         <div class="mt-3">
             <p class="h1"> მომხმარებლის დამატება </p>
 
-            <form action="{{route("storeuser")}}" method="post">
+            <form action="{{route("users.store")}}" method="post">
             @csrf
             <div class="mb-3">
                 <label for="name" class="form-label">მომხმარებლის სახელი</label>
@@ -38,7 +38,7 @@
 
             <div class="mb-3">
                 <button class="btn btn-success">დამატება</button>
-                <a class="btn btn-danger" href="{{url()->previous()}}">უკან</a>
+                <a class="btn btn-danger" href="{{route('users.index')}}">უკან</a>
             </div>
 
             </form>

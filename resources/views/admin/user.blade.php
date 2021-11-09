@@ -6,7 +6,7 @@
             <small class="text-muted">{{$user->description}}</small>
 
 
-            <form action="{{route("updateuser", ['id'=>$user->id])}}" method="post">
+            <form action="{{route("users.update", ['id'=>$user->id])}}" method="post">
             @csrf
             <div class="mb-3">
                 <label for="name" class="form-label">სახელი</label>
@@ -31,11 +31,40 @@
                 </select>
             </div>
 
+            @foreach($permissions as $p)
+                @if($up->has($p->name))
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="permissions[]" value="{{$p->id}}" id="{{$p->name}}" checked>
+                        <label class="form-check-label" for="{{$p->name}}">
+                            {{$p->name}}
+                        </label>
+                    </div>
+                @else
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="permissions[]" value="{{$p->id}}" id="{{$p->name}}">
+                        <label class="form-check-label" for="{{$p->name}}">
+                            {{$p->name}}
+                        </label>
+                    </div>
+                @endif
+            @endforeach
+
+
+
             <div class="mb-3">
                 <button class="btn btn-success">Save</button>
-                <a class="btn btn-danger" href="{{url()->previous()}}">Back</a>
+                <a class="btn btn-primary" href="{{route('users.index')}}">Back</a>
+
             </div>
 
+            </form>
+
+            <form action="{{route('users.delete', ['id'=>$user->id])}}" method="POST">
+                @csrf
+                <button onclick="return confirm('Are you sure you want to delete?')"
+                        class="btn btn-danger">
+                    Delete
+                </button>
             </form>
         </div>
     </div>

@@ -38,25 +38,15 @@ class GroupController extends Controller
             'description' => 'required',
         ]);
 
+        $g = new Group();
+        $g->name = strtolower($request->alias);
+        $g->alias = ucfirst($request->alias);
+        $g->description = $request->description;
+        $g->created_at = now();
+        $g->updated_at = now();
+        $g->save();
 
-        DB::transaction(function($request) {
-
-
-
-
-            $g = new Group();
-            $g->name = strtolower($request->alias);
-            $g->alias = ucfirst($request->alias);
-            $g->description = $request->description;
-            $g->created_at = now();
-            $g->updated_at = now();
-
-            if ( $g->save() ) {
-                return redirect(route("groups"))->with("message", "ჯგუფი წარმატებით დაემატა");
-            }
-        });
-
-
+        return redirect(route("groups.index"))->with("message", "ჯგუფი წარმატებით დაემატა");
     }
 
 
@@ -84,33 +74,37 @@ class GroupController extends Controller
        DB::transaction(function() use ($request, $id){
 
 
-           $g = Group::find($id);
+           $g = Group::findOrFail($id);
            $g->name = strtolower($request->alias);
            $g->alias = ucfirst($request->alias);
            $g->description = $request->description;
            $g->created_at = now();
            $g->updated_at = now();
-
+           $g->save();
+//
            DB::table("group_permission")->where('group_id', '=', $id)->delete();
+
             foreach($request->permissions as $permission_id):
                 DB::table("group_permission")->insert([
                     "group_id" => $id,
-                    "permission_id" => $permission_id
+                    "permission_id" => $permission_id,
+                    "updated_at" => now(),
                 ]);
             endforeach;
 
 
-
-            if ( $g->save() ) {
-                return redirect(route("groups"))->with("message", "ჯგუფი წარმატებით დარედაქტირდა");
-            }
         });
-        return redirect(route("editgroup", ['id'=>$id]))->with("message", "ჯგუფი წარმატებით დარედაქტირდა");
+        return redirect(route("groups.edit", ['id'=>$id]))->with("message", "ჯგუფი წარმატებით დარედაქტირდა");
 
     }
 
     public function destroy($id)
     {
-        //
+        DB::transaction(function() use ( $id){
+            DB::table("group_permission")->where('group_id', '=', $id)->delete();
+            DB::table('groups')->where('id', '=', $id)->delete();
+        });
+
+        return redirect(route("groups.index"));
     }
 }

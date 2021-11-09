@@ -1,6 +1,4 @@
 @extends('layouts.admin')
-
-
 @section('body')
 <div class="container pt-4">
 
@@ -26,7 +24,7 @@
         <tr>
             <th scope="row"> {{$index + 1}} </th>
             <td>
-               <a href="{{route("edituser", ['id'=>$user->id])}}">
+               <a href="{{route("users.edit", ['id'=>$user->id])}}">
                     {{$user->name}}
                 </a>
             </td>
@@ -43,7 +41,7 @@
     </table>
 
     <div style="position:fixed; right: 100px; bottom: 100px; border-radius: 50%; background-color: #00fa9a; padding: 5px; border: 1px solid black; ">
-        <a href="{{route("adduser")}}"> <span class="material-icons md-light">add</span> </a>
+        <a href="{{route("users.add")}}"> <span class="material-icons md-light">add</span> </a>
     </div>
 
 </div>

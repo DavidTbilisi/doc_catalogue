@@ -18,7 +18,7 @@
             <p class="h1"> ჯგუფის შექმნა </p>
             <small class="text-muted"></small>
 
-            <form action="{{route("storegroup")}}" method="post">
+            <form action="{{route("groups.store")}}" method="post">
             @csrf
             <div class="mb-3">
                 <label for="alias" class="form-label">ჯგუფის სახელი</label>
@@ -32,7 +32,7 @@
 
             <div class="mb-3">
                 <button class="btn btn-success">შენახვა</button>
-                <a class="btn btn-danger" href="{{url()->previous()}}">უკან</a>
+                <a class="btn btn-danger" href="{{route("groups.index")}}">უკან</a>
             </div>
 
             </form>
