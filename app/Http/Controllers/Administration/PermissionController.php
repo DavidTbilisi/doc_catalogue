@@ -12,10 +12,10 @@ class PermissionController extends Controller
     {
         if ($id != null) {
             $permission = Permission::where("id", $id)->firstOrFail();
-            return view("admin.permission", compact('permission', $permission));
+            return view("admin.permissions.permission", compact('permission', $permission));
         } else {
             $permissions = Permission::all();
-            return view("admin.permission_list", compact('permissions', $permissions));
+            return view("admin.permissions.permission_list", compact('permissions', $permissions));
         }
     }
 
@@ -45,7 +45,7 @@ class PermissionController extends Controller
     public function show($id)
     {
         $permission = Permission::where("id", $id)->firstOrFail();
-        return view("admin.permission", compact('permission', $permission));
+        return view("admin.permissions.permission", compact('permission', $permission));
     }
 
     public function edit($id)

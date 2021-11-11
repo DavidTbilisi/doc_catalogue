@@ -19,17 +19,17 @@ class AdminController extends Controller
     {
         if($id!=null) {
             $user = User::with("group")->where("id", $id )->firstOrFail();
-            return view('admin.user', compact('user',$user));
+            return view('admin.users.user', compact('user',$user));
         } else {
             $users = User::with("group")->get();
-            return view('admin.user_list', ['users'=>$users, ]);
+            return view('admin.users.user_list', ['users'=>$users, ]);
         }
     }
 
 
     public function create()
     {
-        return view('admin.user_add');
+        return view('admin.users.user_add');
     }
 
 
@@ -74,7 +74,7 @@ class AdminController extends Controller
     public function list()
     {
         $users = User::with("group")->get();
-        return view('admin.user_list', compact('users',$users));
+        return view('admin.users.user_list', compact('users',$users));
     }
 
 
@@ -94,7 +94,7 @@ class AdminController extends Controller
         endforeach;
 
 
-        return view('admin.user', ['user' => $user, 'groups' => $groups, 'permissions' => $permissions, 'up'=>collect($up)]);
+        return view('admin.users.user', ['user' => $user, 'groups' => $groups, 'permissions' => $permissions, 'up'=>collect($up)]);
     }
 
     public function update(Request $request, $id)

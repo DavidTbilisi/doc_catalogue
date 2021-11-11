@@ -17,10 +17,10 @@ class GroupController extends Controller
     {
         if ($id != null) {
             $group = Group::with("users")->where("id", $id)->firstOrFail();
-            return view("admin.group", compact('group', $group));
+            return view("admin.groups.group", compact('group', $group));
         } else {
             $groups = Group::with("users")->get();
-            return view('admin.group_list', compact('groups',$groups));
+            return view('admin.groups.group_list', compact('groups',$groups));
         }
     }
 
@@ -28,7 +28,7 @@ class GroupController extends Controller
 
     public function create()
     {
-        return view('admin.group_add');
+        return view('admin.groups.group_add');
     }
 
     public function store(Request $request)
@@ -64,7 +64,7 @@ class GroupController extends Controller
             $gp[$perm->name] = $perm->id;
         endforeach;
 
-        return view("admin.group", ['group' => $group, 'gp'=>collect($gp),'permissions' => $permissions]);
+        return view("admin.groups.group", ['group' => $group, 'gp'=>collect($gp),'permissions' => $permissions]);
     }
 
 
