@@ -53,7 +53,7 @@ class AdminController extends Controller
         $u->updated_at = now();
 
         if ( $u->save() ) {
-           return redirect(route("users"))->with("message", "მომხმარებელი წარმატებით დაემატა");
+           return redirect(route("users.index"))->with("message", "მომხმარებელი წარმატებით დაემატა");
         }
     }
 
@@ -119,7 +119,7 @@ class AdminController extends Controller
             endforeach;
 
         });
-        return redirect(route("users"));
+        return redirect(route("users.index"));
 
     }
 
@@ -130,7 +130,7 @@ class AdminController extends Controller
             DB::table('users')->where('id', '=', $id)->delete();
         });
 
-        return redirect(route("users"));
+        return redirect(route("users.index"));
     }
 
 }
