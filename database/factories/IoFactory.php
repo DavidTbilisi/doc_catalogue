@@ -9,19 +9,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class IoFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
+
     protected $model = Io::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array
-     * @throws \Exception
-     */
     public function definition()
     {
         $uid = $this->faker->buildingNumber();
