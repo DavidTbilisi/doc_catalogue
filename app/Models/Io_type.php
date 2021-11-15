@@ -5,15 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Io extends Model
+class Io_type extends Model
 {
     use HasFactory;
 
-    protected $table = "io";
-
-
-    public function type()
+    public function ios()
     {
-        return $this->belongsTo(Io_type::class, 'io_type_id');
+        $this->belongsTo(IO::class);
     }
 }

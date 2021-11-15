@@ -3,6 +3,7 @@
 use App\Http\Controllers\Administration\AdminController;
 use App\Http\Controllers\Administration\GroupController;
 use App\Http\Controllers\Administration\PermissionController;
+use App\Http\Controllers\Administration\IoController;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -105,9 +106,37 @@ Route::middleware(['auth','perms'])->group(function () {
         });
 
 
+        // IO (information object)
+        Route::prefix("io")->group(function (){
+            Route::name('io.')->group(function () {
+                Route::get('/{id?}',[IoController::class, 'index'])
+                    ->where('id', "[0-9]+")
+                    ->name('index');
+
+                Route::post('/add',[IoController::class, 'create'])
+                    ->name('add');
+
+                Route::get('/edit/{id?}',[IoController::class, 'edit'])
+                    ->where('id', "[0-9]+")
+                    ->name('edit');
+
+                Route::post('/edit/{id?}',[IoController::class, 'update'])
+                    ->where('id', "[0-9]+")
+                    ->name('update');
+
+                Route::post('/delete/{id?}',[IoController::class, 'destroy'])
+                    ->where('id', "[0-9]+")
+                    ->name('delete');
+            });
+        });
     });
 
-    Route::get('/dashboard',[AdminController::class, 'index'])->name('dashboard');
+
+
+
+
+
+Route::get('/dashboard',[AdminController::class, 'index'])->name('dashboard');
     Route::get('/profile',[AdminController::class, 'profile'])->name('profile');
 });
 

@@ -13,19 +13,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
         $this->call([
             GroupSeeder::class,
             UserSeeder::class,
             PermissionSeeder::class,
-//            AuthroutesSeeder::class,
 
             PermissionUserSeeder::class,
             GroupPermissionSeeder::class,
             IotypesSeeder::class,
             IoSeeder::class,
-//            UserAuthSeeder::class,
-//            GroutAuthSeeder::class,
         ]);
     }
 }

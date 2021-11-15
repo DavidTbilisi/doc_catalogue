@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateIoTypesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('io_types', function (Blueprint $table) {
@@ -20,11 +15,7 @@ class CreateIoTypesTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+
     public function down()
     {
         Schema::dropIfExists('io_types');
