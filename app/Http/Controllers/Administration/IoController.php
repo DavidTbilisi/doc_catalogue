@@ -12,19 +12,19 @@ class IoController extends Controller
     public function index()
     {
         $ioList = Io::with("type")->get();
-        return view("admin.io.index", ["iolist" => $ioList]);
+        return view("admin.io.io_list", ["iolist" => $ioList]);
     }
 
 
     public function create()
     {
-
+        return view("admin.io.io_add");
     }
 
 
     public function store(Request $request)
     {
-
+        dd($request->all());
     }
 
 

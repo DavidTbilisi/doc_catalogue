@@ -17,15 +17,15 @@ class IoFactory extends Factory
         $uid = $this->faker->buildingNumber();
         $type_id = random_int(1,3);
         $parent_id = random_int(1,3);
-        $level = random_int(1,3);
+
 
         return [
             'io_type_id' => $type_id,
             'suffix' => "",
             'identifier' => $uid,
             'prefix' => "",
-            'reference' => "{$type_id}_{$uid}_{$parent_id}",
-            'level' => $level,
+            'reference' => "GE_{$type_id}_{$uid}_{$parent_id}",
+            'level' => $type_id,
             'parentid' => $parent_id,
             'created_at' => now(),
             'updated_at' => now(),

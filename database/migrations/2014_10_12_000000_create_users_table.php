@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->enum('active', ['active', 'not active'])->default('not active');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

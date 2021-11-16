@@ -22,6 +22,7 @@ class CreateIoTable extends Migration
             $table->string('reference');
             $table->integer('level');
             $table->integer('parentid');
+            $table->softDeletes($column = 'deleted_at', $precision = 0)->nullable();
             $table->timestamps();
         });
     }
