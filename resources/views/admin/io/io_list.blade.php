@@ -15,11 +15,14 @@
 @foreach($iolist as $io)
         <tr>
             <th scope="row">{{++$loop->index}}</th>
-            <td class="identifier">{{$io->prefix}}{{$io->identifier}}{{$io->suffix}}</td>
+            <td class="identifier">
+                {{$io->prefix . $io->identifier . $io->suffix . $io->type->id}}
+            </td>
             <td class="reference">{{$io->reference}}</td>
             <td class="type">{{$io->type->name}}</td>
             <td>
-                <button class="btn btn-info">Edit</button>
+                <a href="{{route("io.show", ["id"=>$io->id])}}" class="btn btn-success">View</a>
+                <a href="{{route("io.edit", ["id"=>$io->id])}}" class="btn btn-info">Edit</a>
                 <button onclick="return confirm('Are you sure you want to delete?')"class="btn btn-danger">Delete</button>
             </td>
         </tr>

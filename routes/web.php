@@ -120,6 +120,10 @@ Route::middleware(['auth', 'perms'])->group(function () {
                 Route::post('/add', [IoController::class, 'store'])
                     ->name('store');
 
+                Route::get('/show/{id?}', [IoController::class, 'show'])
+                    ->where('id', "[0-9]+")
+                    ->name('show');
+
                 Route::get('/edit/{id?}', [IoController::class, 'edit'])
                     ->where('id', "[0-9]+")
                     ->name('edit');
