@@ -26,7 +26,7 @@ class IoFactory extends Factory
             'prefix' => "",
             'reference' => "GE_{$type_id}_{$uid}_{$parent_id}",
             'level' => $type_id,
-            'parentid' => $parent_id,
+            'parent_id' => $parent_id,
             'created_at' => now(),
             'updated_at' => now(),
         ];

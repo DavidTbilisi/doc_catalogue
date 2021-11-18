@@ -1,5 +1,21 @@
 @extends('layouts.admin')
 @section('body')
+<div id="jstree_demo_div" class="mt-5">
+    <ul>
+        <li>ფონდები
+            <ul>
+            @foreach($iolist as $io)
+                    <li>
+                        {{$io->type->name}} {{$io->prefix . $io->identifier . $io->suffix . $io->type->id}}
+                    </li>
+            @endforeach
+            </ul>
+
+        </li>
+    </ul>
+</div>
+
+
 
 <table class="table">
     <thead>
@@ -35,4 +51,13 @@
 <div style="position:fixed; right: 100px; bottom: 100px; border-radius: 50%; background-color: #00fa9a; padding: 5px; border: 1px solid black; ">
     <a href="{{route("io.add")}}"> <span class="material-icons md-light">add</span> </a>
 </div>
+
+
+<script>
+
+    $(function () {
+        $('#jstree_demo_div').jstree();
+    });
+
+</script>
 @endsection

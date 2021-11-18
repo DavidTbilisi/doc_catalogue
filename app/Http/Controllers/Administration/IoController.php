@@ -11,7 +11,12 @@ class IoController extends Controller
 
     public function index()
     {
-        $ioList = Io::with("type")->where('level','1')->get();
+        $ioList = Io::with("type")
+            ->with("children")
+            ->where("level", 1)
+            ->get();
+
+
         return view("admin.io.io_list", ["iolist" => $ioList]);
     }
 

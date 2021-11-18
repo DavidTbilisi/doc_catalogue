@@ -11,6 +11,7 @@ class CreateIoTypesTable extends Migration
         Schema::create('io_types', function (Blueprint $table) {
             $table->id();
             $table->string("name");
+            $table->string("table");
             $table->softDeletes();
             $table->timestamps();
         });

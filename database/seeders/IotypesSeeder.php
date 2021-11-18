@@ -14,9 +14,11 @@ class IotypesSeeder extends Seeder
      */
     public function run()
     {
-        foreach(["ფონდი", "ანაწერი", "საქმე", ] as $name):
+        $names = ["fonds"=>"ფონდი", "series"=>"ანაწერი", "files"=>"საქმე","items"=>"დოკუმენტები" ];
+        foreach($names as $tablename => $name):
         DB::table('io_types')->insert([
             'name' => $name,
+            'table' => $tablename,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

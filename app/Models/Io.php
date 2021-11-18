@@ -17,4 +17,14 @@ class Io extends Model
     {
         return $this->belongsTo(Io_type::class, 'io_type_id');
     }
+
+    public function children()
+    {
+        return $this->hasMany(Io::class, 'parent_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Io::class, 'parent_id');
+    }
 }

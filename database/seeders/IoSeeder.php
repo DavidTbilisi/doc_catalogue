@@ -10,6 +10,6 @@ class IoSeeder extends Seeder
 
     public function run()
     {
-        Io::factory()->count(90)->create();
+        Io::factory()->count(6)->create();
     }
 }

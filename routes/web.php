@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Administration\AdminController;
 use App\Http\Controllers\Administration\GroupController;
+use App\Http\Controllers\Administration\IoTypesController;
 use App\Http\Controllers\Administration\PermissionController;
 use App\Http\Controllers\Administration\IoController;
 use Illuminate\Support\Facades\Route;
@@ -133,6 +134,37 @@ Route::middleware(['auth', 'perms'])->group(function () {
                     ->name('update');
 
                 Route::post('/delete/{id?}', [IoController::class, 'destroy'])
+                    ->where('id', "[0-9]+")
+                    ->name('delete');
+            });
+        });
+
+
+        // IO (information object)
+        Route::prefix("types")->group(function () {
+            Route::name('types.')->group(function () {
+                Route::get('/{id?}', [IoTypesController::class, 'index'])
+                    ->where('id', "[0-9]+")
+                    ->name('index');
+
+                Route::get('/add', [IoTypesController::class, 'create'])
+                    ->name('add');
+
+                Route::post('/add', [IoTypesController::class, 'store'])
+                    ->name('store');
+
+                Route::get('/show/{id?}', [IoTypesController::class, 'show'])
+                    ->name('show');
+
+                Route::get('/edit/{id?}', [IoTypesController::class, 'edit'])
+                    ->where('id', "[0-9]+")
+                    ->name('edit');
+
+                Route::post('/edit/{id?}', [IoTypesController::class, 'update'])
+                    ->where('id', "[0-9]+")
+                    ->name('update');
+
+                Route::post('/delete/{id?}', [IoTypesController::class, 'destroy'])
                     ->where('id', "[0-9]+")
                     ->name('delete');
             });

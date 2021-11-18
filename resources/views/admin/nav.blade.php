@@ -39,6 +39,7 @@
                             <li><a class="dropdown-item" href="{{route('users.index')}}">Users</a></li>
                             <li><a class="dropdown-item" href="{{route('groups.index')}}">Groups</a></li>
                             <li><a class="dropdown-item" href="{{route('permissions.index')}}">Permissions</a></li>
+                            <li><a class="dropdown-item" href="{{route('types.index')}}">Io Types</a></li>
                         </ul>
                     </div>
                 </div>
