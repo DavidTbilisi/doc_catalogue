@@ -7,6 +7,7 @@
         <tr>
             <th scope="col">#</th>
             <th scope="col">Name</th>
+            <th scope="col">Action</th>
         </tr>
         </thead>
         <tbody>
@@ -14,6 +15,11 @@
         <tr>
             <th scope="row">{{++$loop->index}}</th>
             <td><a href="{{route("types.show",['id'=>$type->table])}}">{{$type->name}}</a></td>
+            <form action="{{route("types.delete",['id'=>$type->id])}}" method="post">
+                @csrf
+                <input type="hidden" name="table" value="{{$type->name}}">
+                <td><button class="btn btn-danger" onclick="return confirm('Do you really want to delete?')">Delete</button></td>
+            </form>
         </tr>
         @endforeach
         </tbody>

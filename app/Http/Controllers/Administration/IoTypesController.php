@@ -21,27 +21,37 @@ class IoTypesController extends Controller
 
     public function create()
     {
-        return view("admin.iotypes.add_type", ["type"]);
+        $types = Io_type::all();
+        return view("admin.iotypes.add_type", ["types"=>$types]);
     }
 
 
     public function store(Request $request)
     {
         $request->validate([
-            'name'  => 'required|alpha|max:255',
-            'field' => 'required',
-            'type'  => 'required',
+            'name'          => 'required|max:255',
+            'tablename'     => 'required|alpha|max:20',
+            'field'         => 'required|max:255',
+            'type'          => 'required|max:20',
         ]);
-        DB::transaction(function () use ($request){
 
-            if (!Schema::hasTable($request->get("name"))) {
-                Schema::create($request->get("name"), function (Blueprint $table) use ($request) {
+        DB::beginTransaction();
+        try {
+
+            if (!Schema::hasTable($request->get("tablename"))) {
+                Schema::create($request->get("tablename"), function (Blueprint $table) use ($request) {
                     $table->id();
                     foreach ($request->get("type") as $i => $type){
                         $field = $request->get("field")[$i];
                         $table->string($field);
                     }
-                    $table->integer("parent_id");
+
+//                    TODO: parent_id -ს ვერ ხვდება რისია.
+                    /*
+                     * ან თეიბლის სახელი უნდა წამოვიღო და იმის tablename_id-ი მივაწერო
+                     * ან დავტოვო უბრალოდ ინტ-ად და ვიმკითხავო რომელია მისი მშობელი.
+                     * */
+                    $table->foreignId("parent_id")->constrained("fonds");
                     $table->foreignId("io_type_id")->constrained();
                     $table->softDeletes();
                     $table->timestamps();
@@ -49,22 +59,26 @@ class IoTypesController extends Controller
             }
             $ioType = new Io_type();
             $ioType->name = $request->get("name");
-            $ioType->table = $request->get("name");
+            $ioType->table = $request->get("tablename");
+            $ioType->parent_id = $request->get("parent_id");
             $ioType->save();
 
+            DB::commit();
+            return redirect(route('types.index'));
 
-        });
-
-
-
-        return redirect(route("types.index"));
+        } catch (\Exception $e) {
+            DB::rollback();
+            dd($e);
+        }
     }
 
 
     public function show($table)
     {
         $tablename = Io_type::where("table","$table")->first();
-        dd(Io_type::getConnected($table), $tablename->name);
+        $columns = Io_type::getColumns($table);
+
+        return view("admin.iotypes.type", ["tablename"=>$tablename, "columns"=>$columns]);
     }
 
 
@@ -82,7 +96,19 @@ class IoTypesController extends Controller
 
     public function destroy($id)
     {
-        //
+        DB::beginTransaction();
+        try {
+
+            Io_type::find($id)->delete();
+            Schema::dropIfExists(request()->get("table"));
+
+            DB::commit();
+            return redirect(route('types.index'));
+        } catch (\Exception $e) {
+            DB::rollback();
+            dd($e);
+        }
+
     }
 
 
