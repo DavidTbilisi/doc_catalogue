@@ -16,12 +16,13 @@ class CreateIoTable extends Migration
         Schema::create('io', function (Blueprint $table) {
             $table->id();
             $table->foreignId('io_type_id')->constrained();
-            $table->string('suffix');
-            $table->integer('identifier');
-            $table->string('prefix');
-            $table->string('reference');
-            $table->integer('level');
+            $table->string('suffix')->nullable();
+            $table->integer('identifier')->nullable();
+            $table->string('prefix')->nullable();
+            $table->string('reference')->nullable();
+            $table->integer('level')->nullable();
             $table->integer('parent_id');
+            $table->integer('data_id');
             $table->softDeletes($column = 'deleted_at', $precision = 0)->nullable();
             $table->timestamps();
         });

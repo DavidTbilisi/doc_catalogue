@@ -36,7 +36,7 @@ class IoTypesController extends Controller
         ]);
         $pid = $request->get("parent_id");
 
-        $parent_id_key = $pid??$pid."_id";
+        $parent_id_key = $pid?$pid."_id":null;
 
 
         DB::beginTransaction();

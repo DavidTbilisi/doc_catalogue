@@ -82,9 +82,9 @@
                         <div class="col">
                             <label for="type">Type</label>
                             <select name="type[]" class="form-control" id="Type">
-                                <option value="varchar">Text</option>
-                                <option value="int">Number</option>
-                                <option value="text">Long text</option>
+                                <option value="string">Text</option>
+                                <option value="integer">Number</option>
+                                <option value="longText">Long text</option>
                             </select>
                         </div>
                         </div>
