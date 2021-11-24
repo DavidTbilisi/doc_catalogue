@@ -34,24 +34,25 @@ class IoTypesController extends Controller
             'field'         => 'required|max:255',
             'type'          => 'required|max:20',
         ]);
+        $pid = $request->get("parent_id");
+
+        $parent_id_key = $pid??$pid."_id";
+
 
         DB::beginTransaction();
         try {
 
             if (!Schema::hasTable($request->get("tablename"))) {
-                Schema::create($request->get("tablename"), function (Blueprint $table) use ($request) {
+                Schema::create($request->get("tablename"), function (Blueprint $table) use ($request, $parent_id_key) {
+
                     $table->id();
                     foreach ($request->get("type") as $i => $type){
                         $field = $request->get("field")[$i];
-                        $table->string($field);
+                        $table->$type($field)->nullable();
                     }
-
-//                    TODO: parent_id -ს ვერ ხვდება რისია.
-                    /*
-                     * ან თეიბლის სახელი უნდა წამოვიღო და იმის tablename_id-ი მივაწერო
-                     * ან დავტოვო უბრალოდ ინტ-ად და ვიმკითხავო რომელია მისი მშობელი.
-                     * */
-                    $table->foreignId("parent_id")->constrained("fonds");
+                    if($parent_id_key) :
+                    $table->foreignId($parent_id_key)->constrained($request->get("parent_id"));
+                    endif;
                     $table->foreignId("io_type_id")->constrained();
                     $table->softDeletes();
                     $table->timestamps();
@@ -60,7 +61,6 @@ class IoTypesController extends Controller
             $ioType = new Io_type();
             $ioType->name = $request->get("name");
             $ioType->table = $request->get("tablename");
-            $ioType->parent_id = $request->get("parent_id");
             $ioType->save();
 
             DB::commit();
@@ -82,9 +82,12 @@ class IoTypesController extends Controller
     }
 
 
-    public function edit($id)
+    public function edit($table)
     {
-        //
+        $tablename = Io_type::where("table","$table")->first();
+        $columns = Io_type::getColumns($table);
+
+        return view("admin.iotypes.type", ["tablename"=>$tablename, "columns"=>$columns]);
     }
 
 

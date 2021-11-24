@@ -34,7 +34,7 @@
                     <select name="parent_id" class="form-control" id="parent_id">
                         <option value="0">No Parent</option>
                         @foreach($types as $type)
-                            <option value="{{$type->id}}">{{$type->name}}</option>
+                            <option value="{{$type->table}}">{{$type->name}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -52,9 +52,9 @@
                         <div class="col">
                             <label for="type">Type</label>
                             <select name="type[]" class="form-control" id="Type">
-                                <option value="varchar">Text</option>
-                                <option value="int">Number</option>
-                                <option value="text">Long text</option>
+                                <option value="string">Text</option>
+                                <option value="integer">Number</option>
+                                <option value="longText">Long text</option>
                             </select>
                         </div>
                     </div>
