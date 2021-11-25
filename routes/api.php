@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
+Route::get("columns/{name?}", function ($table=null) {
+    return \App\Models\Io_type::getColumns($table);
+})->name('columns');
+
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

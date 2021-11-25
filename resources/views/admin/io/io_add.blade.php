@@ -17,7 +17,7 @@
         <div class="mt-3">
             <p class="h1"> საინფორმაციო ობიექტის დამატება </p>
 
-            <form action="{{route("io.store")}}" method="post">
+            <form action="{{route("io.store")}}" method="post" id="io" onsubmit="save(event)">
             @csrf
             <div class="mb-3">
                 <label for="prefix" class="form-label">პრეფიქსი</label>
@@ -36,20 +36,79 @@
 
             <div class="mb-3">
                 <label for="type" class="form-label">ტიპი</label>
-                <select class="form-control" name="type" id="type">
+                <select class="form-control" name="type" id="type" onchange="getFields(event)">
                     <option value="">აირჩიეთ ტიპი</option>
-                    <option value="1">ფონდი</option>
-                    <option value="2">ანაწერი</option>
-                    <option value="3">ფაილი</option>
+                @foreach($types as $type)
+                    <option value="{{$type->table}}">{{$type->name}}</option>
+                @endforeach
                 </select>
             </div>
 
             <div class="mb-3">
-                <button class="btn btn-success">დამატება</button>
+                <button class="btn btn-success" >დამატება</button>
                 <a class="btn btn-danger" href="{{route('io.index')}}">უკან</a>
             </div>
 
             </form>
         </div>
     </div>
+    <form id="datatable" action="{{route("io.store")}}"   method="post">
+        @csrf
+        <div class="inputs">
+
+        </div>
+
+    </form>
+
+
+    <script>
+
+
+        function drawFields(element){
+            $("#datatable .inputs").append(`
+            <div class="mb-3">
+                <label for="${element}" class="form-label">${element}</label>
+                <input type="text" class="form-control" name="${element}" id="${element}" placeholder="${element}">
+            </div>`);
+
+        }
+
+
+        function getFields(event){
+            $.ajax({
+                url: "{{route("columns")}}/"+event.target.value,
+                success:function(data) {
+                    $("#datatable .inputs").empty();
+                    $("#datatable .inputs").append(
+                        `<input type="hidden" value="${event.target.value}" name="table">`
+                    );
+                    for (let el in data.data){
+                        drawFields(data.data[el].Field)
+                    }
+
+                },
+                error:function() {
+                    $("#datatable .inputs").empty();
+                }
+
+            })
+
+        }
+
+        function save(event) {
+            event.preventDefault();
+            $('#io form').submit()
+            $.ajax({
+                data: $('#datatable form').serialize(),
+                url: $('#datatable form').attr("action"),
+                success:function (data) {
+                    console.log(data)
+                }
+            });
+
+
+
+        }
+
+    </script>
 @endsection

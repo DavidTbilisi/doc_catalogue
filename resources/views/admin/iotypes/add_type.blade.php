@@ -41,7 +41,7 @@
             </div>
 
 
-            <div class="inputs">
+            <div class="inputs" id="fields">
                 <div class="form-group mt-2">
                     <div class="row">
                         <div class="col-8">
@@ -72,24 +72,7 @@
 
         function addInput(event) {
             event.preventDefault();
-            document.querySelector(".inputs").innerHTML += `
-                    <div class="form-group mt-2">
-                        <div class="row">
-                        <div class="col-8">
-                            <label for="field1">Filed</label>
-                            <input type="text" name="field[]" class="form-control" id="field1" placeholder="Field" value="">
-                        </div>
-                        <div class="col">
-                            <label for="type">Type</label>
-                            <select name="type[]" class="form-control" id="Type">
-                                <option value="string">Text</option>
-                                <option value="integer">Number</option>
-                                <option value="longText">Long text</option>
-                            </select>
-                        </div>
-                        </div>
-                     </div>
-            `
+            document.querySelector(".inputs").insertAdjacentHTML("beforeEnd", document.querySelector("#fields .form-group").innerHTML)
         }
 
 

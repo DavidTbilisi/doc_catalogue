@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Models\Io;
+use App\Models\Io_type;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class IoController extends Controller
 {
@@ -23,13 +25,23 @@ class IoController extends Controller
 
     public function create()
     {
-        return view("admin.io.io_add");
+        $types = Io_type::all();
+        return view("admin.io.io_add", ['types'=>$types]);
     }
 
 
     public function store(Request $request)
     {
-        dd($request->all());
+
+        DB::beginTransaction();
+        try{
+            DB::table($request->get("table"))
+                ->insert($request->all()->except());
+            DB::commit();
+        }
+        catch (\Exception $exception) {
+            dd($request->all());
+        }
     }
 
 
