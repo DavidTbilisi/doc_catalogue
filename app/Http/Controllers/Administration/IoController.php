@@ -35,12 +35,25 @@ class IoController extends Controller
 
         DB::beginTransaction();
         try{
-            DB::table($request->get("table"))
-                ->insert($request->all()->except());
+
+            $toInsert = $request->except(["_token", 'table']);
+            $table = $request->get("table");
+
+            $io_type_id = DB::table("io_types")->where("table", $table)->first()->id;
+            $toInsert["io_type_id"] = $io_type_id;
+
+            DB::table($table)->insert($toInsert);
+            $last_id = DB::table($table)->orderByDesc('id')->first()->id;
+
             DB::commit();
+
+            return response()->json([
+                'message' => "The table \"{$request->table}\" was updated",
+                "data" => $last_id
+            ]);
         }
         catch (\Exception $exception) {
-            dd($request->all());
+            dd($exception);
         }
     }
 

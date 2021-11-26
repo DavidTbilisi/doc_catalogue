@@ -17,7 +17,7 @@
         <div class="mt-3">
             <p class="h1"> საინფორმაციო ობიექტის დამატება </p>
 
-            <form action="{{route("io.store")}}" method="post" id="io" onsubmit="save(event)">
+            <form action="{{route("io.store")}}" method="post" id="io" >
             @csrf
             <div class="mb-3">
                 <label for="prefix" class="form-label">პრეფიქსი</label>
@@ -97,18 +97,17 @@
 
         function save(event) {
             event.preventDefault();
-            $('#io form').submit()
             $.ajax({
-                data: $('#datatable form').serialize(),
-                url: $('#datatable form').attr("action"),
+                data: $('#datatable').serialize(),
+                method:"post",
+                url: $('#datatable').attr("action"),
                 success:function (data) {
-                    console.log(data)
+                    console.log("Returned data: ",data)
                 }
             });
-
-
-
         }
+
+        $("#io").on('submit', function (event) {save(event)})
 
     </script>
 @endsection

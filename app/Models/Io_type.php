@@ -18,7 +18,7 @@ class Io_type extends Model
     }
 
 
-    public static function getColumns($table)
+    public static function getColumns($table, $json=true)
     {
         $sql = DB::raw('SHOW COLUMNS FROM '.$table);
 
@@ -31,18 +31,26 @@ class Io_type extends Model
                     && $element->Field != "reference"
                     ;
             });
-
-            return \response( )->json([
-                "message"=>"found",
-                "data" => $columns
-            ]);
+            if ( $json ) {
+                return \response( )->json([
+                    "message"=>"found",
+                    "data" => $columns
+                ]);
+            } else {
+                return $columns;
+            }
 
         } catch (\Exception $exception) {
 
-            return \response( )->json([
+            if ( $json ) {
+                return \response( )->json([
                 "message"=>"nothing found",
                 "data" => null
-            ], 404);
+                ], 404);
+            } else {
+                return $exception;
+            }
+
         }
 
     }
