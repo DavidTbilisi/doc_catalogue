@@ -43,11 +43,7 @@
                 @endforeach
                 </select>
             </div>
-            <div id="datatable">
-                <div class="inputs">
 
-                </div>
-            </div>
 
             <div class="mb-3">
                 <button class="btn btn-success" >დამატება</button>
@@ -59,13 +55,13 @@
     </div>
 
 
-    {{--<form id="datatable" action="{{route("io.store")}}"   method="post">--}}
-        {{--@csrf--}}
-        {{--<div class="inputs">--}}
+    <form id="datatable" action="{{route("io.store")}}"   method="post">
+        @csrf
+        <div class="inputs">
 
-        {{--</div>--}}
+        </div>
 
-    {{--</form>--}}
+    </form>
 
 
     <script>
@@ -102,33 +98,33 @@
 
         }
 
-        // function save(event) {
-        //     event.preventDefault();
-        //     $.ajax({
-        //         data: $('#datatable').serialize(),
-        //         method:"post",
-        //         url: $('#datatable').attr("action"),
-        //         success:function (data) {
-        //             let toPost = $('#io').serialize();
-        //
-        //             toPost+=`&data_id=${data.inserted_id}`;
-        //             toPost+=`&io_type_id=${data.io_type_id}`;
-        //
-        //             $.ajax({
-        //                 method:"post",
-        //                 url: $('#io').attr("action"),
-        //                 data: toPost,
-        //                 success: function (data) {
-        //                     console.log(data);
-        //                 }
-        //             });
-        //
-        //
-        //         }
-        //     });
-        // }
+        function save(event) {
+            event.preventDefault();
+            $.ajax({
+                data: $('#datatable').serialize(),
+                method:"post",
+                url: $('#datatable').attr("action"),
+                success:function (data) {
+                    let toPost = $('#io').serialize();
 
-        // $("#io").on('submit', function (event) {save(event)})
+                    toPost+=`&data_id=${data.inserted_id}`;
+                    toPost+=`&io_type_id=${data.io_type_id}`;
+
+                    $.ajax({
+                        method:"post",
+                        url: $('#io').attr("action"),
+                        data: toPost,
+                        success: function (data) {
+                            console.log(data);
+                        }
+                    });
+
+
+                }
+            });
+        }
+
+        $("#io").on('submit', function (event) {save(event)})
 
     </script>
 @endsection

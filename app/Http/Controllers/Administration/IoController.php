@@ -46,7 +46,6 @@ class IoController extends Controller
                 DB::table($table)->insert($toInsert);
                 $last_id = DB::table($table)->orderByDesc('id')->first()->id;
 
-                DB::commit();
 
                 return response()->json([
                     'message' => "The table \"{$request->table}\" was updated",
@@ -57,6 +56,9 @@ class IoController extends Controller
             } else {
 
                 $result = Io::create($request->except(["_token"]));
+
+                DB::commit();
+
                 if ($result){
                     return response()->json([
                         'message' => "row added successfully ",
