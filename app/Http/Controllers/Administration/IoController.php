@@ -35,22 +35,37 @@ class IoController extends Controller
 
         DB::beginTransaction();
         try{
+            if ($request->has("table")) {
 
-            $toInsert = $request->except(["_token", 'table']);
-            $table = $request->get("table");
+                $toInsert = $request->except(["_token", 'table']);
+                $table = $request->get("table");
 
-            $io_type_id = DB::table("io_types")->where("table", $table)->first()->id;
-            $toInsert["io_type_id"] = $io_type_id;
+                $io_type_id = DB::table("io_types")->where("table", $table)->first()->id;
+                $toInsert["io_type_id"] = $io_type_id;
 
-            DB::table($table)->insert($toInsert);
-            $last_id = DB::table($table)->orderByDesc('id')->first()->id;
+                DB::table($table)->insert($toInsert);
+                $last_id = DB::table($table)->orderByDesc('id')->first()->id;
 
-            DB::commit();
+                DB::commit();
 
-            return response()->json([
-                'message' => "The table \"{$request->table}\" was updated",
-                "data" => $last_id
-            ]);
+                return response()->json([
+                    'message' => "The table \"{$request->table}\" was updated",
+                    "inserted_id" => $last_id,
+                    "io_type_id" => $io_type_id
+                ]);
+
+            } else {
+
+                $result = Io::create($request->except(["_token"]));
+                if ($result){
+                    return response()->json([
+                        'message' => "row added successfully ",
+                    ]);
+                };
+            }
+
+
+
         }
         catch (\Exception $exception) {
             dd($exception);

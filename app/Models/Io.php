@@ -11,6 +11,15 @@ class Io extends Model
     use HasFactory;
 
     protected $table = "io";
+    protected $fillable = [
+        'suffix',
+        'io_type_id',
+        'identifier',
+        'prefix',
+        'reference',
+        'level',
+        'data_id',
+    ];
     use SoftDeletes;
 
     public function type()

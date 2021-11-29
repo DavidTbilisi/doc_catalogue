@@ -43,6 +43,11 @@
                 @endforeach
                 </select>
             </div>
+            <div id="datatable">
+                <div class="inputs">
+
+                </div>
+            </div>
 
             <div class="mb-3">
                 <button class="btn btn-success" >დამატება</button>
@@ -52,13 +57,15 @@
             </form>
         </div>
     </div>
-    <form id="datatable" action="{{route("io.store")}}"   method="post">
-        @csrf
-        <div class="inputs">
 
-        </div>
 
-    </form>
+    {{--<form id="datatable" action="{{route("io.store")}}"   method="post">--}}
+        {{--@csrf--}}
+        {{--<div class="inputs">--}}
+
+        {{--</div>--}}
+
+    {{--</form>--}}
 
 
     <script>
@@ -95,19 +102,33 @@
 
         }
 
-        function save(event) {
-            event.preventDefault();
-            $.ajax({
-                data: $('#datatable').serialize(),
-                method:"post",
-                url: $('#datatable').attr("action"),
-                success:function (data) {
-                    console.log("Returned data: ",data)
-                }
-            });
-        }
+        // function save(event) {
+        //     event.preventDefault();
+        //     $.ajax({
+        //         data: $('#datatable').serialize(),
+        //         method:"post",
+        //         url: $('#datatable').attr("action"),
+        //         success:function (data) {
+        //             let toPost = $('#io').serialize();
+        //
+        //             toPost+=`&data_id=${data.inserted_id}`;
+        //             toPost+=`&io_type_id=${data.io_type_id}`;
+        //
+        //             $.ajax({
+        //                 method:"post",
+        //                 url: $('#io').attr("action"),
+        //                 data: toPost,
+        //                 success: function (data) {
+        //                     console.log(data);
+        //                 }
+        //             });
+        //
+        //
+        //         }
+        //     });
+        // }
 
-        $("#io").on('submit', function (event) {save(event)})
+        // $("#io").on('submit', function (event) {save(event)})
 
     </script>
 @endsection
