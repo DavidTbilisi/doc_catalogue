@@ -32,7 +32,6 @@ class IoController extends Controller
 
     public function store(Request $request)
     {
-
         DB::beginTransaction();
         try{
             if ($request->has("table")) {
@@ -46,6 +45,7 @@ class IoController extends Controller
                 DB::table($table)->insert($toInsert);
                 $last_id = DB::table($table)->orderByDesc('id')->first()->id;
 
+                DB::commit();
 
                 return response()->json([
                     'message' => "The table \"{$request->table}\" was updated",
@@ -55,7 +55,17 @@ class IoController extends Controller
 
             } else {
 
-                $result = Io::create($request->except(["_token"]));
+                $io = $request->except(["_token"]);
+
+                $io['reference'] = "GE";
+
+                $io['reference'] .= $request->has("prefix")? "_{$io["prefix"]}" : "";
+
+                $io['reference'] .= $request->has("identifier")? "_{$io["identifier"]}" : "";
+
+                $io['reference'] .= $request->has('suffix')? "_{$io["suffix"]}" : "";
+
+                $result = Io::create($io);
 
                 DB::commit();
 
@@ -70,6 +80,7 @@ class IoController extends Controller
 
         }
         catch (\Exception $exception) {
+            DB::rollback();
             dd($exception);
         }
     }
@@ -77,13 +88,24 @@ class IoController extends Controller
 
     public function show($id)
     {
+        $io = IO::with("type")
+            ->with('parent')
+            ->where('id',$id)
+            ->first();
 
+        return $io;
     }
 
 
     public function edit($id)
     {
+        $io = IO::with("type")
+            ->with('parent')
+            ->where('id',$id)
+            ->first();
 
+        $types = Io_type::all();
+        return view('admin.io.io_edit', ['types'=>$types, 'io'=>$io]);
     }
 
 
