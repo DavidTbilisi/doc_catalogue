@@ -119,4 +119,16 @@ class IoController extends Controller
     {
 
     }
+
+    public function test($id)
+    {
+        $child = Io::find($id)->parent;
+        $str = "";
+        while ($child) {
+            $str .= "_" .substr($child->reference, 3);
+            $child = Io::find($child->id)->parent;
+        }
+        // $str = substr($str, 1);
+        print($str);
+    }
 }

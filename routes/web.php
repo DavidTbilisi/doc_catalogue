@@ -111,6 +111,10 @@ Route::middleware(['auth', 'perms'])->group(function () {
         // IO (information object)
         Route::prefix("io")->group(function () {
             Route::name('io.')->group(function () {
+
+                Route::get('/test/{id?}', [IoController::class, 'test'])
+                    ->name('test');
+
                 Route::get('/{id?}', [IoController::class, 'index'])
                     ->where('id', "[0-9]+")
                     ->name('index');
