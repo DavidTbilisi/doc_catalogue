@@ -76,7 +76,7 @@ class IoTypesController extends Controller
     public function show($table)
     {
         $tablename = Io_type::where("table","$table")->first();
-        $columns = Io_type::getColumns($table);
+        $columns = Io_type::getColumns($table, false);
 
         return view("admin.iotypes.type", ["tablename"=>$tablename, "columns"=>$columns]);
     }
