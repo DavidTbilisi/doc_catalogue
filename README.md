@@ -21,3 +21,20 @@ php artisan key:generate
 ```bash
 php artisan migrate --seed
 ```
+
+
+მომხმარებლები
+ადმინისტრირების ჯგუფები
+პრივილეგიები
+ობიექტების ტიპები
+
+
+http://localhost:8000/admin/types/add - parent ველი წავშალოთ
+
+http://localhost:8000/admin/types/show/fonds - + ნიშანი ველების დასამატებლად უნდა იყოს. და ველების წაშლაც უნდა იყოს შესაძლებელი
+
+http://localhost:8000/admin/types/add - ღილაკების ფერები შევცვალოთ
+
+http://localhost:8000/admin/types/add - არ მუშაობს
+
+ობიექტის რედაქტირება არ მუშაობს
