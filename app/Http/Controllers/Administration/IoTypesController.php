@@ -15,55 +15,62 @@ class IoTypesController extends Controller
     public function index()
     {
         $types = Io_type::all();
-        return view("admin.iotypes.type_list", ['types'=>$types]);
+        return view("admin.iotypes.type_list", [
+            'types'=>$types
+        ]);
     }
 
 
     public function create()
     {
         $types = Io_type::all();
-        return view("admin.iotypes.add_type", ["types"=>$types]);
+        return view("admin.iotypes.add_type", [
+            "types"=>$types
+        ]);
     }
 
 
     public function store(Request $request)
     {
+
         $request->validate([
-            'name'          => 'required|max:255',
+            'name'          => 'required|max:50',
             'tablename'     => 'required|alpha|max:20',
-            'field'         => 'required|max:255',
+            'field'         => 'required|max:100',
             'type'          => 'required|max:20',
         ]);
-        $pid = $request->get("parent_id");
 
-        $parent_id_key = $pid?$pid."_id":null;
+
 
 
         DB::beginTransaction();
         try {
+            $toCreateTable = $request->get("tablename");
 
-            if (!Schema::hasTable($request->get("tablename"))) {
-                Schema::create($request->get("tablename"), function (Blueprint $table) use ($request, $parent_id_key) {
+            if (!Schema::hasTable($toCreateTable)) {
 
-                    $table->id();
-                    foreach ($request->get("type") as $i => $type){
-                        $field = $request->get("field")[$i];
-                        $table->$type($field)->nullable();
-                    }
-                    if($parent_id_key) :
-                    $table->foreignId($parent_id_key)->constrained($request->get("parent_id"));
-                    endif;
-                    $table->foreignId("io_type_id")->constrained();
-                    $table->softDeletes();
-                    $table->timestamps();
+                Schema::create( $toCreateTable, 
+                    function (Blueprint $table) use ($request) {
+                    
+                        $table->id();
+                        // იქმნება გადმოცემული Column-ები მითითებული Type-ებით
+                        foreach ($request->get("type") as $i => $type){
+                            $field = $request->get("field")[$i];
+                            $table->$type($field)->nullable();
+                        }
+                        $table->foreignId("io_type_id")->constrained();
+                        $table->softDeletes();
+                        $table->timestamps();
                 });
             }
+
+            // თუ შეიქმნა Table -ი ვქმნით ჩანაწერს მის შესახებ io_types-შიც
             $ioType = new Io_type();
             $ioType->name = $request->get("name");
             $ioType->table = $request->get("tablename");
             $ioType->save();
 
-            DB::commit();
+            // DB::commit();
             return redirect(route('types.index'));
 
         } catch (\Exception $e) {
@@ -78,7 +85,10 @@ class IoTypesController extends Controller
         $tablename = Io_type::where("table","$table")->first();
         $columns = Io_type::getColumns($table, false);
 
-        return view("admin.iotypes.type", ["tablename"=>$tablename, "columns"=>$columns]);
+        return view("admin.iotypes.type", [
+            "tablename"=>$tablename, 
+            "columns"=>$columns
+        ]);
     }
 
 
@@ -87,7 +97,10 @@ class IoTypesController extends Controller
         $tablename = Io_type::where("table","$table")->first();
         $columns = Io_type::getColumns($table);
 
-        return view("admin.iotypes.type", ["tablename"=>$tablename, "columns"=>$columns]);
+        return view("admin.iotypes.type", [
+            "tablename"=>$tablename, 
+            "columns"=>$columns
+        ]);
     }
 
 
@@ -99,17 +112,23 @@ class IoTypesController extends Controller
 
     public function destroy($id)
     {
+        // https://laravel.com/docs/8.x/database#database-transactions
+        // https://www.php.net/manual/en/pdo.begintransaction.php
         DB::beginTransaction();
         try {
+            // ვშლი ჩანაწერს io_type tabel-დან და თავად table-ს
+            $type = Io_type::findOrfail($id); // 404 თუ ვერ იპოვა ჩანაწერი
+            $type->delete();
 
-            Io_type::find($id)->delete();
             Schema::dropIfExists(request()->get("table"));
 
-            DB::commit();
+            // DB::commit(); 
             return redirect(route('types.index'));
+
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
+            return redirect(route('types.index'));
+
         }
 
     }

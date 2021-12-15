@@ -19,14 +19,18 @@ class IoController extends Controller
             ->get();
 
 
-        return view("admin.io.io_list", ["iolist" => $ioList]);
+        return view("admin.io.io_list", [
+            "iolist" => $ioList
+        ]);
     }
 
 
     public function create()
     {
         $types = Io_type::all();
-        return view("admin.io.io_add", ['types'=>$types]);
+        return view("admin.io.io_add", [
+            'types'=>$types
+        ]);
     }
 
 
@@ -39,11 +43,19 @@ class IoController extends Controller
                 $toInsert = $request->except(["_token", 'table']);
                 $table = $request->get("table");
 
-                $io_type_id = DB::table("io_types")->where("table", $table)->first()->id;
+                $io_type_id = DB::table("io_types")
+                                    ->where("table", $table)
+                                    ->first()
+                                    ->id;
+
                 $toInsert["io_type_id"] = $io_type_id;
 
+
                 DB::table($table)->insert($toInsert);
-                $last_id = DB::table($table)->orderByDesc('id')->first()->id;
+                $last_id = DB::table($table)
+                                    ->orderByDesc('id')
+                                    ->first()
+                                    ->id;
 
                 DB::commit();
 
@@ -105,7 +117,10 @@ class IoController extends Controller
             ->first();
 
         $types = Io_type::all();
-        return view('admin.io.io_edit', ['types'=>$types, 'io'=>$io]);
+        return view('admin.io.io_edit', [
+            'types'=>$types, 
+            'io'=>$io
+        ]);
     }
 
 
