@@ -43,7 +43,7 @@ admin@archive.gov.ge
 
 - [x] http://localhost:8000/admin/types/add - parent ველი წავშალოთ
 
-- [] http://localhost:8000/admin/types/show/fonds - + ნიშანი ველების დასამატებლად უნდა იყოს. და ველების წაშლაც უნდა იყოს შესაძლებელი
+- [ ] http://localhost:8000/admin/types/show/fonds - + ნიშანი ველების დასამატებლად უნდა იყოს. და ველების წაშლაც უნდა იყოს შესაძლებელი
 
 - [x] http://localhost:8000/admin/types/add - ღილაკების ფერები შევცვალოთ
 
