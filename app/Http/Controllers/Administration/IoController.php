@@ -11,6 +11,32 @@ use Illuminate\Support\Facades\DB;
 class IoController extends Controller
 {
 
+    private function buildReference($id, $request) {
+
+        
+        $reff = "GE";
+
+        $reff .= $request->get("prefix") != NULL? "_{$request->get("prefix")}" : "";
+
+        $reff .= $request->get("identifier") != NULL? "-{$request->get("identifier")}" : "";
+
+        $reff .= $request->get('suffix') != NULL? "-{$request->get('suffix')}" : "";
+
+        $ioParent = Io::find($id)->parent;
+        
+        $str = "";
+        while ($ioParent) {
+            $str .= $ioParent->prefix != null?      "_" . $ioParent->prefix: "";
+            $str .= $ioParent->identifier != null?  "-" .$ioParent->identifier: "";
+            $str .= $ioParent->suffix != null?      "-" . $ioParent->suffix: "";
+            $ioParent = Io::find($ioParent->id)->parent;
+        }
+
+        $reff .= $str;
+
+        return $reff;
+    }
+
     public function index()
     {
         $ioList = Io::with("type")
@@ -69,13 +95,7 @@ class IoController extends Controller
 
                 $io = $request->except(["_token"]);
 
-                $io['reference'] = "GE";
-
-                $io['reference'] .= $request->has("prefix")? "_{$io["prefix"]}" : "";
-
-                $io['reference'] .= $request->has("identifier")? "_{$io["identifier"]}" : "";
-
-                $io['reference'] .= $request->has('suffix')? "_{$io["suffix"]}" : "";
+                $io['reference'] = $this->buildReference($id, $request);
 
                 $result = Io::create($io);
 
@@ -126,7 +146,19 @@ class IoController extends Controller
 
     public function update(Request $request, $id)
     {
+        $io = Io::findOrFail($id);
+        $post = $request->except(["_token"]);
 
+
+        $io->prefix = $post['prefix'];
+        $io->identifier = $post['identifier'];
+        $io->suffix = $post['suffix'];
+        $io->io_type_id = $post['io_type_id'];
+        $io->reference = $this->buildReference($id, $request);
+
+        $io->save();
+
+        return redirect(route("io.index"));
     }
 
 

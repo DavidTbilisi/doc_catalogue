@@ -26,7 +26,7 @@ php artisan migrate --seed
 
 Default ადმინისტრატორი
 ```bash
-dchincharashvili@archive.gov.ge
+admin@archive.gov.ge
 ```
 პაროლი
 ```bash
@@ -49,4 +49,4 @@ dchincharashvili@archive.gov.ge
 
 - [x] http://localhost:8000/admin/types/add - არ მუშაობს
 
-ობიექტის რედაქტირება არ მუშაობს
+- [x] ობიექტის რედაქტირება არ მუშაობს

@@ -17,8 +17,11 @@
         <div class="mt-3">
             <p class="h1"> საინფორმაციო ობიექტის დამატება </p>
 
-            <form action="{{route("io.store")}}" method="post" id="io" >
+            <form action="{{route("io.update",['id'=>$io->id])}}" method="post" id="io" >
             @csrf
+
+            <input type="hidden" name="io_type_id" value="{{$io->io_type_id}}">
+
             <div class="mb-3">
                 <label for="prefix" class="form-label">პრეფიქსი</label>
                 <input type="text" class="form-control" name="prefix" id="prefix" placeholder="პრეფიქსი" value="{{$io->prefix}}">
@@ -36,12 +39,12 @@
 
             <div class="mb-3">
                 <label for="type" class="form-label">ტიპი</label>
-                <select class="form-control" name="type" id="type" onchange="getFields(event)">
+                <select class="form-control" name="io_type_id" id="type" onchange="getFields(event)">
                     @foreach($types as $type)
                         @if($io->type->table == $type->table)
-                            <option selected value="{{$type->table}}">{{$type->name}}</option>
+                            <option selected value="{{$type->id}}">{{$type->name}}</option>
                         @else
-                            <option value="{{$type->table}}">{{$type->name}}</option>
+                            <option value="{{$type->id}}">{{$type->name}}</option>
                         @endif
                     @endforeach
                 </select>
@@ -49,7 +52,7 @@
 
 
             <div class="mb-3">
-                <button class="btn btn-success" >დამატება</button>
+                <button class="btn btn-success" >განახლება</button>
                 <a class="btn btn-danger" href="{{route('io.index')}}">უკან</a>
             </div>
 
