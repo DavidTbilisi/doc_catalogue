@@ -37,7 +37,7 @@ class Io_type extends Model
                     "data" => $columns
                 ]);
             } else {
-                return $columns;
+                return array_values($columns);
             }
 
         } catch (\Exception $exception) {

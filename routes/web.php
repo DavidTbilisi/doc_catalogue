@@ -167,10 +167,16 @@ Route::middleware(['auth', 'perms'])->group(function () {
                 Route::post('/edit/{id?}', [IoTypesController::class, 'update'])
                     ->where('id', "[0-9]+")
                     ->name('update');
-
+                    
                 Route::post('/delete/{id?}', [IoTypesController::class, 'destroy'])
                     ->where('id', "[0-9]+")
                     ->name('delete');
+
+                Route::post('/column', [IoTypesController::class, 'columnChange'])
+                    ->name('columnchange');
+
+
+
             });
         });
     });
