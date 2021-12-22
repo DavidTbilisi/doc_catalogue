@@ -9,6 +9,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+use Illuminate\Support\Facades\Log;
+
 class IoTypesController extends Controller
 {
 
@@ -111,85 +113,47 @@ class IoTypesController extends Controller
 
     public function columnChange(Request $request){
 
-
-
-
         $table = $request->get("table");
 
         $columnsDb = Io_type::getColumns($table, false); // False -> not Json / Array of Objects;
+        foreach ($columnsDb as $key => $value) $tableColumns[] = $value->Field; // Convert Array of Objects to array of col names
 
-        foreach ($columnsDb as $key => $value) {
-            $tableColumns[] = $value->Field;
-        }
-        $toRemove = array_diff($tableColumns, $request->get('cols'));
-        dump($toRemove);
+       
+
+        $toRemove = array_diff($tableColumns, $request->get('cols')); // Get Deleted Columns
 
         foreach ($request->get('cols') as $key => $col) {
             $aCol = explode(",", $col);
-            dump($aCol);
 
             if (Schema::hasTable($table)) {
-
                 if (count($aCol) > 1 && Schema::hasColumn($table, $aCol[0])) {
                     // RENAME
                     Schema::table($table, function (Blueprint $table) use ($aCol){
-                        dump( $table->renameColumn($aCol[0], $aCol[1]) );
+                       $table->renameColumn($aCol[0], $aCol[1]) ;
                     });
-
-
                 } else if (! Schema::hasColumn($table, $col)){
                     // ADD
                     Schema::table($table, function (Blueprint $table) use ($col){
                         $table->string($col);
                     });
-
-                }
-
-            }
-
-            foreach ($toRemove as $key => $col) {
-                if (Schema::hasColumn($table, $col)) {
-                    // REMOVE
-                    Schema::table($table, function($table) use ($col){
-                        $table->dropColumn($col);
-                      });
                 }
             }
-
         }
 
 
-        // return redirect(route("types.show",["id"=>$table]));
-    }
-
-    // TODO: remove this function 
-    public function renameColumn(Request $request){
-        $table = $request->get("table");
-        $col = $request->get("col");
-
-        if (Schema::hasTable($table)) {
+        // REMOVE
+        foreach ($toRemove as $key => $col) {
             if (Schema::hasColumn($table, $col)) {
-                Schema::table($table, function (Blueprint $table) {
-                    $table->renameColumn('from', 'to');
-                });
-            } 
+                Schema::table($table, function($table) use ($col){
+                    $table->dropColumn($col);
+                    });
+            }
         }
+
+        return redirect(route("types.show",["id"=>$table]));
     }
 
-    // TODO: remove this function 
-    public function addColumn(Request $request){
-
-        $table = $request->get("table");
-        $col = $request->get("col");
-
-        if (Schema::hasTable($table)) {
-            if (Schema::hasColumn($table, $col)) {
-                Schema::table($table, function (Blueprint $table) {
-                    $table->renameColumn('from', 'to');
-                });
-            } 
-        }
-    }
+   
 
     public function destroy($id)
     {
