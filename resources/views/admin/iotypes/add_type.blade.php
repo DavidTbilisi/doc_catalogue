@@ -28,18 +28,6 @@
         </div>
 
 
-            <div class="inputs">
-                <div class="form-group mt-2">
-                    <label for="parent_id">Parent</label>
-                    <select name="parent_id" class="form-control" id="parent_id">
-                        <option value="0">No Parent</option>
-                        @foreach($types as $type)
-                            <option value="{{$type->table}}">{{$type->name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
 
             <div class="inputs" id="fields">
                 <div class="form-group mt-2">
@@ -63,7 +51,7 @@
 
             <div class="form-group mt-5">
                 <button type="submit" class="btn btn-primary">Submit</button>
-                <button class="btn btn-primary" onclick="addInput(event)">Add Input</button>
+                <button class="btn btn-success" onclick="addInput(event)">Add Input</button>
             </div>
     </form>
 

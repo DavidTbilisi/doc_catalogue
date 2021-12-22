@@ -11,6 +11,32 @@ use Illuminate\Support\Facades\DB;
 class IoController extends Controller
 {
 
+    private function buildReference($id, $request) {
+
+        
+        $reff = "GE";
+
+        $reff .= $request->get("prefix") != NULL? "_{$request->get("prefix")}" : "";
+
+        $reff .= $request->get("identifier") != NULL? "-{$request->get("identifier")}" : "";
+
+        $reff .= $request->get('suffix') != NULL? "-{$request->get('suffix')}" : "";
+
+        $ioParent = Io::find($id)->parent;
+        
+        $str = "";
+        while ($ioParent) {
+            $str .= $ioParent->prefix != null?      "_" . $ioParent->prefix: "";
+            $str .= $ioParent->identifier != null?  "-" .$ioParent->identifier: "";
+            $str .= $ioParent->suffix != null?      "-" . $ioParent->suffix: "";
+            $ioParent = Io::find($ioParent->id)->parent;
+        }
+
+        $reff .= $str;
+
+        return $reff;
+    }
+
     public function index()
     {
         $ioList = Io::with("type")
@@ -19,14 +45,18 @@ class IoController extends Controller
             ->get();
 
 
-        return view("admin.io.io_list", ["iolist" => $ioList]);
+        return view("admin.io.io_list", [
+            "iolist" => $ioList
+        ]);
     }
 
 
     public function create()
     {
         $types = Io_type::all();
-        return view("admin.io.io_add", ['types'=>$types]);
+        return view("admin.io.io_add", [
+            'types'=>$types
+        ]);
     }
 
 
@@ -39,11 +69,19 @@ class IoController extends Controller
                 $toInsert = $request->except(["_token", 'table']);
                 $table = $request->get("table");
 
-                $io_type_id = DB::table("io_types")->where("table", $table)->first()->id;
+                $io_type_id = DB::table("io_types")
+                                    ->where("table", $table)
+                                    ->first()
+                                    ->id;
+
                 $toInsert["io_type_id"] = $io_type_id;
 
+
                 DB::table($table)->insert($toInsert);
-                $last_id = DB::table($table)->orderByDesc('id')->first()->id;
+                $last_id = DB::table($table)
+                                    ->orderByDesc('id')
+                                    ->first()
+                                    ->id;
 
                 DB::commit();
 
@@ -57,13 +95,7 @@ class IoController extends Controller
 
                 $io = $request->except(["_token"]);
 
-                $io['reference'] = "GE";
-
-                $io['reference'] .= $request->has("prefix")? "_{$io["prefix"]}" : "";
-
-                $io['reference'] .= $request->has("identifier")? "_{$io["identifier"]}" : "";
-
-                $io['reference'] .= $request->has('suffix')? "_{$io["suffix"]}" : "";
+                $io['reference'] = $this->buildReference($id, $request);
 
                 $result = Io::create($io);
 
@@ -105,18 +137,45 @@ class IoController extends Controller
             ->first();
 
         $types = Io_type::all();
-        return view('admin.io.io_edit', ['types'=>$types, 'io'=>$io]);
+        return view('admin.io.io_edit', [
+            'types'=>$types, 
+            'io'=>$io
+        ]);
     }
 
 
     public function update(Request $request, $id)
     {
+        $io = Io::findOrFail($id);
+        $post = $request->except(["_token"]);
 
+
+        $io->prefix = $post['prefix'];
+        $io->identifier = $post['identifier'];
+        $io->suffix = $post['suffix'];
+        $io->io_type_id = $post['io_type_id'];
+        $io->reference = $this->buildReference($id, $request);
+
+        $io->save();
+
+        return redirect(route("io.index"));
     }
 
 
     public function destroy($id)
     {
 
+    }
+
+    public function test($id)
+    {
+        $child = Io::find($id)->parent;
+        $str = "";
+        while ($child) {
+            $str .= "_" .substr($child->reference, 3);
+            $child = Io::find($child->id)->parent;
+        }
+        // $str = substr($str, 1);
+        print($str);
     }
 }

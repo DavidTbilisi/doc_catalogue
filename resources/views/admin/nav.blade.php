@@ -19,10 +19,10 @@
                         Browse
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="leftmenudropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">ქმედება</a></li>
+                        <li><a class="dropdown-item" href="#">სხვა ქმედება</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><a class="dropdown-item" href="#">კიდევ სხვა რამე</a></li>
                     </ul>
                 </li>
             </ul>
@@ -36,10 +36,10 @@
                             <span class="material-icons md-light">settings_applications</span>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item" href="{{route('users.index')}}">Users</a></li>
-                            <li><a class="dropdown-item" href="{{route('groups.index')}}">Groups</a></li>
-                            <li><a class="dropdown-item" href="{{route('permissions.index')}}">Permissions</a></li>
-                            <li><a class="dropdown-item" href="{{route('types.index')}}">Io Types</a></li>
+                            <li><a class="dropdown-item" href="{{route('users.index')}}">მომხმარებლები</a></li>
+                            <li><a class="dropdown-item" href="{{route('groups.index')}}">ადმინისტრირების ჯგუფები</a></li>
+                            <li><a class="dropdown-item" href="{{route('permissions.index')}}">პრივილეგიები</a></li>
+                            <li><a class="dropdown-item" href="{{route('types.index')}}">ობიექტების ტიპები</a></li>
                         </ul>
                     </div>
                 </div>
@@ -49,8 +49,8 @@
                         <span class="material-icons md-light">account_circle</span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="profile">
-                        <li><a class="dropdown-item" href="{{route('profile')}}">Profile</a></li>
-                        <li><a class="dropdown-item" onclick="logout()" href="#">Log out</a></li>
+                        <li><a class="dropdown-item" href="{{route('profile')}}">პროფილი</a></li>
+                        <li><a class="dropdown-item" onclick="logout()" href="#">გამოსვლა</a></li>
                     </ul>
                 </div>
             </div>
