@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use mysql_xdevapi\Exception;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
 
 class Io_type extends Model
 {
@@ -50,8 +52,33 @@ class Io_type extends Model
             } else {
                 return $exception;
             }
-
         }
-
     }
+
+    public static function getColNames($table){
+        $columnsDb = Io_type::getColumns($table, false);
+        foreach ($columnsDb as $key => $value) $tableColumns[] = $value->Field;
+        return $tableColumns;
+    }
+
+    public static function rnCol($table, Array $aCol ) {
+        Schema::table($table, function (Blueprint $table) use ($aCol){
+            $table->renameColumn($aCol[0], $aCol[1]) ;
+        });
+    }
+
+    public static function addCol($table, $col) {
+        Schema::table($table, function (Blueprint $table) use ($col){
+            $table->string($col);
+        });
+    }
+
+    public static function rmCol($table, $col) {
+        if (Schema::hasColumn($table, $col)) {
+            Schema::table($table, function($table) use ($col){
+                $table->dropColumn($col);
+            });
+        }
+    }
+
 }

@@ -114,11 +114,7 @@ class IoTypesController extends Controller
     public function columnChange(Request $request){
 
         $table = $request->get("table");
-
-        $columnsDb = Io_type::getColumns($table, false); // False -> not Json / Array of Objects;
-        foreach ($columnsDb as $key => $value) $tableColumns[] = $value->Field; // Convert Array of Objects to array of col names
-
-       
+        $tableColumns = Io_type::getColNames($table);
 
         $toRemove = array_diff($tableColumns, $request->get('cols')); // Get Deleted Columns
 
@@ -127,27 +123,15 @@ class IoTypesController extends Controller
 
             if (Schema::hasTable($table)) {
                 if (count($aCol) > 1 && Schema::hasColumn($table, $aCol[0])) {
-                    // RENAME
-                    Schema::table($table, function (Blueprint $table) use ($aCol){
-                       $table->renameColumn($aCol[0], $aCol[1]) ;
-                    });
+                    Io_type::rnCol($table, $aCol); // $aCol = [oldName, newName]
                 } else if (! Schema::hasColumn($table, $col)){
-                    // ADD
-                    Schema::table($table, function (Blueprint $table) use ($col){
-                        $table->string($col);
-                    });
+                    Io_type::addCol($table, $col);
                 }
             }
         }
 
-
-        // REMOVE
         foreach ($toRemove as $key => $col) {
-            if (Schema::hasColumn($table, $col)) {
-                Schema::table($table, function($table) use ($col){
-                    $table->dropColumn($col);
-                    });
-            }
+            Io_type::rmCol($table, $col);
         }
 
         return redirect(route("types.show",["id"=>$table]));
