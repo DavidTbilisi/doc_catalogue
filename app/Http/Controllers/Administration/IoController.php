@@ -7,12 +7,13 @@ use App\Models\Io_type;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response as Code;
 
 class IoController extends Controller
 {
 
-    private function buildReference($id, $request) {
-
+    private function buildReference($io_type_id, $request) {
         
         $reff = "GE";
 
@@ -22,8 +23,10 @@ class IoController extends Controller
 
         $reff .= $request->get('suffix') != NULL? "-{$request->get('suffix')}" : "";
 
-        $ioParent = Io::find($id)->parent;
-        
+        $ioParent = Io_type::find($io_type_id)->parent;
+
+        Log::channel("app")->info("Reference Builder: ", ["IoParent"=> $ioParent]);
+
         $str = "";
         while ($ioParent) {
             $str .= $ioParent->prefix != null?      "_" . $ioParent->prefix: "";
@@ -65,14 +68,19 @@ class IoController extends Controller
         DB::beginTransaction();
         try{
             if ($request->has("table")) {
+                
+                // If Table -> Insert into that table 
+                // Else -> insert into Io 
 
+                /* Ajax send request with "table" (name of table)
+                 * and right after that it sands another request with 
+                 * "inserted_id" and "io_type_id" for Io Table
+                */
+
+            
                 $toInsert = $request->except(["_token", 'table']);
                 $table = $request->get("table");
-
-                $io_type_id = DB::table("io_types")
-                                    ->where("table", $table)
-                                    ->first()
-                                    ->id;
+                $io_type_id = Io_type::getTypeId($table);
 
                 $toInsert["io_type_id"] = $io_type_id;
 
@@ -89,13 +97,13 @@ class IoController extends Controller
                     'message' => "The table \"{$request->table}\" was updated",
                     "inserted_id" => $last_id,
                     "io_type_id" => $io_type_id
-                ]);
+                ], Code::HTTP_CREATED);
 
             } else {
 
                 $io = $request->except(["_token"]);
-
-                $io['reference'] = $this->buildReference($id, $request);
+                
+                $io['reference'] = $this->buildReference($io['io_type_id'], $request);
 
                 $result = Io::create($io);
 
@@ -104,12 +112,9 @@ class IoController extends Controller
                 if ($result){
                     return response()->json([
                         'message' => "row added successfully ",
-                    ]);
+                    ], Code::HTTP_CREATED);
                 };
             }
-
-
-
         }
         catch (\Exception $exception) {
             DB::rollback();
@@ -120,12 +125,10 @@ class IoController extends Controller
 
     public function show($id)
     {
-        $io = IO::with("type")
+        return IO::with("type")
             ->with('parent')
             ->where('id',$id)
             ->first();
-
-        return $io;
     }
 
 
@@ -164,18 +167,8 @@ class IoController extends Controller
 
     public function destroy($id)
     {
-
+        // TODO: Io Remove Fn
     }
 
-    public function test($id)
-    {
-        $child = Io::find($id)->parent;
-        $str = "";
-        while ($child) {
-            $str .= "_" .substr($child->reference, 3);
-            $child = Io::find($child->id)->parent;
-        }
-        // $str = substr($str, 1);
-        print($str);
-    }
+
 }

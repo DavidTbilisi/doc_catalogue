@@ -81,4 +81,8 @@ class Io_type extends Model
         }
     }
 
+    public static function getTypeId($table) {
+        return (new static)::where('table', $table)->first()->id;
+    }
+
 }
