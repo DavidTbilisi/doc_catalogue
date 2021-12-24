@@ -16,6 +16,23 @@ class IoTypeTest extends TestCase
         $this->user = User::find(1);
     }
 
+
+
+    public function test_types_add()
+    {
+        $response = $this->actingAs($this->user, 'web')->post('/admin/types/add',[
+            "name"=>"ტესტი",
+            "tablename"=>"ტესტი",
+            "cols[]"=>"p1",
+            "cols[]"=>"p2",
+            "cols[]"=>"p3",
+        ]);
+        $response->assertOk();
+    }
+    
+
+
+
     public function test_types_opens()
     {
         $response = $this->actingAs($this->user, 'web')->get('/admin/types');

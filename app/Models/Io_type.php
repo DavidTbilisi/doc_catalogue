@@ -57,6 +57,7 @@ class Io_type extends Model
 
     public static function getColNames($table){
         $columnsDb = Io_type::getColumns($table, false);
+        $tableColumns = [];
         foreach ($columnsDb as $key => $value) $tableColumns[] = $value->Field;
         return $tableColumns;
     }

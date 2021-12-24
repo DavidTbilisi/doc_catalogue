@@ -15,9 +15,7 @@ class CreateFondTable extends Migration
     {
         Schema::create('fonds', function (Blueprint $table) {
             $table->id();
-            $table->string("prefix")->nullable();
             $table->string("name");
-            $table->string("suffix")->nullable();
             $table->string("reference")->nullable();
             $table->foreignId("io_type_id")->constrained();
             $table->softDeletes();

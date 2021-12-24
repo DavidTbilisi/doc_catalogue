@@ -9,6 +9,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response as Code;
+
 
 class IoTypesController extends Controller
 {
@@ -59,7 +61,7 @@ class IoTypesController extends Controller
                             $field = $request->get("field")[$i];
                             $table->$type($field)->nullable();
                         }
-                        $table->foreignId("io_type_id")->constrained();
+                        $table->foreignId("io_type_id")->constrained()->nallable();
                         $table->softDeletes();
                         $table->timestamps();
                 });
@@ -76,7 +78,8 @@ class IoTypesController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
+            Log::channel("app")->debug("Type Table Not Created ", [$e]);
+            return abort(Code::HTTP_NOT_ACCEPTABLE);
         }
     }
 
@@ -114,22 +117,31 @@ class IoTypesController extends Controller
 
         $table = $request->get("table");
         $tableColumns = Io_type::getColNames($table);
+        Log::channel("app")->info("if cols exist", [$request->get('cols')]);
+        
+        if ($request->get('cols') != null ) {
 
-        $toRemove = array_diff($tableColumns, $request->get('cols')); // Get Deleted Columns
+            $toRemove = array_diff($tableColumns, $request->get('cols')); // Get Deleted Columns
 
-        foreach ($request->get('cols') as $key => $col) {
-            $aCol = explode(",", $col);
+            foreach ($toRemove as $key => $col) {
+                Io_type::rmCol($table, $col);
+            }
 
-            if (Schema::hasTable($table)) {
-                if (count($aCol) > 1 && Schema::hasColumn($table, $aCol[0])) {
-                    Io_type::rnCol($table, $aCol); // $aCol = [oldName, newName]
-                } else if (! Schema::hasColumn($table, $col)){
-                    Io_type::addCol($table, $col);
+
+            foreach ($request->get('cols') as $key => $col) {
+                $aCol = explode(",", $col);
+    
+                if (Schema::hasTable($table)) {
+                    if (count($aCol) > 1 && Schema::hasColumn($table, $aCol[0])) {
+                        Io_type::rnCol($table, $aCol); // $aCol = [oldName, newName]
+                    } else if (! Schema::hasColumn($table, $col)){
+                        Io_type::addCol($table, $col);
+                    }
                 }
             }
-        }
-
-        foreach ($toRemove as $key => $col) {
+        } 
+        
+        foreach ($tableColumns  as $key => $col) {
             Io_type::rmCol($table, $col);
         }
 

@@ -118,11 +118,11 @@ class IoController extends Controller
         }
         catch (\Exception $exception) {
             DB::rollback();
-            dd($exception);
+            return response()->json(['message' => $exception,], Code::HTTP_BAD_REQUEST);
         }
     }
 
-
+    // TODO: io show
     public function show($id)
     {
         return IO::with("type")
@@ -158,10 +158,13 @@ class IoController extends Controller
         $io->suffix = $post['suffix'];
         $io->io_type_id = $post['io_type_id'];
         $io->reference = $this->buildReference($id, $request);
+        $isSaved = $io->save();
 
-        $io->save();
-
-        return redirect(route("io.index"));
+        Log::channel("app")->info("Io Update: ", ['Is Io Saved'=> $isSaved]);
+        if ($isSaved) {
+            return redirect(route("io.index"));
+        } 
+        return abort(Code::HTTP_NOT_MODIFIED);
     }
 
 

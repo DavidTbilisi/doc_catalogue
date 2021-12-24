@@ -67,10 +67,10 @@
     <script>
 
 
-        function drawFields(element){
+        function drawFields(element, type){
             $("#datatable .inputs").append(`
             <div class="mb-3">
-                <label for="${element}" class="form-label">${element}</label>
+                <label for="${element}" class="form-label">${element} (${type})</label>
                 <input type="text" class="form-control" name="${element}" id="${element}" placeholder="${element}">
             </div>`);
 
@@ -85,8 +85,12 @@
                     $("#datatable .inputs").append(
                         `<input type="hidden" value="${event.target.value}" name="table">`
                     );
+
                     for (let el in data.data){
-                        drawFields(data.data[el].Field)
+                        let fieldName = data.data[el].Field;
+                        let fieldType = data.data[el].Type;
+
+                        drawFields(fieldName, fieldType)
                     }
 
                 },
@@ -99,6 +103,7 @@
         }
 
         function save(event) {
+            // XXX: replace with axios? 
             event.preventDefault();
             $.ajax({
                 data: $('#datatable').serialize(),
@@ -116,6 +121,7 @@
                         data: toPost,
                         success: function (data) {
                             console.log(data);
+                            // location.href = '{{route("io.index")}}'
                         }
                     });
 

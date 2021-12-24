@@ -53,6 +53,6 @@ admin@archive.gov.ge
 
 - [x] ობიექტის რედაქტირება არ მუშაობს
 
-- [ ] http://localhost:8000/admin/types/add - field-ის ნაცვლად დავწეროთ "ველის ტექნიკური დასახელება"
+- [x] http://localhost:8000/admin/types/add - field-ის ნაცვლად დავწეროთ "ველის ტექნიკური დასახელება"
 
-- [ ] http://localhost:8000/admin/io/add - ობიექტის დამატებისას არ აკეთებს რედირექტს
+- [x] http://localhost:8000/admin/io/add - ობიექტის დამატებისას არ აკეთებს რედირექტს

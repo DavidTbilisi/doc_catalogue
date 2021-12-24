@@ -1,7 +1,13 @@
 @extends('layouts.admin')
 @section('body')
 
+
     <form action="{{route("types.store")}}" method="post" class="mt-5 ">
+
+    <div class="alert alert-warning" role="alert">
+        "ტექნიკური სახელი" გულისხმობს იმას, რომ ველებში შეიძლება იყოს შეყვანილი მხოლოდ ლათინური ასოები.
+    </div>
+
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -11,8 +17,10 @@
                 </ul>
             </div>
         @endif
+
         @csrf
 
+        <!-- Table Name -->
         <div class="form-group mb-5">
             <div class="row">
                 <div class="col">
@@ -28,31 +36,35 @@
         </div>
 
 
-
-            <div class="inputs" id="fields">
-                <div class="form-group mt-2">
-                    <div class="row">
-                        <div class="col-8">
-                            <label for="field1">Filed</label>
-                            <input type="text" name="field[]" class="form-control" id="field1" placeholder="Field"
-                                   value="">
-                        </div>
-                        <div class="col">
-                            <label for="type">Type</label>
-                            <select name="type[]" class="form-control" id="Type">
-                                <option value="string">Text</option>
-                                <option value="integer">Number</option>
-                                <option value="longText">Long text</option>
-                            </select>
-                        </div>
+        <!-- Fields Group -->
+        <div class="inputs" id="fields">
+            <div class="form-group mt-2">
+                <div class="row">
+                    <div class="col-8 mt-2">
+                        <label for="field1 mb-1">ველის ტექნიკური დასახელება</label>
+                        <input type="text" 
+                                name="field[]" 
+                                class="form-control" 
+                                id="field1" 
+                                placeholder="Field"
+                                value="">
+                    </div>
+                    <div class="col mt-2">
+                        <label for="type">ტიპი</label>
+                        <select name="type[]" class="form-control" id="Type">
+                            <option value="string">Text</option>
+                            <option value="integer">Number</option>
+                            <option value="longText">Long text</option>
+                        </select>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="form-group mt-5">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <button class="btn btn-success" onclick="addInput(event)">Add Input</button>
-            </div>
+        <div class="form-group mt-5">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button class="btn btn-success" onclick="addInput(event)">Add Input</button>
+        </div>
     </form>
 
 
@@ -60,11 +72,14 @@
 
         function addInput(event) {
             event.preventDefault();
-            document.querySelector(".inputs").insertAdjacentHTML("beforeEnd", document.querySelector("#fields .form-group").innerHTML)
+            let newField = document.querySelector("#fields .form-group").innerHTML;
+            let fieldGroups = document.querySelector(".inputs");
+            fieldGroups.insertAdjacentHTML("beforeEnd", newField)
         }
 
 
     </script>
+
 
 
 
