@@ -149,7 +149,8 @@ class IoController extends Controller
 
     public function update(Request $request, $id)
     {
-        $io = Io::findOrFail($id);
+        $io = Io::findOrFail($id); // If Id not specified return code 
+        
         $post = $request->except(["_token"]);
 
 
@@ -164,7 +165,6 @@ class IoController extends Controller
         if ($isSaved) {
             return redirect(route("io.index"));
         } 
-        return abort(Code::HTTP_NOT_MODIFIED);
     }
 
 

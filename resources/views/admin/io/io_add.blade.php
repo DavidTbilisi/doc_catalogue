@@ -121,7 +121,7 @@
                         data: toPost,
                         success: function (data) {
                             console.log(data);
-                            // location.href = '{{route("io.index")}}'
+                            location.href = '{{route("io.index")}}'
                         }
                     });
 

@@ -116,16 +116,18 @@ class IoTest extends TestCase
 
 
     public function test_edit_io_no_id(){
-        $response = $this->actingAs($this->user, 'web')->post('/admin/io/edit/1',[
+        $response = $this->actingAs($this->user, 'web')->post('/admin/io/edit/',[
             "prefix" => "Prefix",
             "identifier" => "987",
             "suffix" => "suffix",
             "io_type_id" => "1",
-            "id" => ""
         ]);
-        $response->assertStatus(Code::HTTP_NOT_MODIFIED);
+        $response->assertStatus(Code::HTTP_INTERNAL_SERVER_ERROR);
     }
 
+
+
+    
 
     // OPENS PAGES
 
