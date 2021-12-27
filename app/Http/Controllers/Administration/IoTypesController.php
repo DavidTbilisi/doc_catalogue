@@ -71,9 +71,11 @@ class IoTypesController extends Controller
             $ioType = new Io_type();
             $ioType->name = $request->get("name");
             $ioType->table = $request->get("tablename");
-            $ioType->save();
+            $status = $ioType->save();
 
             // DB::commit();
+            Log::channel("app")->debug("Type Table Created Successfully", [$status]);
+
             return redirect(route('types.index'));
 
         } catch (\Exception $e) {
@@ -110,38 +112,119 @@ class IoTypesController extends Controller
 
     public function update(Request $request, $id)
     {
-        //
+        // TODO: type updated 
+    }
+
+    private function prepareColumnData($table, $col){
+
+        $old = null; $new = null; $tableHasColumn = false;
+
+        $tableColumns = Io_type::getColNames($table);
+        $aCol = explode(",", $col);
+        $is_renameable = count($aCol) > 1;
+
+        if($is_renameable):
+
+            list($old, $new) = explode(",", $col);
+
+            $tableHasColumn = in_array($old, $tableColumns);
+
+            Log::channel("app")->info("is_renameable", [
+                "Field"=> $aCol, 
+                "is_renameable"=> $is_renameable,
+                "exists_{$table}:{$old}"=> $tableHasColumn,
+            ]);
+
+        else:
+            $tableHasColumn = in_array($col, $tableColumns);
+        endif;
+        
+        return [
+            "is_renameable" => $is_renameable,
+            "tableHasColumn" => $tableHasColumn,
+        ];
     }
 
     public function columnChange(Request $request){
 
+
+        $request->validate([
+            'cols'          => 'required',
+            'table'         => 'required',
+        ]);
+
+
+
         $table = $request->get("table");
+        $requestCols = $request->get('cols');
         $tableColumns = Io_type::getColNames($table);
-        Log::channel("app")->info("if cols exist", [$request->get('cols')]);
+
+        Log::channel("app")->info("All Fields of {$table} table :", [
+            $tableColumns
+        ]);
         
-        if ($request->get('cols') != null ) {
-
-            $toRemove = array_diff($tableColumns, $request->get('cols')); // Get Deleted Columns
-
-            foreach ($toRemove as $key => $col) {
-                Io_type::rmCol($table, $col);
-            }
+        if ($requestCols != null ):
 
 
-            foreach ($request->get('cols') as $key => $col) {
+            foreach ($requestCols as $col):
+
+
+                // prepare table columns
+                // 
+                $old = null; $new = null; $tableHasColumn = false;
+
                 $aCol = explode(",", $col);
+                $is_renameable = count($aCol) > 1;
+
+                if($is_renameable):
+
+                    list($old, $new) = explode(",", $col);
+
+                    $tableHasColumn = in_array($old, $tableColumns);
+
+                    Log::channel("app")->info("is_renameable", [
+                        "Field"=> $aCol, 
+                        "is_renameable"=> $is_renameable,
+                        "exists_{$table}:{$old}"=> $tableHasColumn,
+                    ]);
+
+                else:
+                    $tableHasColumn = in_array($col, $tableColumns);
+                endif;
+
+     
     
-                if (Schema::hasTable($table)) {
-                    if (count($aCol) > 1 && Schema::hasColumn($table, $aCol[0])) {
-                        Io_type::rnCol($table, $aCol); // $aCol = [oldName, newName]
-                    } else if (! Schema::hasColumn($table, $col)){
+                if (Schema::hasTable($table)):
+
+                    if ( $is_renameable && $tableHasColumn ) {
+
+                        Log::channel("app")->info("renaming", [
+                            "Old name"=> $old, 
+                            "New name"=> $new
+                        ]);
+
+                        Io_type::rnCol($table, [$old, $new]); 
+
+                    } else if (! $tableHasColumn && ! $is_renameable){
+
+                        Log::channel("app")->info("Adding Field to '{$table}' table", [
+                            "Field"=> $col,
+                        ]);
+
                         Io_type::addCol($table, $col);
+
                     }
-                }
-            }
-        } 
-        
-        foreach ($tableColumns  as $key => $col) {
+
+                endif;
+
+            endforeach;
+        endif; // if post columns exist
+
+        $toRemove = array_diff($tableColumns, $requestCols); // Get Deleted Columns
+
+        Log::channel("app")->debug("To Remove Fields", [$toRemove]);
+
+        foreach ($toRemove as $col) {
             Io_type::rmCol($table, $col);
         }
 
