@@ -39,15 +39,10 @@ class IoTypeTest extends TestCase
     
 
 
-
-
-
     // FIELDS Manipulations
-
 
     public function test_types_field_add()
     {
-        // http://localhost:8000/admin/types/delete/1
         $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
             "table"=>"test",
             "cols" => [
@@ -56,37 +51,60 @@ class IoTypeTest extends TestCase
                 "c",
                 "d",
             ]
-    ]);
+        ]);
 
-        Log::channel("app")->debug("Response", ["Response"=>$response]);
+        // Log::channel("app")->debug("Response", ["Response"=>$response]);
         $response->assertStatus(Code::HTTP_FOUND);
     }
+
+    public function test_types_field_rename_duplicated_columns()
+    {
+        $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
+            "table"=>"test",
+            "cols" => [
+                "a,d",
+                "b,a",
+                "c,v",
+                "d,i",
+            ]
+        ]);
+
+        // Log::channel("app")->debug("Response", ["Response"=>$response]);
+        $response->assertStatus(Code::HTTP_INTERNAL_SERVER_ERROR);
+
+    }
+
 
     public function test_types_field_rename()
     {
         $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
             "table"=>"test",
-    ]);
+            "cols" => [
+                "a,f",
+                "b,e",
+                "c,v",
+                "d,i",
+            ]
+        ]);
 
-        Log::channel("app")->debug("Response", ["Response"=>$response]);
         $response->assertStatus(Code::HTTP_FOUND);
     }
-
 
     public function test_types_field_delete()
     {
         $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
             "table"=>"test",
-    ]);
+            "cols" => [
+                "a",
+                "b",
+            ]
+        ]);
 
-        Log::channel("app")->debug("Response", ["Response"=>$response]);
+        // Log::channel("app")->debug("Response", ["Response"=>$response]);
         $response->assertStatus(Code::HTTP_FOUND);
     }
 
 
-
-
-    
 
     // Remove test table
     public function test_types_delete()
@@ -96,7 +114,7 @@ class IoTypeTest extends TestCase
             "table"=>"test",
     ]);
 
-        Log::channel("app")->debug("Response", ["Response"=>$response]);
+        // Log::channel("app")->debug("Response", ["Response"=>$response]);
         $response->assertStatus(Code::HTTP_FOUND);
     }
 

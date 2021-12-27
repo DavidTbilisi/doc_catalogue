@@ -115,7 +115,7 @@ class IoTypesController extends Controller
         // TODO: type updated 
     }
 
-    private function prepareColumnData($table, $col){
+    private function prepareColumnConditions($table, $col){
 
         $old = null; $new = null; $tableHasColumn = false;
 
@@ -138,15 +138,14 @@ class IoTypesController extends Controller
         else:
             $tableHasColumn = in_array($col, $tableColumns);
         endif;
-        
+
         return [
-            "is_renameable" => $is_renameable,
-            "tableHasColumn" => $tableHasColumn,
+            $is_renameable,
+            $tableHasColumn,
         ];
     }
 
     public function columnChange(Request $request){
-
 
         $request->validate([
             'cols'          => 'required',
@@ -168,35 +167,15 @@ class IoTypesController extends Controller
 
             foreach ($requestCols as $col):
 
-
                 // prepare table columns
-                // 
-                $old = null; $new = null; $tableHasColumn = false;
-
-                $aCol = explode(",", $col);
-                $is_renameable = count($aCol) > 1;
-
-                if($is_renameable):
-
-                    list($old, $new) = explode(",", $col);
-
-                    $tableHasColumn = in_array($old, $tableColumns);
-
-                    Log::channel("app")->info("is_renameable", [
-                        "Field"=> $aCol, 
-                        "is_renameable"=> $is_renameable,
-                        "exists_{$table}:{$old}"=> $tableHasColumn,
-                    ]);
-
-                else:
-                    $tableHasColumn = in_array($col, $tableColumns);
-                endif;
-
-     
+                $prepared = $this->prepareColumnConditions($table, $col);
+                list($is_renameable, $tableHasColumn) = $prepared;
     
                 if (Schema::hasTable($table)):
 
                     if ( $is_renameable && $tableHasColumn ) {
+
+                        list($old, $new) = explode(",", $col);
 
                         Log::channel("app")->info("renaming", [
                             "Old name"=> $old, 
@@ -212,10 +191,9 @@ class IoTypesController extends Controller
                         ]);
 
                         Io_type::addCol($table, $col);
-
                     }
 
-                endif;
+                endif; // table exists
 
             endforeach;
         endif; // if post columns exist
