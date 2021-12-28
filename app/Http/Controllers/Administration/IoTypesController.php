@@ -225,11 +225,10 @@ class IoTypesController extends Controller
 
             // DB::commit(); 
             return redirect(route('types.index'));
-
         } catch (\Exception $e) {
+            Log::channel("app")->info("Type Not Deleted", [$e]);
             DB::rollback();
             return redirect(route('types.index'));
-
         }
 
     }

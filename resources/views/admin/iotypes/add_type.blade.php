@@ -24,11 +24,11 @@
         <div class="form-group mb-5">
             <div class="row">
                 <div class="col">
-                    <label for="typename">ტიპის სახელი</label>
+                    <label for="typename">ობიექტის ტიპის სახელი</label>
                     <input type="text" class="form-control" id="typename" name="name" placeholder="Type name">
                 </div>
                 <div class="col">
-                    <label for="tablename">ტექნიკური სახელი</label>
+                    <label for="tablename">ობიექტის ტიპის ტექნიკური სახელი</label>
                     <input type="text" class="form-control" id="tablename" name="tablename" placeholder="Type name">
                 </div>
 
@@ -41,7 +41,7 @@
             <div class="form-group mt-2">
                 <div class="row">
                     <div class="col-8 mt-2">
-                        <label for="field1 mb-1">ველის ტექნიკური დასახელება</label>
+                        <label for="field1 mb-1">ობიექტის ტიპის აღწერის ველის ტექნიკური დასახელება</label>
                         <input type="text" 
                                 name="field[]" 
                                 class="form-control" 
