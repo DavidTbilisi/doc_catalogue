@@ -55,7 +55,7 @@ class IoTest extends TestCase
     }
 
 
-    // EDITING IOs
+    // EDITING Fields Os
     public function test_edit_io_no_pref(){
         $response = $this->actingAs($this->user, 'web')->post('/admin/io/edit/1',[
             "prefix" => "",
@@ -64,6 +64,8 @@ class IoTest extends TestCase
             "io_type_id" => "1",
             "id" => 1
         ]);
+
+        
         $response->assertStatus(Code::HTTP_FOUND);
     }
 
@@ -127,6 +129,15 @@ class IoTest extends TestCase
 
 
 
+    public function test_add_io() {
+        $response = $this->actingAs($this->user, 'web')->post('/admin/io/delete/2',[
+            "prefix" => "Prefix",
+            "identifier" => "987",
+            "suffix" => "suffix",
+            "io_type_id" => "1",
+        ]);
+        $response->assertStatus(Code::HTTP_INTERNAL_SERVER_ERROR);
+    }
     
 
     // OPENS PAGES
