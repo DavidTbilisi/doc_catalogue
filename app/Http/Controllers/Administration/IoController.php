@@ -23,7 +23,10 @@ class IoController extends Controller
 
         $reff .= $request->get('suffix') != NULL? "-{$request->get('suffix')}" : "";
 
-        $ioParent = Io_type::find($io_type_id)->parent;
+        $ioParent = Io_type::find($io_type_id);
+        if ($ioParent ){
+            $ioParent = $ioParent ->parent;
+        }
 
         Log::channel("app")->info("Reference Builder: ", ["IoParent"=> $ioParent]);
 
@@ -125,10 +128,18 @@ class IoController extends Controller
     // TODO: io show
     public function show($id)
     {
-        return IO::with("type")
+        $io_item =  IO::with("type")
             ->with('parent')
+            ->with('type')
             ->where('id',$id)
             ->first();
+
+        $data = DB::table($io_item->type->table)->where("id", $io_item->data_id)->get();
+
+        return view("admin.io.io_view", [
+            "io"=> $io_item,
+            "data" => $data
+        ]);
     }
 
 
@@ -170,7 +181,13 @@ class IoController extends Controller
 
     public function destroy($id)
     {
-        // TODO: Io Remove Fn
+        // TODO: add deletion test
+        $item = Io::findOrFail($id);
+        $status = $item->delete();
+        if($status) {
+            return redirect(route("io.index"));
+        }
+        Log::channel("app")->info("Deletion status", [$status]);
     }
 
 
