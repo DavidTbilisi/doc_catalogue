@@ -23,12 +23,12 @@ class IoController extends Controller
 
         $reff .= $request->get('suffix') != NULL? "-{$request->get('suffix')}" : "";
 
-        $ioParent = Io_type::find($io_type_id);
-        if ($ioParent ){
-            $ioParent = $ioParent ->parent;
-        }
 
-        Log::channel("app")->info("Reference Builder: ", ["IoParent"=> $ioParent]);
+        $ioType = Io::find($io_type_id);
+
+        $ioParent = $ioType ? $ioType->parent : false;
+
+        Log::channel("app")->info("Reference Builder: ", ["ioType"=>$ioType, "has_parent"=> $ioParent]);
 
         $str = "";
         while ($ioParent) {
@@ -104,9 +104,21 @@ class IoController extends Controller
 
             } else {
 
+                // INSERT INTO IO TABLE
+
                 $io = $request->except(["_token"]);
                 
                 $io['reference'] = $this->buildReference($io['io_type_id'], $request);
+
+                if ($request->has("io_parent_id")) {
+
+                    Log::channel('app')
+                    ->info("Io Parent Test",[
+                        "has_parent"=>$request->get("io_parent_id")
+                    ]);
+
+                    $io['parent_id'] = $request->get("io_parent_id");
+                }
 
                 $result = Io::create($io);
 
@@ -125,7 +137,6 @@ class IoController extends Controller
         }
     }
 
-    // TODO: io show
     public function show($id)
     {
         $io_item =  IO::with("type")

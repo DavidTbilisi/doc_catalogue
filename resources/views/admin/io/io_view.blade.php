@@ -36,4 +36,8 @@
 
 </div>
 
+<div style="position:fixed; right: 100px; bottom: 100px; border-radius: 50%; background-color: #00fa9a; padding: 5px; border: 1px solid black; ">
+    <a href="{{route("io.add",["io_parent_id"=> $io->id])}}"> <span class="material-icons md-light">add</span> </a>
+</div>
+
 @endsection

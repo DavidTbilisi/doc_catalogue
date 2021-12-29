@@ -18,6 +18,7 @@
             <p class="h1"> საინფორმაციო ობიექტის დამატება </p>
 
             <form action="{{route("io.store")}}" method="post" id="io" >
+                <input type="hidden" name="io_parent_id" value="{{request()->io_parent_id}}">
             @csrf
             <div class="mb-3">
                 <label for="prefix" class="form-label">პრეფიქსი</label>
@@ -104,6 +105,7 @@
 
         function save(event) {
             // XXX: replace with axios? 
+
             event.preventDefault();
             $.ajax({
                 data: $('#datatable').serialize(),
@@ -130,7 +132,14 @@
             });
         }
 
-        $("#io").on('submit', function (event) {save(event)})
+  
+
+
+        // EVENTS 
+        $("#io").on('submit', function (event) {
+
+            save(event)
+        })
 
     </script>
 @endsection

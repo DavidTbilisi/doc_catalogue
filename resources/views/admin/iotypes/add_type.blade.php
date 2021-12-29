@@ -29,7 +29,7 @@
                 </div>
                 <div class="col">
                     <label for="tablename">ობიექტის ტიპის ტექნიკური სახელი</label>
-                    <input type="text" class="form-control" id="tablename" name="tablename" placeholder="Type name">
+                    <input type="text" class="form-control technical" id="tablename" name="tablename" placeholder="Type name">
                 </div>
 
             </div>
@@ -44,7 +44,7 @@
                         <label for="field1 mb-1">ობიექტის ტიპის აღწერის ველის ტექნიკური დასახელება</label>
                         <input type="text" 
                                 name="field[]" 
-                                class="form-control" 
+                                class="form-control technical" 
                                 id="field1" 
                                 placeholder="Field"
                                 value="">
@@ -77,6 +77,18 @@
             fieldGroups.insertAdjacentHTML("beforeEnd", newField)
         }
 
+
+        function validateFields(){
+
+            $(".technical").each((a, b)=>{
+                
+                if (!validator.isAlpha($(b).val())) {
+                    $(b).css("border","1px solid red") 
+                }
+            })
+
+            
+        }
 
     </script>
 

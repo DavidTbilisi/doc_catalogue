@@ -129,14 +129,36 @@ class IoTest extends TestCase
 
 
 
-    public function test_add_io() {
+    public function test_add_io_not_found_error() {
         $response = $this->actingAs($this->user, 'web')->post('/admin/io/delete/2',[
             "prefix" => "Prefix",
             "identifier" => "987",
             "suffix" => "suffix",
             "io_type_id" => "1",
         ]);
-        $response->assertStatus(Code::HTTP_INTERNAL_SERVER_ERROR);
+        $response->assertStatus(Code::HTTP_NOT_FOUND);
+    }
+    
+
+    public function test_add_io() {
+
+        // add info to connected table
+        $response = $this->actingAs($this->user, 'web')->post('/admin/io/add/',[
+            "table" => "fond",
+            "name" => "something",
+        ]);
+
+        // if written, write to io table
+        $response = $this->actingAs($this->user, 'web')->post('/admin/io/add/',[
+            "prefix" => "P",
+            "identifier" => "987",
+            "suffix" => "s",
+            "io_type_id" => "1",
+            "type" => "fond",
+            "data_id" => "1",
+      
+        ]);
+        $response->assertStatus(Code::HTTP_CREATED);
     }
     
 

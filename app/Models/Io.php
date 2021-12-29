@@ -19,6 +19,7 @@ class Io extends Model
         'reference',
         'level',
         'data_id',
+        'parent_id',
     ];
     use SoftDeletes;
 

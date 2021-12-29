@@ -119,7 +119,6 @@ class IoTypeTest extends TestCase
     }
 
 
-
     // OPENS
 
     public function test_types_opens()
