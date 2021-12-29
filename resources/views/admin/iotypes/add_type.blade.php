@@ -5,7 +5,7 @@
     <form action="{{route("types.store")}}" method="post" class="mt-5 ">
 
     <div class="alert alert-warning" role="alert">
-        "ტექნიკური სახელი" გულისხმობს იმას, რომ ველებში შეიძლება იყოს შეყვანილი მხოლოდ ლათინური ასოები.
+        ტექნიკური სახელები უნდა შედგებოდეს მხოლოდ ლათინური ასოებისგან.
     </div>
 
         @if ($errors->any())
@@ -29,7 +29,7 @@
                 </div>
                 <div class="col">
                     <label for="tablename">ობიექტის ტიპის ტექნიკური სახელი</label>
-                    <input type="text" class="form-control technical" id="tablename" name="tablename" placeholder="Type name">
+                    <input type="text" class="form-control" id="tablename" name="tablename" placeholder="Type name" pattern="[a-z]{1,20}">
                 </div>
 
             </div>
@@ -44,9 +44,10 @@
                         <label for="field1 mb-1">ობიექტის ტიპის აღწერის ველის ტექნიკური დასახელება</label>
                         <input type="text" 
                                 name="field[]" 
-                                class="form-control technical" 
+                                class="form-control" 
                                 id="field1" 
                                 placeholder="Field"
+                                pattern="[a-z]{1,20}"
                                 value="">
                     </div>
                     <div class="col mt-2">
@@ -77,18 +78,6 @@
             fieldGroups.insertAdjacentHTML("beforeEnd", newField)
         }
 
-
-        function validateFields(){
-
-            $(".technical").each((a, b)=>{
-                
-                if (!validator.isAlpha($(b).val())) {
-                    $(b).css("border","1px solid red") 
-                }
-            })
-
-            
-        }
 
     </script>
 
