@@ -17,7 +17,7 @@ class CreateFondTable extends Migration
             $table->id();
             $table->string("name");
             $table->string("reference")->nullable();
-            $table->foreignId("io_type_id")->constrained()->nallable();
+            $table->foreignId("io_type_id")->constrained()->onDelete("cascade")->change();
             $table->softDeletes();
             $table->timestamps();
         });

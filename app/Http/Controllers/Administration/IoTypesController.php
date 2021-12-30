@@ -226,9 +226,24 @@ class IoTypesController extends Controller
             // DB::commit(); 
             return redirect(route('types.index'));
         } catch (\Exception $e) {
-            Log::channel("app")->info("Type Not Deleted", [$e]);
+
+            Log::channel("app")->info("Type Not Deleted", [
+                "message"=>$e->getMessage(),
+                "code"=>$e->getCode()
+            ]);
+
             DB::rollback();
-            return redirect(route('types.index'));
+
+            if ($e->getCode() == "23000") {
+
+                return redirect(route('types.index'))
+                ->withErrors([
+                    "msg"=>"ცხრილის წაშლა შეუძლებელია, სანამ მასზე მიბმულია IO"
+                ]);
+
+            } else {
+                return redirect(route('types.index'));
+            }
         }
 
     }
