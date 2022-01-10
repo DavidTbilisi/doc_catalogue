@@ -22,19 +22,23 @@
   </div>
 </div>
 
-<ul class="list-group">
-  <li class="list-group-item"> <b> ტიპი: </b> <span>  {{$io->type->name}} </span> </li>
-  <li class="list-group-item"> <b> რეფერენსი: </b> <span> {{$io->reference}} </span> </li>
-  <li class="list-group-item"> <b> სუფიქსი: </b> <span> {{$io->suffix}} </span> </li>
-  <li class="list-group-item"> <b> იდენტიფიკატორი: </b> <span> {{$io->identifier}} </span> </li>
-  <li class="list-group-item"> <b> პრეფიქსი: </b> <span> {{$io->prefix}} </span> </li>
-  <li class="list-group-item"> <b> მონაცემი: </b> <span> {{$data}} </span> </li>
-</ul>
+  <ul class="list-group">
+    <li class="list-group-item"> <b> ტიპი: </b> <span>  {{$io->type->name}} </span> </li>
+    <li class="list-group-item"> <b> რეფერენსი: </b> <span> {{$io->reference}} </span> </li>
+    <li class="list-group-item"> <b> სუფიქსი: </b> <span> {{$io->suffix}} </span> </li>
+    <li class="list-group-item"> <b> იდენტიფიკატორი: </b> <span> {{$io->identifier}} </span> </li>
+    <li class="list-group-item"> <b> პრეფიქსი: </b> <span> {{$io->prefix}} </span> </li>
+  </ul>
 
 
-
-
-</div>
+  <ul class="list-group mt-5 mb-5">
+    <li class="list-group-item active">მონაცემი</li>
+    @foreach((array)$data[0] as $key => $value)
+      @if ( !preg_match("/_at|_id|^id$/i", $key))
+        <li class="list-group-item"> <b> {{$key}}: </b> <span> {{$value}} </span> </li>
+      @endif
+    @endforeach
+  </ul>
 
 <div style="position:fixed; right: 100px; bottom: 100px; border-radius: 50%; background-color: #00fa9a; padding: 5px; border: 1px solid black; ">
     <a href="{{route("io.add",["io_parent_id"=> $io->id])}}"> <span class="material-icons md-light">add</span> </a>
