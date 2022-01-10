@@ -15,3 +15,5 @@ yarn-error.log
 /.vscode
 package-lock.json
 package-lock.json
+/nbproject/private/
+nbproject/
