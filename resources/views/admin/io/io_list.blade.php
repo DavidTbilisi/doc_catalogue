@@ -32,7 +32,7 @@
         <tr>
             <th scope="row">{{++$loop->index}}</th>
             <td class="identifier">
-                {{$io->prefix . $io->identifier . $io->suffix }}
+                {{$io->prefix}}-{{$io->identifier}}-{{$io->suffix }}
             </td>
             <td class="reference">{{$io->reference}}</td>
             <td class="type">{{$io->type->name}}</td>
