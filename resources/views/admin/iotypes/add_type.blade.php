@@ -20,7 +20,7 @@
 
         @csrf
 
-        <!-- Table Name -->
+        {{-- Table Name --}}
         <div class="form-group mb-5">
             <div class="row">
                 <div class="col">
@@ -36,12 +36,26 @@
         </div>
 
 
-        <!-- Fields Group -->
+        {{-- Fields Group --}}
         <div class="inputs" id="fields">
             <div class="form-group mt-2">
                 <div class="row">
-                    <div class="col-8 mt-2">
-                        <label for="field1 mb-1">ობიექტის ტიპის აღწერის ველის ტექნიკური დასახელება</label>
+                    
+                    <div class="col-4 mt-2">
+                        
+                        <label for="field1 mb-1">ტიპის აღწერის ველის დასახელება</label>
+                        <input type="text" 
+                                name="names[]" 
+                                class="form-control" 
+                                id="field1" 
+                                placeholder="Field"
+                                pattern="[ა-ჰ0-9 ]{1,20}"
+                                value="">
+                    </div>
+                    
+                    <div class="col-4 mt-2">
+                        
+                        <label for="field1 mb-1">ველის ტექნიკური დასახელება</label>
                         <input type="text" 
                                 name="field[]" 
                                 class="form-control" 
@@ -50,6 +64,8 @@
                                 pattern="[a-z]{1,20}"
                                 value="">
                     </div>
+                    
+                    
                     <div class="col mt-2">
                         <label for="type">ტიპი</label>
                         <select name="type[]" class="form-control" id="Type">
@@ -58,6 +74,8 @@
                             <option value="longText">Long text</option>
                         </select>
                     </div>
+                    
+                    
                 </div>
             </div>
         </div>

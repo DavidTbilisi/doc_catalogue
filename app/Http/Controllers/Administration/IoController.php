@@ -13,34 +13,63 @@ use Symfony\Component\HttpFoundation\Response as Code;
 class IoController extends Controller
 {
 
+
+    private function getRefRequest($request) {
+        // Get reference from Current io
+        $reqReference  = '';
+        $reqReference .= $request->get("prefix") != NULL? "_{$request->get("prefix")}" : "";
+        $reqReference .= $request->get("identifier") != NULL? "-{$request->get("identifier")}" : "";
+        $reqReference .= $request->get('suffix') != NULL? "-{$request->get('suffix')}" : "";
+        return $reqReference;
+    }
+
+
+
+    private function getRefParent($ioParent) {
+        // Get reference from Current io
+        $parentReference  = '';
+        $parentReference .= $ioParent->prefix != null?      "_" . $ioParent->prefix: "";
+        $parentReference .= $ioParent->identifier != null?  "-" .$ioParent->identifier: "";
+        $parentReference .= $ioParent->suffix != null?      "-" . $ioParent->suffix: "";
+        return $parentReference;
+    }
+
     private function buildReference($io_type_id, $request) {
         
-        $reff = "GE";
-
-        $reff .= $request->get("prefix") != NULL? "_{$request->get("prefix")}" : "";
-
-        $reff .= $request->get("identifier") != NULL? "-{$request->get("identifier")}" : "";
-
-        $reff .= $request->get('suffix') != NULL? "-{$request->get('suffix')}" : "";
-
-
         $ioType = Io::find($io_type_id);
 
         $ioParent = $ioType ? $ioType->parent : false;
 
         Log::channel("app")->info("Reference Builder: ", ["ioType"=>$ioType, "has_parent"=> $ioParent]);
 
-        $str = "";
+        $str = '';
+        $reff = "GE";
+
+        // Get reference from Current io 
+        $currentIoReference = $this->getRefRequest($request);
+        $reff .= $currentIoReference;
+        $refsArray = [$currentIoReference];
+
+
         while ($ioParent) {
-            $str .= $ioParent->prefix != null?      "_" . $ioParent->prefix: "";
-            $str .= $ioParent->identifier != null?  "-" .$ioParent->identifier: "";
-            $str .= $ioParent->suffix != null?      "-" . $ioParent->suffix: "";
+            $parentRef = $this->getRefParent($ioParent);
+            $str .= $parentRef;
             $ioParent = Io::find($ioParent->id)->parent;
+
+            array_push($refsArray, $parentRef);
         }
 
         $reff .= $str;
 
-        return $reff;
+        $reversedOrderOfRefs = array_reverse($refsArray);
+        $parentReferences = "GE".implode("", $reversedOrderOfRefs); // joining reversed references to string
+        Log::channel('app')->info("Reverse Refs", [
+            "arr_of_refs" => $refsArray,
+            "reversed_arr_of_refs" => $reversedOrderOfRefs,
+            "reversed_str_of_refs" => $parentReferences,
+        ]);
+
+        return $parentReferences;
     }
 
     public function index()

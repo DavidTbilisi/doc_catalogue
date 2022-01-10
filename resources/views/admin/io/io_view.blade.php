@@ -34,7 +34,8 @@
   <ul class="list-group mt-5 mb-5">
     <li class="list-group-item active">მონაცემი</li>
     @foreach((array)$data[0] as $key => $value)
-      @if ( !preg_match("/_at|_id|^id$/i", $key))
+    {{-- Don't show fileds with _at, _id or id itself --}}
+      @if ( !preg_match("/_at|_id|^id$/i", $key) ) 
         <li class="list-group-item"> <b> {{$key}}: </b> <span> {{$value}} </span> </li>
       @endif
     @endforeach

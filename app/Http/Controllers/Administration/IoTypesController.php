@@ -59,7 +59,10 @@ class IoTypesController extends Controller
                         // იქმნება გადმოცემული Column-ები მითითებული Type-ებით
                         foreach ($request->get("type") as $i => $type){
                             $field = $request->get("field")[$i];
+                            $name = $request->get("names")[$i];
                             $table->$type($field)->nullable();
+                            // TODO: გვინდა ეგ ნამდვილად? 
+                            // $table->string($field."xHHH")->nullable();
                         }
                         $table->foreignId("io_type_id")->constrained()->nallable();
                         $table->softDeletes();
