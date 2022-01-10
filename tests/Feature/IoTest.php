@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\HttpFoundation\Response as Code;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -12,6 +12,8 @@ class IoTest extends TestCase
 {
     public function setUp(): void{
         parent::setUp();
+        Artisan::call("migrate:fresh");
+        Artisan::call("db:seed");
         $this->user = User::find(1);
     }
 
