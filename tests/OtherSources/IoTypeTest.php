@@ -12,20 +12,23 @@ use Tests\TestCase;
 
 class IoTypeTest extends TestCase
 {
-    protected $user;
+    use RefreshDatabase;
 
     public function setUp(): void{
         parent::setUp();
-        Artisan::call("migrate:fresh");
-        Artisan::call("db:seed");
-        $this->user = User::find(1);
+        // Artisan::call("migrate:fresh");
+        // Artisan::call("db:seed");
+        // $user = User::find(1);
     }
 
 
 
     public function test_types_add()
     {
-        $response = $this->actingAs($this->user, 'web')->post('/admin/types/add',[
+
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user, 'web')->post('/admin/types/add',[
             "name"=>"ტესტი",
             "tablename"=>"test",
             "type"=>[
@@ -46,7 +49,9 @@ class IoTypeTest extends TestCase
 
     public function test_types_field_add()
     {
-        $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user, 'web')->post('/admin/types/column',[
             "table"=>"test",
             "cols" => [
                 "a",
@@ -62,7 +67,9 @@ class IoTypeTest extends TestCase
 
     public function test_types_field_rename_duplicated_columns()
     {
-        $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user, 'web')->post('/admin/types/column',[
             "table"=>"test",
             "cols" => [
                 "a,d",
@@ -80,7 +87,9 @@ class IoTypeTest extends TestCase
 
     public function test_types_field_rename()
     {
-        $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user, 'web')->post('/admin/types/column',[
             "table"=>"test",
             "cols" => [
                 "a,f",
@@ -95,7 +104,9 @@ class IoTypeTest extends TestCase
 
     public function test_types_field_delete()
     {
-        $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user, 'web')->post('/admin/types/column',[
             "table"=>"test",
             "cols" => [
                 "a",
@@ -112,12 +123,12 @@ class IoTypeTest extends TestCase
     // Remove test table
     public function test_types_delete()
     {
+        $user = User::factory()->create();
+
         // http://localhost:8000/admin/types/delete/1
-        $response = $this->actingAs($this->user, 'web')->post('/admin/types/delete/2',[
+        $response = $this->actingAs($user, 'web')->post('/admin/types/delete/2',[
             "table"=>"test",
     ]);
-
-        // Log::channel("app")->debug("Response", ["Response"=>$response]);
         $response->assertStatus(Code::HTTP_FOUND);
     }
 
@@ -126,14 +137,18 @@ class IoTypeTest extends TestCase
 
     public function test_types_opens()
     {
-        $response = $this->actingAs($this->user, 'web')->get('/admin/types');
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user, 'web')->get('/admin/types');
         $response->assertOk();
     }
 
 
     public function test_types_fonds_opens()
     {
-        $response = $this->actingAs($this->user, 'web')->get('/admin/types/show/fonds');
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user, 'web')->get('/admin/types/show/fonds');
         $response->assertOk();
     }
 
