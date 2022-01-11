@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
 use App\Models\Io_type;
+use App\Models\Io_types_translation;
 use Illuminate\Http\Request;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +34,53 @@ class IoTypesController extends Controller
     }
 
 
-    
+
+    private function create_type_table($toCreateTable, $request) {
+
+        $fields = [];
+
+        // create Type Table 
+        if (!Schema::hasTable($toCreateTable)) {
+
+            Schema::create( $toCreateTable, 
+                function (Blueprint $table) use ($request) {
+                
+                    $table->id();
+                    // იქმნება გადმოცემული Column-ები მითითებული Type-ებით
+                    foreach ($request->get("type") as $i => $type){
+                        $field = $request->get("field")[$i];
+                        $name = $request->get("names")[$i];
+                        
+                        // build return couples 
+                        $fields[] = [$field => $name];
+
+                        $table->$type($field)->nullable();
+
+                    }
+                    $table->foreignId("io_type_id")->constrained()->nallable();
+                    $table->softDeletes();
+                    $table->timestamps();
+            });
+        } else {
+            throw new \Exception('Table already exists');
+        }
+
+        // TODO: არ აბრუნებს მასივს; ვერ გავიგე რატომ.
+        return $fields;
+    }
+
+
+
+    private function register_type_table_translation($io_types_table_id, $fields) {
+
+        $io_type = Io_type::find($io_types_table_id);
+        $fhuman = new Io_types_translation();
+        $fhuman->io_type_id = $io_type->id;
+        $fhuman->fields = json_encode($fields);
+        $fhuman->save();
+        
+    }
+        
 
     public function store(Request $request)
     {
@@ -47,36 +94,20 @@ class IoTypesController extends Controller
 
 
 
-
         DB::beginTransaction();
         try {
             $toCreateTable = $request->get("tablename");
 
-            if (!Schema::hasTable($toCreateTable)) {
-
-                Schema::create( $toCreateTable, 
-                    function (Blueprint $table) use ($request) {
-                    
-                        $table->id();
-                        // იქმნება გადმოცემული Column-ები მითითებული Type-ებით
-                        foreach ($request->get("type") as $i => $type){
-                            $field = $request->get("field")[$i];
-                            $name = $request->get("names")[$i];
-                            $table->$type($field)->nullable();
-                            // TODO: გვინდა ეგ ნამდვილად? 
-                            // $table->string($field."xHHH")->nullable();
-                        }
-                        $table->foreignId("io_type_id")->constrained()->nallable();
-                        $table->softDeletes();
-                        $table->timestamps();
-                });
-            }
+            $fields = $this->create_type_table($toCreateTable, $request); // returns fields array
 
             // თუ შეიქმნა Table -ი ვქმნით ჩანაწერს მის შესახებ io_types-შიც
             $ioType = new Io_type();
             $ioType->name = $request->get("name");
             $ioType->table = $request->get("tablename");
             $status = $ioType->save();
+
+            
+            $this->register_type_table_translation($ioType->id, $fields);
 
             // DB::commit();
             Log::channel("app")->debug("Type Table Created Successfully", [$status]);
@@ -86,7 +117,10 @@ class IoTypesController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             Log::channel("app")->debug("Type Table Not Created ", [$e]);
-            return abort(Code::HTTP_NOT_ACCEPTABLE);
+            return redirect(route('types.add'))
+                ->withErrors([
+                    "msg"=>$e->getMessage()
+                ]);
         }
     }
 
