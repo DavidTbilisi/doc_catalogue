@@ -33,6 +33,8 @@ class IoTypesController extends Controller
     }
 
 
+    
+
     public function store(Request $request)
     {
 

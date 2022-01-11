@@ -21,8 +21,11 @@ class GroupFactory extends Factory
      */
     public function definition()
     {
+        $name = $this->faker->company();
         return [
-            //
+            "name" => strtolower($name),
+            "alias" => $name,
+            "description" => $this->faker->realText(),
         ];
     }
 }
