@@ -88,7 +88,7 @@ class IoController extends Controller
 
     public function create()
     {
-        $types = Io_type::all();
+        $types = Io_type::with('translation')->get();
         return view("admin.io.io_add", [
             'types'=>$types
         ]);

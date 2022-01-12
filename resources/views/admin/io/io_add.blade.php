@@ -71,7 +71,7 @@
         function drawFields(element, type){
             $("#datatable .inputs").append(`
             <div class="mb-3">
-                <label for="${element}" class="form-label">${element} (${type})</label>
+                <label for="${element}" class="form-label">${element} </label>
                 <input type="text" class="form-control" name="${element}" id="${element}" placeholder="${element}">
             </div>`);
 
@@ -91,7 +91,7 @@
                         let fieldName = data.data[el].Field;
                         let fieldType = data.data[el].Type;
 
-                        drawFields(fieldName, fieldType)
+                        drawFields(data.translation[fieldName], fieldType)
                     }
 
                 },

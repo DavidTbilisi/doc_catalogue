@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 class Io_type extends Model
@@ -27,6 +28,13 @@ class Io_type extends Model
     public static function getColumns($table, $json=true)
     {
         $sql = DB::raw('SHOW COLUMNS FROM '.$table);
+        
+        $type = Io_type::where('table',$table)->first();
+
+
+        $translation = Io_types_translation::find($type->id);
+        $translation = json_decode($translation->fields, true);
+
 
         try{
             $columns = Db::select($sql);
@@ -37,10 +45,18 @@ class Io_type extends Model
                     && $element->Field != "reference"
                     ;
             });
+
+
+            Log::channel("app")->info("Translation ".__FILE__, [
+                "translation" => $translation,
+                "columns" => $columns,
+            ]);
+
             if ( $json ) {
                 return \response( )->json([
                     "message"=>"found",
-                    "data" => $columns
+                    "data" => $columns,
+                    "translation" => $translation
                 ]);
             } else {
                 return array_values($columns);
