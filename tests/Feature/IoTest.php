@@ -26,97 +26,104 @@ class IoTest extends TestCase
     public function setUp(): void{
         parent::setUp();
 
-        $groups = Group::factory()->count(3)->create();
-        foreach ($groups as $item) :
-            $res[] = $item->id . " " . $item->name;
-        endforeach;
-        fwrite(STDERR, print_r($res, TRUE));
+        // $groups = Group::factory()->count(3)->create();
 
-        $this->user = User::factory()->create();
-        $types = Io_type::factory()->count(12)->create();
-        $ios = Io::factory()->count(12)->create();
+        Group::factory()->create([
+            "id" => 3,
+        ]);
+
+        $this->user = User::factory()->create([
+            "id" => 1,
+        ]);
+
+        Io_type::factory()->create([
+            "id" => 1,
+            "table" => "fonds"
+        ]);
+
+        Io::factory()->create([
+            'id' => 1
+        ]);
         
-        // $status = DB::unprepared("ALTER TABLE groups AUTO_INCREMENT = 1");
-
-       
-        Log::channel('app')->info("test groups", ['groups'=> $res] );
+        // Log::channel('app')->info("test groups", ['groups'=> $res] );
     }
 
 
     // CREATING IOs
-    // public function test_io_create()
-    // {
+    public function test_io_create()
+    {
 
-    //     // IoController
-    //     // TODO: თუ შესაძლებელია კარგი ინქებოდა ორი მოთხოვნის გაერთიანება. 
-    //     $response = $this->actingAs($this->user, 'web')->post('/admin/io/add',[
-    //         "prefix"=>"prefix",
-    //         "identifier"=>"123",
-    //         "suffix"=>"suffix", 
-    //         "io_type_id"=>"1", // table id
-    //         "data_id"=>"1", 
+        // IoController
+        // TODO: თუ შესაძლებელია კარგი ინქებოდა ორი მოთხოვნის გაერთიანება. 
+        $response = $this->actingAs($this->user, 'web')->post('/admin/io/add',[
+            "prefix"=>"prefix",
+            "identifier"=>"123",
+            "suffix"=>"suffix", 
+            "io_type_id"=>"1", // table id
+            "data_id"=>"1", 
    
-    //     ]);
-    //     $response->assertStatus(Code::HTTP_CREATED);
-    // }
+        ]);
+        $response->assertStatus(Code::HTTP_CREATED);
+    }
 
 
-    // public function test_io_connected_table_adds_info()
-    // {
-    //     $response = $this->actingAs($this->user, 'web')->post('/admin/io/add',[
-    //         "name"=>"ფონდის სახელი",
-    //         "table"=>"fonds",
-    //     ]);
-    //     $response->assertStatus(Code::HTTP_CREATED);
-    // }
+    public function test_io_connected_table_adds_info()
+    {
+
+        $response = $this->actingAs($this->user, 'web')->post('/admin/io/add',[
+            "name"=>"ფონდის სახელი",
+            "table"=>"fonds",
+        ]);
+        $response->assertStatus(Code::HTTP_CREATED);
+    }
 
 
-    // public function test_io_connected_table_bad_adds_info()
-    // {
-    //     $response = $this->actingAs($this->user, 'web')->post('/admin/io/add',[
-    //         "name"=>"",
-    //         "table"=>"fonds",
-    //     ]);
-    //     $response->assertStatus(Code::HTTP_BAD_REQUEST);
-    // }
+    public function test_io_connected_table_bad_adds_info()
+    {
+        $response = $this->actingAs($this->user, 'web')->post('/admin/io/add',[
+            "name"=>"",
+            "table"=>"fonds",
+        ]);
+        $response->assertStatus(Code::HTTP_BAD_REQUEST);
+    }
 
 
-    // // EDITING Fields Os
-    // public function test_edit_io_no_pref(){
-    //     $response = $this->actingAs($this->user, 'web')->post('/admin/io/edit/1',[
-    //         "prefix" => "",
-    //         "identifier" => "987",
-    //         "suffix" => "suffix",
-    //         "io_type_id" => "1",
-    //         "id" => 1
-    //     ]);
+    // EDITING Fields Os
+    public function test_edit_io_no_prefix(){
+        $response = $this->actingAs($this->user, 'web')->post('/admin/io/edit/1',[
+            "prefix" => "",
+            "identifier" => "987",
+            "suffix" => "suffix",
+            "io_type_id" => "1",
+            "id" => 1
+        ]);
 
         
-    //     $response->assertStatus(Code::HTTP_FOUND);
-    // }
+        $response->assertStatus(Code::HTTP_FOUND);
+    }
 
-    // public function test_edit_io_no_suff(){
-    //     $response = $this->actingAs($this->user, 'web')->post('/admin/io/edit/1',[
-    //         "prefix" => "Prefix",
-    //         "identifier" => "987",
-    //         "suffix" => "",
-    //         "io_type_id" => "1",
-    //         "id" => 1
-    //     ]);
-    //     $response->assertStatus(Code::HTTP_FOUND);
-    // }
+    public function test_edit_io_no_suffix(){
+        $response = $this->actingAs($this->user, 'web')->post('/admin/io/edit/1',[
+            "prefix" => "Prefix",
+            "identifier" => "987",
+            "suffix" => "",
+            "io_type_id" => "1",
+            "id" => 1
+        ]);
+        $response->assertStatus(Code::HTTP_FOUND);
+    }
 
 
-    // public function test_edit_io_no_pref_suff(){
-    //     $response = $this->actingAs($this->user, 'web')->post('/admin/io/edit/1',[
-    //         "prefix" => "",
-    //         "identifier" => "987",
-    //         "suffix" => "",
-    //         "io_type_id" => "1",
-    //         "id" => 1
-    //     ]);
-    //     $response->assertStatus(Code::HTTP_FOUND);
-    // }
+    public function test_edit_io_no_pref_suff(){
+        $response = $this->actingAs($this->user, 'web')->post('/admin/io/edit/1',[
+            "prefix" => "",
+            "identifier" => "987",
+            "suffix" => "",
+            "io_type_id" => "1",
+            "id" => 1
+        ]);
+        $response->assertStatus(Code::HTTP_FOUND);
+    }
 
 
     // public function test_edit_io_no_pref_suff_identifier(){
@@ -192,14 +199,8 @@ class IoTest extends TestCase
 
     public function test_io_add_opens()
     {
-
-
         $response = $this->actingAs($this->user, 'web')->get('/admin/io/add');
-        // $response->dumpSession();
-        // $response->dump();
-
         $response->assertOk();
-        
     }
 
     public function test_io_opens()
@@ -209,11 +210,11 @@ class IoTest extends TestCase
     }
 
 
-    // public function test_io_edit_opens()
-    // {
-    //     $response = $this->actingAs($this->user, 'web')->get('/admin/io/edit/1');
-    //     $response->assertOk();
-    // }
+    public function test_io_edit_opens()
+    {
+        $response = $this->actingAs($this->user, 'web')->get('/admin/io/edit/1');
+        $response->assertOk();
+    }
 
    
 
