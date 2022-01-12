@@ -10,6 +10,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Log;
+use stdClass;
 use Symfony\Component\HttpFoundation\Response as Code;
 
 
@@ -37,13 +38,13 @@ class IoTypesController extends Controller
 
     private function create_type_table($toCreateTable, $request) {
 
-        $fields = [];
+        $fields = new stdClass();
 
         // create Type Table 
         if (!Schema::hasTable($toCreateTable)) {
 
             Schema::create( $toCreateTable, 
-                function (Blueprint $table) use ($request) {
+                function (Blueprint $table) use ($request, $fields) {
                 
                     $table->id();
                     // იქმნება გადმოცემული Column-ები მითითებული Type-ებით
@@ -52,7 +53,7 @@ class IoTypesController extends Controller
                         $name = $request->get("names")[$i];
                         
                         // build return couples 
-                        $fields[] = [$field => $name];
+                        $fields->$field = $name;
 
                         $table->$type($field)->nullable();
 
@@ -65,8 +66,7 @@ class IoTypesController extends Controller
             throw new \Exception('Table already exists');
         }
 
-        // TODO: არ აბრუნებს მასივს; ვერ გავიგე რატომ.
-        return $fields;
+        return (array)$fields;
     }
 
 
@@ -76,7 +76,7 @@ class IoTypesController extends Controller
         $io_type = Io_type::find($io_types_table_id);
         $fhuman = new Io_types_translation();
         $fhuman->io_type_id = $io_type->id;
-        $fhuman->fields = json_encode($fields);
+        $fhuman->fields = json_encode($fields, JSON_UNESCAPED_SLASHES);
         $fhuman->save();
         
     }
@@ -127,11 +127,15 @@ class IoTypesController extends Controller
 
     public function show($table)
     {
-        $tablename = Io_type::where("table","$table")->first();
+        $tablename = Io_type::where("table","$table")->with("translation")->first();
         $columns = Io_type::getColumns($table, false);
 
+        $translation = $tablename->translation->fields;
+        $translation = json_decode($translation, true);
+      
         return view("admin.iotypes.type", [
             "tablename"=>$tablename, 
+            "translation"=>$translation, 
             "columns"=>$columns
         ]);
     }

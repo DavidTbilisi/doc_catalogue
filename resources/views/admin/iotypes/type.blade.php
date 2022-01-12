@@ -18,7 +18,6 @@
         არსებული კოლონების წაშლამ ან შეცვლამ შეიძლება გამოიწვიოს ამ ცხრილში არსებული ინფორმაციის სრული დაკარგვა...
     </div>
 
-
     <form action="{{route("types.columnchange")}}" method="POST">
     @csrf
     <div class="inputs">
@@ -26,7 +25,7 @@
     @foreach($columns as $col)
         <div class="form-group mb-2">
             <div class="row">
-                <label for="{{$col->Field}}">{{$col->Field}} <span onclick="removeColumn(event)" class="material-icons md-light">delete</span> </label>
+                <label for="{{$col->Field}}">{{$translation[$col->Field]}} <span onclick="removeColumn(event)" class="material-icons md-light">delete</span> </label>
                 <input type="text" oninput="changeName(event)" data-oldName="{{$col->Field}}" class="form-control" id="{{$col->Field}}" name="cols[]" value="{{$col->Field}}" >
             </div>
         </div>

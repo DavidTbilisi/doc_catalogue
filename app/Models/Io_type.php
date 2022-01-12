@@ -19,6 +19,10 @@ class Io_type extends Model
         $this->belongsTo(IO::class);
     }
 
+    public function translation()
+    {
+        return $this->hasOne(Io_types_translation::class);
+    }
 
     public static function getColumns($table, $json=true)
     {

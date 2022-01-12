@@ -10,4 +10,11 @@ class Io_types_translation extends Model
     use HasFactory;
     protected $table = "humanreadable_type_fields"; // override table name
 
+    public function type()
+    {
+        return $this->belongsTo(Io_type::class, 'io_type_id');
+    }
+
+
+
 }
