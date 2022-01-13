@@ -2,13 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response as Code;
+use App\Models\Io;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Group;
+use App\Models\Io_type;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Symfony\Component\HttpFoundation\Response as Code;
 
 class IoTypeTest extends TestCase
 {
@@ -16,9 +17,16 @@ class IoTypeTest extends TestCase
 
     public function setUp(): void{
         parent::setUp();
-        // Artisan::call("migrate:fresh");
-        // Artisan::call("db:seed");
-        // $user = User::find(1);
+        Group::factory()->create(["id" => 3,]);
+
+        $this->user = User::factory()->create(["id" => 1,]);
+
+        Io_type::factory()->create([
+            "id" => 1,
+            "table" => "fonds"
+        ]);
+
+        Io::factory()->create(['id' => 1]);
     }
 
 
@@ -26,9 +34,8 @@ class IoTypeTest extends TestCase
     public function test_types_add()
     {
 
-        $user = User::factory()->create();
 
-        $response = $this->actingAs($user, 'web')->post('/admin/types/add',[
+        $response = $this->actingAs($this->user, 'web')->post('/admin/types/add',[
             "name"=>"ტესტი",
             "tablename"=>"test",
             "type"=>[
@@ -51,7 +58,7 @@ class IoTypeTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user, 'web')->post('/admin/types/column',[
+        $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
             "table"=>"test",
             "cols" => [
                 "a",
@@ -69,7 +76,7 @@ class IoTypeTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user, 'web')->post('/admin/types/column',[
+        $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
             "table"=>"test",
             "cols" => [
                 "a,d",
@@ -89,7 +96,7 @@ class IoTypeTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user, 'web')->post('/admin/types/column',[
+        $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
             "table"=>"test",
             "cols" => [
                 "a,f",
@@ -106,7 +113,7 @@ class IoTypeTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user, 'web')->post('/admin/types/column',[
+        $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
             "table"=>"test",
             "cols" => [
                 "a",
@@ -126,7 +133,7 @@ class IoTypeTest extends TestCase
         $user = User::factory()->create();
 
         // http://localhost:8000/admin/types/delete/1
-        $response = $this->actingAs($user, 'web')->post('/admin/types/delete/2',[
+        $response = $this->actingAs($this->user, 'web')->post('/admin/types/delete/2',[
             "table"=>"test",
     ]);
         $response->assertStatus(Code::HTTP_FOUND);
@@ -139,7 +146,7 @@ class IoTypeTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user, 'web')->get('/admin/types');
+        $response = $this->actingAs($this->user, 'web')->get('/admin/types');
         $response->assertOk();
     }
 
@@ -148,7 +155,7 @@ class IoTypeTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user, 'web')->get('/admin/types/show/fonds');
+        $response = $this->actingAs($this->user, 'web')->get('/admin/types/show/fonds');
         $response->assertOk();
     }
 
