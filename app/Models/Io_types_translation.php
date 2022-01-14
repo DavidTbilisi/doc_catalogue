@@ -9,6 +9,9 @@ class Io_types_translation extends Model
 {
     use HasFactory;
     protected $table = "humanreadable_type_fields"; // override table name
+    protected $fillable = [
+        'io_type_id', 'fields'
+    ];
 
     public function type()
     {

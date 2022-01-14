@@ -74,9 +74,15 @@ class IoTypesController extends Controller
     private function register_type_table_translation($io_types_table_id, $fields) {
 
         $io_type = Io_type::find($io_types_table_id);
-        $fhuman = new Io_types_translation();
+        $fhuman = Io_types_translation::firstOrCreate([
+            "io_type_id"=>$io_type->id
+        ],[
+            "fields" => json_encode($fields, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+        ]);
+
+
         $fhuman->io_type_id = $io_type->id;
-        $fhuman->fields = json_encode($fields, JSON_UNESCAPED_SLASHES);
+        $fhuman->fields = json_encode($fields, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $fhuman->save();
         
     }
@@ -188,22 +194,26 @@ class IoTypesController extends Controller
         ];
     }
 
+
     public function columnChange(Request $request){
 
         $request->validate([
             'cols'          => 'required',
             'table'         => 'required',
+            'names'         => 'required',
         ]);
 
 
 
         $table = $request->get("table");
         $requestCols = $request->get('cols');
-        $tableColumns = Io_type::getColNames($table);
+        $requestColTranslations = $request->get('names');
 
-        Log::channel("app")->info("All Fields of {$table} table :", [
-            $tableColumns
-        ]);
+        $tableColumns = Io_type::getColNames($table);
+        $technicalNames = new stdClass();
+        $table_type = Io_type::where("table",$table)->first();
+
+     
         
         if ($requestCols != null ):
 
@@ -212,6 +222,7 @@ class IoTypesController extends Controller
 
                 // prepare table columns
                 $prepared = $this->prepareColumnConditions($table, $col);
+
                 list($is_renameable, $tableHasColumn) = $prepared;
     
                 if (Schema::hasTable($table)):
@@ -224,7 +235,6 @@ class IoTypesController extends Controller
                             "Old name"=> $old, 
                             "New name"=> $new
                         ]);
-
                         Io_type::rnCol($table, [$old, $new]); 
 
                     } else if (! $tableHasColumn && ! $is_renameable){
@@ -237,17 +247,33 @@ class IoTypesController extends Controller
                     }
 
                 endif; // table exists
-
             endforeach;
         endif; // if post columns exist
+
+
 
         $toRemove = array_diff($tableColumns, $requestCols); // Get Deleted Columns
 
         Log::channel("app")->debug("To Remove Fields", [$toRemove]);
-
+        Log::channel("app")->info("All Fields of {$table} table ".__FILE__.":", [
+            "TableColumns" => $tableColumns,
+            "TableColumnsTranslation" => $requestColTranslations,
+        ]);
         foreach ($toRemove as $col) {
             Io_type::rmCol($table, $col);
         }
+
+
+        // TODO: აქ გვინდა შევადაროთ არსებული ველები ყველა მანიპულაციის მერე
+        // გადმოცემულ ველებთან რომისგანაც უნდა შევადგინოთ ასოციაციური მასივი (zip)
+        $type_col_names = Io_type::getColNames($table);
+        if(count($type_col_names) == count($requestColTranslations)){
+            foreach ($tableColumns as $index => $technicalName):
+                $fieldsAndTranslations[$technicalName] = $requestColTranslations[$index]; 
+            endforeach;
+            $this->register_type_table_translation($table_type->id, $fieldsAndTranslations);
+        }
+
 
         return redirect(route("types.show",["id"=>$table]));
     }
