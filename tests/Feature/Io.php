@@ -2,13 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Models\Group;
 use App\Models\Io;
-use App\Models\Io_type;
 use Tests\TestCase;
 use App\Models\User;
-use Symfony\Component\HttpFoundation\Response as Code;
+use App\Models\Group;
+use App\Models\Io_type;
+use App\Models\Io_types_translation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Symfony\Component\HttpFoundation\Response as Code;
 
 
 
@@ -23,30 +24,25 @@ class IoTest extends TestCase
     public function setUp(): void{
         parent::setUp();
 
-        // $groups = Group::factory()->count(3)->create();
+        Group::factory()->create(["id" => 3,]);
 
-        Group::factory()->create([
-            "id" => 3,
-        ]);
-
-        $this->user = User::factory()->create([
-            "id" => 1,
-        ]);
+        $this->user = User::factory()->create(["id" => 1,]);
 
         Io_type::factory()->create([
             "id" => 1,
             "table" => "fonds"
         ]);
 
-        Io::factory()->create([
-            'id' => 1
+        Io::factory()->create(['id' => 1]);
+
+        Io_types_translation::factory()->create([
+            "io_type_id"=>1,
+            "fields"=>'{"string":"სტრიქონი"}',
         ]);
         
         // Log::channel('app')->info("test groups", ['groups'=> $res] );
     }
 
-
-   
 
     // OPENS PAGES
 
@@ -68,8 +64,4 @@ class IoTest extends TestCase
         $response = $this->actingAs($this->user, 'web')->get('/admin/io/edit/1');
         $response->assertOk();
     }
-
-   
-
-
 }
