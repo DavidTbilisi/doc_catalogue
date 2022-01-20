@@ -17,7 +17,4 @@ class Io_types_translation extends Model
     {
         return $this->belongsTo(Io_type::class, 'io_type_id');
     }
-
-
-
 }

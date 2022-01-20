@@ -95,12 +95,41 @@ class IoController extends Controller
     }
 
 
+    private function type_create($request){
+                
+            $toInsert = $request->except(["_token", 'table']);
+            $table = $request->get("table");
+            $io_type_id = Io_type::getTypeId($table);
+
+            Log::channel('app')->info(
+                "creating table {$table}"
+            );
+
+            $toInsert["io_type_id"] = $io_type_id;
+
+            
+
+            DB::table($table)->insert($toInsert);
+
+
+            $last_id = DB::table($table)
+                                ->orderByDesc('id')
+                                ->first()
+                                ->id;
+
+            return [
+                'message' => "The table \"{$request->table}\" was updated",
+                "inserted_id" => $last_id,
+                "io_type_id" => $io_type_id
+            ];
+    }
+
+
     public function store(Request $request)
     {
         DB::beginTransaction();
         try{
             if ($request->has("table")) {
-                
                 // If Table -> Insert into that table 
                 // Else -> insert into Io 
 
@@ -109,27 +138,11 @@ class IoController extends Controller
                  * "inserted_id" and "io_type_id" for Io Table
                 */
 
-            
-                $toInsert = $request->except(["_token", 'table']);
-                $table = $request->get("table");
-                $io_type_id = Io_type::getTypeId($table);
-
-                $toInsert["io_type_id"] = $io_type_id;
-
-
-                DB::table($table)->insert($toInsert);
-                $last_id = DB::table($table)
-                                    ->orderByDesc('id')
-                                    ->first()
-                                    ->id;
+                $created_type = $this->type_create($request);
 
                 DB::commit();
 
-                return response()->json([
-                    'message' => "The table \"{$request->table}\" was updated",
-                    "inserted_id" => $last_id,
-                    "io_type_id" => $io_type_id
-                ], Code::HTTP_CREATED);
+                return response()->json($created_type, Code::HTTP_CREATED);
 
             } else {
 
