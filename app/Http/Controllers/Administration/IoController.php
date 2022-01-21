@@ -154,8 +154,7 @@ class IoController extends Controller
 
                 if ($request->has("io_parent_id")) {
 
-                    Log::channel('app')
-                    ->info("Io Parent Test",[
+                    Log::channel('app')->info("Io Parent Test",[
                         "has_parent"=>$request->get("io_parent_id")
                     ]);
 

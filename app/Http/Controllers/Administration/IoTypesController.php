@@ -115,7 +115,7 @@ class IoTypesController extends Controller
             
             $this->register_type_table_translation($ioType->id, $fields);
 
-            // DB::commit();
+            DB::commit();
             Log::channel("app")->debug("Type Table Created Successfully", [$status]);
 
             return redirect(route('types.index'));
@@ -292,7 +292,7 @@ class IoTypesController extends Controller
 
             Schema::dropIfExists(request()->get("table"));
 
-            // DB::commit(); 
+            DB::commit(); 
             return redirect(route('types.index'));
         } catch (\Exception $e) {
 
