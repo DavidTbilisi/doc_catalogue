@@ -18,6 +18,7 @@
             <p class="h1"> საინფორმაციო ობიექტის დამატება </p>
 
             <form action="{{route("io.store")}}" method="post" id="io" >
+                <input type="hidden" name="io_parent_id" value="{{request()->io_parent_id}}">
             @csrf
             <div class="mb-3">
                 <label for="prefix" class="form-label">პრეფიქსი</label>
@@ -67,11 +68,11 @@
     <script>
 
 
-        function drawFields(element){
+        function drawFields(translation, fieldname){
             $("#datatable .inputs").append(`
             <div class="mb-3">
-                <label for="${element}" class="form-label">${element}</label>
-                <input type="text" class="form-control" name="${element}" id="${element}" placeholder="${element}">
+                <label for="${fieldname}" class="form-label">${translation} </label>
+                <input type="text" class="form-control" name="${fieldname}" id="${fieldname}" placeholder="${fieldname}">
             </div>`);
 
         }
@@ -85,8 +86,12 @@
                     $("#datatable .inputs").append(
                         `<input type="hidden" value="${event.target.value}" name="table">`
                     );
+
                     for (let el in data.data){
-                        drawFields(data.data[el].Field)
+                        let fieldName = data.data[el].Field;
+                        let fieldType = data.data[el].Type;
+
+                        drawFields(data.translation[fieldName], fieldName)
                     }
 
                 },
@@ -99,6 +104,8 @@
         }
 
         function save(event) {
+            // XXX: replace with axios? 
+
             event.preventDefault();
             $.ajax({
                 data: $('#datatable').serialize(),
@@ -116,6 +123,7 @@
                         data: toPost,
                         success: function (data) {
                             console.log(data);
+                            location.href = '{{route("io.index")}}'
                         }
                     });
 
@@ -124,7 +132,14 @@
             });
         }
 
-        $("#io").on('submit', function (event) {save(event)})
+  
+
+
+        // EVENTS 
+        $("#io").on('submit', function (event) {
+
+            save(event)
+        })
 
     </script>
 @endsection

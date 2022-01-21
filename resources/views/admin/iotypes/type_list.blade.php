@@ -1,6 +1,15 @@
 @extends('layouts.admin')
 @section('body')
 
+@if($errors->any())
+<div class="container mt-3">
+<div class="alert alert-danger alert-dismissible fade show">
+{{$errors->first()}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+</div>
+@endif
+
 
     <table class="table table-striped">
         <thead>

@@ -18,17 +18,31 @@
         არსებული კოლონების წაშლამ ან შეცვლამ შეიძლება გამოიწვიოს ამ ცხრილში არსებული ინფორმაციის სრული დაკარგვა...
     </div>
 
-
     <form action="{{route("types.columnchange")}}" method="POST">
     @csrf
     <div class="inputs">
         <input type="hidden" name="table" value="{{$tablename->table}}">
     @foreach($columns as $col)
         <div class="form-group mb-2">
+
+
             <div class="row">
-                <label for="{{$col->Field}}">{{$col->Field}} <span onclick="removeColumn(event)" class="material-icons md-light">delete</span> </label>
-                <input type="text" oninput="changeName(event)" data-oldName="{{$col->Field}}" class="form-control" id="{{$col->Field}}" name="cols[]" value="{{$col->Field}}" >
+                <!-- თარგმანი -->
+                <div class="col">
+                    <label for="{{$col->Field}}">ველის სახელი<span onclick="removeColumn(event)" class="material-icons md-light">delete</span> </label>
+                    <input type="text" class="form-control" id="{{$col->Field}}" name="names[]" value="{{$translation[$col->Field] ?? $col->Field}}" >
+                </div>
+
+                <!-- ტექნიკური  -->
+                <div class="col">
+                    <label for="{{$col->Field}}">ტექნიკური სახელი <span onclick="removeColumn(event)" class="material-icons md-light">delete</span> </label>
+                    <input type="text" oninput="changeName(event)" data-oldName="{{$col->Field}}" class="form-control" id="{{$col->Field}}" name="cols[]" value="{{$col->Field}}" >
+                </div> 
+               
+
             </div>
+
+
         </div>
     @endforeach
     </div>
@@ -56,7 +70,6 @@
             </div>
         </div>`
 
-
         function addColumn() {
             document.querySelector(".inputs").insertAdjacentHTML("beforeEnd", input("newColumn"))
         }
@@ -76,8 +89,6 @@
                     toReturn = This.dataset.oldname+","+val
                     return This.dataset.oldname+","+toReturn.replaceAll(This.dataset.oldname+",","")
                 } return val;
-                
-                
             }
 
 

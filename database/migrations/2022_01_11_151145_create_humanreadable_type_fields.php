@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFondTable extends Migration
+class CreateHumanreadableTypeFields extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateFondTable extends Migration
      */
     public function up()
     {
-        Schema::create('fonds', function (Blueprint $table) {
+        Schema::create('humanreadable_type_fields', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->string("reference")->nullable();
-            $table->foreignId("io_type_id")->constrained()->onDelete("cascade")->change();
-            $table->softDeletes();
+            $table->foreignId("io_type_id")->constrained(); // connected with io_types and other type tables
+            $table->text("fields"); // json {"field1":"transl1","field2":"transl2",...}
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class CreateFondTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fonds');
+        Schema::dropIfExists('humanreadable_type_fields');
     }
 }

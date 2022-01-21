@@ -20,11 +20,12 @@ class IoFactory extends Factory
 
 
         return [
-            'io_type_id' => $type_id,
+            'io_type_id' => 1,
             'suffix' => "",
             'identifier' => $uid,
             'prefix' => "",
             'reference' => "GE_{$type_id}_{$uid}_{$parent_id}",
+            "data_id"=>1,
             'level' => $type_id,
             'parent_id' => $parent_id,
             'created_at' => now(),

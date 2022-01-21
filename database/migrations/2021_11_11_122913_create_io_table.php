@@ -17,7 +17,7 @@ class CreateIoTable extends Migration
             $table->id();
             $table->foreignId('io_type_id')->constrained();
             $table->string('suffix')->nullable();
-            $table->integer('identifier')->nullable();
+            $table->integer('identifier')->nullable();  // TODO: არის თუ არა სავალდებულო
             $table->string('prefix')->nullable();
             $table->string('reference')->nullable();
             $table->integer('level')->default(1);

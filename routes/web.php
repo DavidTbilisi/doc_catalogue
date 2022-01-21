@@ -154,7 +154,8 @@ Route::middleware(['auth', 'perms'])->group(function () {
                 Route::get('/add', [IoTypesController::class, 'create'])
                     ->name('add');
 
-                Route::post('/add', [IoTypesController::class, 'store'])
+                Route::post('/add/{id?}', [IoTypesController::class, 'store'])
+                    ->where('id', "[0-9]+")
                     ->name('store');
 
                 Route::get('/show/{id?}', [IoTypesController::class, 'show'])
@@ -174,8 +175,6 @@ Route::middleware(['auth', 'perms'])->group(function () {
 
                 Route::post('/column', [IoTypesController::class, 'columnChange'])
                     ->name('columnchange');
-
-
 
             });
         });

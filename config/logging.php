@@ -100,6 +100,20 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+
+        'app' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/app.log'),
+            'level' => 'debug',
+            // 'formatter' => Monolog\Formatter\JsonFormatter::class,
+            'formatter' => Monolog\Formatter\LineFormatter::class,
+            'formatter_with' => [
+                'format' => "[%datetime%]: %message% \n\t%context%\n",
+            ],
+        ],
+
+
     ],
 
 ];

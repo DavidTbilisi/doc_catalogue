@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Group;
+use App\Models\Io_types_translation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class GroupFactory extends Factory
+class Io_types_translationFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Group::class;
+    protected $model = Io_types_translation::class;
 
     /**
      * Define the model's default state.
@@ -21,11 +21,9 @@ class GroupFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->company();
         return [
-            "name" => strtolower($name),
-            "alias" => $name,
-            "description" => $this->faker->realText(),
+            'io_type_id' => 1, 
+            'fields' => '{"string":"სტრიქონი"}'
         ];
     }
 }
