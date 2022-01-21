@@ -11,9 +11,11 @@ use App\Models\Io_types_translation;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response as Code;
+// use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class IoTypeTest extends TestCase
 {
+    // use DatabaseTransactions;
     use RefreshDatabase;
 
     protected $user;
@@ -21,36 +23,32 @@ class IoTypeTest extends TestCase
     public function setUp(): void{
         parent::setUp();
 
-// group > user > type table > io_object > translation from both
-
-
+        // group > user > type table > io_object > translation from both
         Group::factory()->create(["id" => 3,]);
         $this->user = User::factory()->create(["id" => 1,]);
-
-        Io_types_translation::factory()->create([
-            "io_type_id"=>1,
-            "fields"=>'{"string":"სტრიქონი"}',
-        ]);
 
         Io_type::factory()->create([
             "id" => 1,
             "table" => "fonds"
         ]);
+        
+        Io_types_translation::factory()->create([
+            "io_type_id"=>1, // Dependes on io_types table
+            "fields"=>'{"name":"სახელი"}',
+        ]);
 
- 
         
         // Log::channel('app')->info("test groups", ['groups'=> $res] );
     }
 
-    // public function tearDown(): void 
-    // {
-    //     parent::tearDown();
-    //     Group::trancate();
-
-    // }
-
     public function test_types_add()
     {
+
+        // PARAMS: 
+        // Type table
+        // Tech column names
+        // Translation column names
+
 
         $response = $this->actingAs($this->user, 'web')->post('/admin/types/add',[
             "tablename"=>"test",
@@ -69,22 +67,20 @@ class IoTypeTest extends TestCase
 
     public function test_types_field_add()
     {
-        $user = User::factory()->create();
-
-        Io_type::factory()->create([
-            "tablename"=>"test",
-            "type"=>["string",],
-            "fields"=>'{"string":"სტრიქონი"}',
-            "field"=>["p2",],
-        ]);
 
         $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
-            "table"=>"test",
+            "table"=>"fonds",
             "cols" => [
                 "a",
                 "b",
                 "c",
                 "d",
+            ],
+            'names' => [
+                'ა',
+                'ბ',
+                'გ',
+                'დ',
             ]
         ]);
 
@@ -92,24 +88,31 @@ class IoTypeTest extends TestCase
         $response->assertStatus(Code::HTTP_FOUND);
     }
 
-    // public function test_types_field_rename_duplicated_columns()
-    // {
-    //     $user = User::factory()->create();
+    public function test_types_field_rename_duplicated_columns()
+    {
 
-    //     $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
-    //         "table"=>"test",
-    //         "cols" => [
-    //             "a,d",
-    //             "b,a",
-    //             "c,v",
-    //             "d,i",
-    //         ]
-    //     ]);
-    //     // /App/Http/Controllers/Administration/IoTypesController.php
-    //     // Log::channel("app")->debug("Response", ["Response"=>$response]);
-    //     $response->assertStatus(Code::HTTP_INTERNAL_SERVER_ERROR);
+        // TODO:1062 Duplicate entry '3' for key 'PRIMARY' (SQL: insert into `groups`
 
-    // }
+        $response = $this->actingAs($this->user, 'web')->post('/admin/types/column',[
+            "table"=>"test",
+            "cols" => [
+                "a,d",
+                "b,a",
+                "c,v",
+                "d,i",
+            ],
+            'names' => [
+                'ა',
+                'ბ',
+                'გ',
+                'დ',
+            ]
+        ]);
+        // /App/Http/Controllers/Administration/IoTypesController.php
+        // Log::channel("app")->debug("Response", ["Response"=>$response]);
+        $response->assertStatus(Code::HTTP_INTERNAL_SERVER_ERROR);
+
+    }
 
 
     // public function test_types_field_rename()
@@ -173,7 +176,7 @@ class IoTypeTest extends TestCase
 
     // public function test_types_fonds_opens()
     // {
-    //     $user = User::factory()->create();
+    //     // $user = User::factory()->create();
 
     //     $response = $this->actingAs($this->user, 'web')->get('/admin/types/show/fonds');
     //     $response->assertOk();
