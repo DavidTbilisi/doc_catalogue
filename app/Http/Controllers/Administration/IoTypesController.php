@@ -292,8 +292,6 @@ class IoTypesController extends Controller
             $type = Io_type::findOrfail($id); // 404 თუ ვერ იპოვა ჩანაწერი
             $translation = Io_types_translation::where('io_type_id',$id)->firstOrFail();
 
-
-
             $translation->delete();
             $type->delete();
 
