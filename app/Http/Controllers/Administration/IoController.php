@@ -102,11 +102,10 @@ class IoController extends Controller
             $io_type_id = Io_type::getTypeId($table);
 
             Log::channel('app')->info(
-                "creating table {$table}"
+                "creating data in table {$table}"
             );
 
-            $toInsert["io_type_id"] = $io_type_id;
-
+            $toInsert["io_type_id"] = $io_type_id;            
             
 
             DB::table($table)->insert($toInsert);
@@ -130,27 +129,39 @@ class IoController extends Controller
         DB::beginTransaction();
         try{
             if ($request->has("table")) {
-                // If Table -> Insert into that table 
-                // Else -> insert into Io 
-
-                /* Ajax send request with "table" (name of table)
+                /*
+                 * If Table -> Insert into that table | ჯერ ვინახავ კონკრეტული თეიბლის მონაცემს
+                 * Else -> insert into Io | შემდეგ, უკვე შენახულის შესახებ ინფორმაციას ვინახავ io თეიბლში
+                 *
+                 * Ajax send request with "table" (name of table)
                  * and right after that it sands another request with 
                  * "inserted_id" and "io_type_id" for Io Table
                 */
 
                 $created_type = $this->type_create($request);
-
+                
                 DB::commit();
-
+                
                 return response()->json($created_type, Code::HTTP_CREATED);
 
             } else {
 
                 // INSERT INTO IO TABLE
+/*
+                params: 
+                - data_id: int
+                - io_type_id: int
+                - suffix: str
+                - identifier: int
+                - prefix: str
+                - reference: str
+                - level: int
+                - parent_id: int
+*/
 
                 $io = $request->except(["_token"]);
                 
-                $io['reference'] = $this->buildReference($io['io_type_id'], $request);
+                $io['reference'] = $this->buildReference($io['io_parent_id'], $request);
 
                 if ($request->has("io_parent_id")) {
 
