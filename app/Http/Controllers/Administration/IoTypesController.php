@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Administration;
 use App\Http\Controllers\Controller;
 use App\Models\Io_type;
 use App\Models\Io_types_translation;
+use Database\Seeders\HumanreadableSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -284,10 +285,14 @@ class IoTypesController extends Controller
     {
         // https://laravel.com/docs/8.x/database#database-transactions
         // https://www.php.net/manual/en/pdo.begintransaction.php
+        
         DB::beginTransaction();
         try {
             // ვშლი ჩანაწერს io_type tabel-დან და თავად table-ს
             $type = Io_type::findOrfail($id); // 404 თუ ვერ იპოვა ჩანაწერი
+            $translation = Io_types_translation::where('io_type_id',$id)->firstOrFail();
+
+            $translation->delete();
             $type->delete();
 
             Schema::dropIfExists(request()->get("table"));

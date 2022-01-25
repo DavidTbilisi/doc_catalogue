@@ -42,9 +42,9 @@
         @endforeach
         </tbody>
     </table>
-    <div style="position:fixed; right: 100px; bottom: 100px; border-radius: 50%; background-color: #00fa9a; padding: 5px; border: 1px solid black; ">
-        <a href="{{route("groups.add")}}"> <span class="material-icons md-light">add</span> </a>
-    </div>
+    
+    <x-add-button route="{{route('groups.add')}}"></x-add-button>
+
 
 </div>
 @endsection
