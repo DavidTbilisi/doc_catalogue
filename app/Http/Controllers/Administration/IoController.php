@@ -34,32 +34,34 @@ class IoController extends Controller
         return $parentReference;
     }
 
-    private function buildReference($io_type_id, $request) {
-        
-        $ioType = Io::find($io_type_id);
+    private function buildReference($io_id, $request) {
 
-        $ioParent = $ioType ? $ioType->parent : false;
+        $io = Io::find($io_id);
 
-        Log::channel("app")->info("Reference Builder: ", ["ioType"=>$ioType, "has_parent"=> $ioParent]);
+        $ioParent = $io ? $io->parent : false;
 
-        $str = '';
-        $reff = "GE";
+        Log::channel("app")->info("Reference Builder: ", ["io_ref"=>$io, "has_parent"=> $ioParent]);
 
-        // Get reference from Current io 
+        // Get reference from Current io
         $currentIoReference = $this->getRefRequest($request);
-        $reff .= $currentIoReference;
-        $refsArray = [$currentIoReference];
 
+        // init values
+        $refsArray = [$currentIoReference];
+        if ($io) {
+            array_push($refsArray, $this->getRefParent($io));
+        }
+
+        // უნილაკურობის გარეშე ედიტორების დროს მეორდება ელემენტები
+        $refsArray = array_unique($refsArray); // generalize for editing and inserting
+
+        Log::channel("app")->info("Ref Array:", ["ref "=>$refsArray]);
 
         while ($ioParent) {
             $parentRef = $this->getRefParent($ioParent);
-            $str .= $parentRef;
-            $ioParent = Io::find($ioParent->id)->parent;
-
             array_push($refsArray, $parentRef);
+            $ioParent = Io::find($ioParent->id)->parent;
         }
 
-        $reff .= $str;
 
         $reversedOrderOfRefs = array_reverse($refsArray);
         $parentReferences = "GE".implode("", $reversedOrderOfRefs); // joining reversed references to string
@@ -96,7 +98,7 @@ class IoController extends Controller
 
 
     private function type_create($request){
-                
+
             $toInsert = $request->except(["_token", 'table']);
             $table = $request->get("table");
             $io_type_id = Io_type::getTypeId($table);
@@ -105,8 +107,8 @@ class IoController extends Controller
                 "creating data in table {$table}"
             );
 
-            $toInsert["io_type_id"] = $io_type_id;            
-            
+            $toInsert["io_type_id"] = $io_type_id;
+
 
             DB::table($table)->insert($toInsert);
 
@@ -134,21 +136,21 @@ class IoController extends Controller
                  * Else -> insert into Io | შემდეგ, უკვე შენახულის შესახებ ინფორმაციას ვინახავ io თეიბლში
                  *
                  * Ajax send request with "table" (name of table)
-                 * and right after that it sands another request with 
+                 * and right after that it sands another request with
                  * "inserted_id" and "io_type_id" for Io Table
                 */
 
                 $created_type = $this->type_create($request);
-                
+
                 DB::commit();
-                
+
                 return response()->json($created_type, Code::HTTP_CREATED);
 
             } else {
 
                 // INSERT INTO IO TABLE
 /*
-                params: 
+                params:
                 - data_id: int
                 - io_type_id: int
                 - suffix: str
@@ -160,17 +162,18 @@ class IoController extends Controller
 */
 
                 $io = $request->except(["_token"]);
-                
-                $io['reference'] = $this->buildReference($io['io_parent_id'], $request);
+
 
                 if ($request->has("io_parent_id")) {
 
-                    Log::channel('app')->info("Io Parent Test",[
+                    Log::channel('app')->info("Io Parent in request",[
                         "has_parent"=>$request->get("io_parent_id")
                     ]);
 
                     $io['parent_id'] = $request->get("io_parent_id");
                 }
+
+                $io['reference'] = $this->buildReference($io['parent_id'], $request);
 
                 $result = Io::create($io);
 
@@ -185,7 +188,7 @@ class IoController extends Controller
         }
         catch (\Exception $exception) {
             DB::rollback();
-            return response()->json(['message' => $exception,], Code::HTTP_BAD_REQUEST);
+            return response()->json(['message' => $exception->getMessage(),], Code::HTTP_BAD_REQUEST);
         }
     }
 
@@ -215,7 +218,7 @@ class IoController extends Controller
 
         $types = Io_type::all();
         return view('admin.io.io_edit', [
-            'types'=>$types, 
+            'types'=>$types,
             'io'=>$io
         ]);
     }
@@ -223,8 +226,8 @@ class IoController extends Controller
 
     public function update(Request $request, $id)
     {
-        $io = Io::findOrFail($id); // If Id not specified return code 
-        
+        $io = Io::findOrFail($id); // If Id not specified return code
+
         $post = $request->except(["_token"]);
 
 
@@ -238,7 +241,7 @@ class IoController extends Controller
         Log::channel("app")->info("Io Update: ", ['Is Io Saved'=> $isSaved]);
         if ($isSaved) {
             return redirect(route("io.index"));
-        } 
+        }
     }
 
 

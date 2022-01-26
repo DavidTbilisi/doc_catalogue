@@ -48,7 +48,7 @@ class Io_type extends Model
             });
 
 
-            Log::channel("app")->info("Translation ".__FILE__, [
+            Log::channel("app")->info("Translation ", [
                 "translation" => $translation,
                 "columns" => $columns,
             ]);
