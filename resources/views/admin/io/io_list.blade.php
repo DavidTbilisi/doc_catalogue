@@ -1,23 +1,9 @@
 @extends('layouts.admin')
 @section('body')
-<div id="jstree_demo_div" class="mt-5">
-    <ul>
-        <li>ფონდები
-            <ul>
-            @foreach($iolist as $io)
-                    <li>
-                        {{$io->type->name}} {{$io->prefix . $io->identifier . $io->suffix . $io->type->id}}
-                    </li>
-            @endforeach
-            </ul>
-
-        </li>
-    </ul>
-</div>
 
 
 
-<table class="table">
+<table class="table mt-4">
     <thead>
     <tr>
         <th scope="col">#</th>

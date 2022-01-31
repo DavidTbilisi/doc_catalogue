@@ -2,7 +2,6 @@
 @section('body')
 
 <div class="container">
-
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -14,11 +13,26 @@
 @endif
 
 <br>
+{{--TODO: get all children from parent--}}
+<div id="jstree_demo_div" class="mt-5">
+    <ul>
+        <li> ფონდები
+            <ul>
+                @foreach([1,2,3,4] as $i)
+                    <li>
+                        {{$i}} {{$i}}
+                    </li>
+                @endforeach
+            </ul>
+        </li>
+    </ul>
+</div>
+
+
 
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h1 class="display-4"> საინფორმაციო ობიექტი </h1>
-    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
   </div>
 </div>
 
@@ -32,15 +46,22 @@
 
 
   <ul class="list-group mt-5 mb-5">
-    <li class="list-group-item active">მონაცემი</li>
+      {{$data}}
+    <li class="list-group-item active"><a href="{{1}}" class="link-light">მონაცემი</a> </li>
     @foreach((array)$data[0] as $key => $value)
-    {{-- Don't show fileds with _at, _id or id itself --}}
-      @if ( !preg_match("/_at|_id|^id$/i", $key) ) 
-        <li class="list-group-item"> <b> {{$key}}: </b> <span> {{$value}} </span> </li>
+      @if ( !preg_match("/_at|_id|^id$/i", $key) )
+        <li class="list-group-item"> <b> {{$translation[$key]}}: </b> <span> {{$value}} </span> </li>
       @endif
     @endforeach
   </ul>
 
   <x-add-button route="{{route('io.add',['io_parent_id'=> $io->id])}}"></x-add-button>
 
+<script>
+
+    $(function () {
+        $('#jstree_demo_div').jstree();
+    });
+
+</script>
 @endsection

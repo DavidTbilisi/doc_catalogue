@@ -34,22 +34,25 @@ class IoController extends Controller
         return $parentReference;
     }
 
-    private function buildReference($io_id, $request) {
+    private function buildReference($io_id, $request, string $method = 'create') {
 
         $io = Io::find($io_id);
 
-        $ioParent = $io ? $io->parent : false;
+        $ioParent = ($io && property_exists($io, 'identifier')) ? $io->parent : false; // Returns parent ID
 
-        Log::channel("app")->info("Reference Builder: ", ["io_ref"=>$io, "has_parent"=> $ioParent]);
+
+        Log::channel("app")->info("Reference Builder: ", [
+            "io_ref" => $io,
+            "has_parent" => $ioParent
+        ]);
 
         // Get reference from Current io
         $currentIoReference = $this->getRefRequest($request);
 
         // init values
         $refsArray = [$currentIoReference];
-        if ($io) {
-            array_push($refsArray, $this->getRefParent($io));
-        }
+        // dd($this->getRefParent($io));
+        if ($method === 'create' && $io) array_push($refsArray, $this->getRefParent($io));
 
         // უნილაკურობის გარეშე ედიტორების დროს მეორდება ელემენტები
         $refsArray = array_unique($refsArray); // generalize for editing and inserting
@@ -57,7 +60,7 @@ class IoController extends Controller
         Log::channel("app")->info("Ref Array:", ["ref "=>$refsArray]);
 
         while ($ioParent) {
-            $parentRef = $this->getRefParent($ioParent);
+            $parentRef = $this->getRefParent($ioParent); // Get reference by parent
             array_push($refsArray, $parentRef);
             $ioParent = Io::find($ioParent->id)->parent;
         }
@@ -78,7 +81,7 @@ class IoController extends Controller
     {
         $ioList = Io::with("type")
             ->with("children")
-            ->where("level", 1)
+//            ->where("parent_id", null)
             ->get();
 
 
@@ -163,7 +166,6 @@ class IoController extends Controller
 
                 $io = $request->except(["_token"]);
 
-
                 if ($request->has("io_parent_id")) {
 
                     Log::channel('app')->info("Io Parent in request",[
@@ -200,11 +202,16 @@ class IoController extends Controller
             ->where('id',$id)
             ->first();
 
+        $translation = Io_type::with('translation')->where("id", $io_item->io_type_id)->first()->translation;
+        $translation = json_decode($translation->fields, true);
+
         $data = DB::table($io_item->type->table)->where("id", $io_item->data_id)->get();
+
 
         return view("admin.io.io_view", [
             "io"=> $io_item,
-            "data" => $data
+            "data" => $data,
+            "translation" => $translation,
         ]);
     }
 
@@ -230,12 +237,12 @@ class IoController extends Controller
 
         $post = $request->except(["_token"]);
 
-
         $io->prefix = $post['prefix'];
         $io->identifier = $post['identifier'];
         $io->suffix = $post['suffix'];
         $io->io_type_id = $post['io_type_id'];
-        $io->reference = $this->buildReference($id, $request);
+
+        $io->reference = $this->buildReference($id, $request, 'update');
         $isSaved = $io->save();
 
         Log::channel("app")->info("Io Update: ", ['Is Io Saved'=> $isSaved]);

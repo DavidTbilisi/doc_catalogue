@@ -83,7 +83,6 @@ Route::middleware(['auth', 'perms'])->group(function () {
 
 
 // PERMISSION
-
         Route::prefix("permissions")->group(function () {
             Route::name('permissions.')->group(function () {
                 Route::get('/{id?}', [PermissionController::class, 'index'])
@@ -108,7 +107,7 @@ Route::middleware(['auth', 'perms'])->group(function () {
         });
 
 
-        // IO (information object)
+// IO (information object)
         Route::prefix("io")->group(function () {
             Route::name('io.')->group(function () {
 
@@ -144,7 +143,7 @@ Route::middleware(['auth', 'perms'])->group(function () {
         });
 
 
-        // IO (information object)
+// IO (information object)
         Route::prefix("types")->group(function () {
             Route::name('types.')->group(function () {
                 Route::get('/{id?}', [IoTypesController::class, 'index'])
@@ -168,7 +167,7 @@ Route::middleware(['auth', 'perms'])->group(function () {
                 Route::post('/edit/{id?}', [IoTypesController::class, 'update'])
                     ->where('id', "[0-9]+")
                     ->name('update');
-                    
+
                 Route::post('/delete/{id?}', [IoTypesController::class, 'destroy'])
                     ->where('id', "[0-9]+")
                     ->name('delete');
