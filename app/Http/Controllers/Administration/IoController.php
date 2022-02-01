@@ -57,7 +57,7 @@ class IoController extends Controller
         // უნილაკურობის გარეშე ედიტორების დროს მეორდება ელემენტები
         $refsArray = array_unique($refsArray); // generalize for editing and inserting
 
-        Log::channel("app")->info("Ref Array:", ["ref "=>$refsArray]);
+        Log::channel("app")->info("Ref Array:", ["ref " => $refsArray]);
 
         while ($ioParent) {
             $parentRef = $this->getRefParent($ioParent); // Get reference by parent
@@ -198,20 +198,26 @@ class IoController extends Controller
     {
         $io_item =  IO::with("type")
             ->with('parent')
+            ->with('children')
             ->with('type')
             ->where('id',$id)
             ->first();
-
-        $translation = Io_type::with('translation')->where("id", $io_item->io_type_id)->first()->translation;
+        $trTable = Io_type::with('translation')->where("id", $io_item->io_type_id)->first();
+        $translation = $trTable->translation;
         $translation = json_decode($translation->fields, true);
 
-        $data = DB::table($io_item->type->table)->where("id", $io_item->data_id)->get();
+        $table = $io_item->type->table;
+        $data = DB::table($io_item->type->table)
+            ->select()
+            ->where("id", $io_item->data_id)
+            ->get();
 
 
         return view("admin.io.io_view", [
             "io"=> $io_item,
             "data" => $data,
             "translation" => $translation,
+            "table" => $table
         ]);
     }
 

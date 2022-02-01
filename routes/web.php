@@ -3,6 +3,7 @@
 use App\Http\Controllers\Administration\AdminController;
 use App\Http\Controllers\Administration\GroupController;
 use App\Http\Controllers\Administration\IoTypesController;
+use App\Http\Controllers\Administration\OtherTablesController;
 use App\Http\Controllers\Administration\PermissionController;
 use App\Http\Controllers\Administration\IoController;
 use Illuminate\Support\Facades\Route;
@@ -177,6 +178,46 @@ Route::middleware(['auth', 'perms'])->group(function () {
 
             });
         });
+
+
+        Route::prefix("data")->group(function () {
+            Route::name('data.')->group(function () {
+                Route::get('/{id?}', [OtherTablesController::class, 'index'])
+                    ->where('id', "[0-9]+")
+                    ->name('index');
+
+                Route::get('/add', [OtherTablesController::class, 'create'])
+                    ->name('add');
+
+                Route::post('/add/{id?}', [OtherTablesController::class, 'store'])
+                    ->where('id', "[0-9]+")
+                    ->name('store');
+
+                Route::get('/show/{table}/{id?}', [OtherTablesController::class, 'show'])
+                    ->where('id', "[0-9]+")
+                    ->where('table', "[a-z]+")
+                    ->name('show');
+
+                Route::get('/edit/{table}/{id?}', [OtherTablesController::class, 'edit'])
+                    ->where('id', "[0-9]+")
+                    ->where('table', "[a-z]+")
+                    ->name('edit');
+
+                Route::post('/edit/{id?}', [OtherTablesController::class, 'update'])
+                    ->where('id', "[0-9]+")
+                    ->name('update');
+
+                Route::post('/delete/{id?}', [OtherTablesController::class, 'destroy'])
+                    ->where('id', "[0-9]+")
+                    ->name('delete');
+
+                Route::post('/column', [OtherTablesController::class, 'columnChange'])
+                    ->name('columnchange');
+
+            });
+        });
+
+
     });
 
 

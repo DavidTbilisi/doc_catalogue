@@ -2,25 +2,17 @@
 @section('body')
 
 <div class="container">
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
 
+{{--@dump($io->children)--}}
 <br>
 {{--TODO: get all children from parent--}}
 <div id="jstree_demo_div" class="mt-5">
     <ul>
         <li> ფონდები
             <ul>
-                @foreach([1,2,3,4] as $i)
+                @foreach($io->children as $i)
                     <li>
-                        {{$i}} {{$i}}
+                        <a href="{{route('io.show',["id"=>$i->id])}}">{{$i->reference}}</a>
                     </li>
                 @endforeach
             </ul>
@@ -46,8 +38,7 @@
 
 
   <ul class="list-group mt-5 mb-5">
-      {{$data}}
-    <li class="list-group-item active"><a href="{{1}}" class="link-light">მონაცემი</a> </li>
+    <li class="list-group-item active"><a href="{{route("data.edit",["id"=>$io->data_id, "table"=>$table])}}" class="link-light">მონაცემი</a> </li>
     @foreach((array)$data[0] as $key => $value)
       @if ( !preg_match("/_at|_id|^id$/i", $key) )
         <li class="list-group-item"> <b> {{$translation[$key]}}: </b> <span> {{$value}} </span> </li>
