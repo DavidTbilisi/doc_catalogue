@@ -22,7 +22,7 @@
             <input type="text" name="{{$index}}" class="form-control" id="{{$index}}" value="{{$value}}" placeholder="{{$translation[$index]}}">
         </div>
         @endforeach
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-success">Save</button>
     </form>
 
 @endsection

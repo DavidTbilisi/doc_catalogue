@@ -38,7 +38,7 @@
 
 
   <ul class="list-group mt-5 mb-5">
-    <li class="list-group-item active"><a href="{{route("data.edit",["id"=>$io->data_id, "table"=>$table])}}" class="link-light">მონაცემი</a> </li>
+    <li class="list-group-item active"><a id="go-to-data" href="{{route("data.edit",["id"=>$io->data_id, "table"=>$table])}}" class="link-light">მონაცემი</a> </li>
     @foreach((array)$data[0] as $key => $value)
       @if ( !preg_match("/_at|_id|^id$/i", $key) )
         <li class="list-group-item"> <b> {{$translation[$key]}}: </b> <span> {{$value}} </span> </li>
