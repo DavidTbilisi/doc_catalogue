@@ -2,15 +2,7 @@
 @section('body')
     <div class="container">
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <x-error-alert></x-error-alert>
 
 
 
@@ -104,7 +96,7 @@
         }
 
         function save(event) {
-            // XXX: replace with axios? 
+            // XXX: replace with axios?
 
             event.preventDefault();
             $.ajax({
@@ -132,10 +124,10 @@
             });
         }
 
-  
 
 
-        // EVENTS 
+
+        // EVENTS
         $("#io").on('submit', function (event) {
 
             save(event)

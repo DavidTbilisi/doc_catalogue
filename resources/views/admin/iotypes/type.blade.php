@@ -2,15 +2,8 @@
 @section('body')
 
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    <x-error-alert></x-error-alert>
+
 
     <h1 class="mt-3"> {{$tablename->name}}</h1>
 
@@ -37,8 +30,8 @@
                 <div class="col">
                     <label for="{{$col->Field}}">ტექნიკური სახელი <span onclick="removeColumn(event)" class="material-icons md-light">delete</span> </label>
                     <input type="text" oninput="changeName(event)" data-oldName="{{$col->Field}}" class="form-control" id="{{$col->Field}}" name="cols[]" value="{{$col->Field}}" >
-                </div> 
-               
+                </div>
+
 
             </div>
 
@@ -46,12 +39,12 @@
         </div>
     @endforeach
     </div>
-        <div class="row"> 
+        <div class="row">
             <div class="col">
                 <a href="{{route('types.index')}}" class="btn btn-danger w-100">უკან</a>
             </div>
             <div class="col">
-                <button class="btn btn-success w-100">შენახვა</button> 
+                <button class="btn btn-success w-100">შენახვა</button>
             </div>
         </div>
     </form>
@@ -62,7 +55,7 @@
     </div>
 
     <script>
-        
+
         const input = (name) => `
         <div class="form-group mb-2">
             <div class="row">
@@ -95,7 +88,7 @@
 
             This.setAttribute("name", "cols[]"); // Required
             This.setAttribute("id", val);
-            This.value =  newValue(); 
+            This.value =  newValue();
 
             label.setAttribute("for",val);
             label.innerHTML = val + " " + rmBtn;
@@ -104,7 +97,7 @@
 
 
         function removeColumn(event){
-            let This = event.target; 
+            let This = event.target;
             const column = This
                             .parentElement
                             .parentElement
