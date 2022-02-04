@@ -85,8 +85,18 @@ class IoController extends Controller
             ->get();
 
 
+        $identifiers = [];
+        foreach($ioList as $io):
+            $identifier = '';
+            $identifier .= $io->prefix != ""? $io->prefix:"";
+            $identifier .= $io->prefix != ""? "-". $io->identifier : $io->identifier;
+            $identifier .= $io->suffix != ""? "-". $io->suffix : "";
+            array_push($identifiers, $identifier);
+        endforeach;
+
         return view("admin.io.io_list", [
-            "iolist" => $ioList
+            "iolist" => $ioList,
+            "identifiers" => $identifiers,
         ]);
     }
 

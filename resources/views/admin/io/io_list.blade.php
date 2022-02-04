@@ -1,8 +1,6 @@
 @extends('layouts.admin')
 @section('body')
 
-
-
 <table class="table mt-4">
     <thead>
     <tr>
@@ -18,7 +16,7 @@
         <tr>
             <th scope="row">{{++$loop->index}}</th>
             <td class="identifier">
-                {{$io->prefix}}-{{$io->identifier}}-{{$io->suffix }}
+                {{$identifiers[$loop->index-1]}}
             </td>
             <td class="reference">{{$io->reference}}</td>
             <td class="type">{{$io->type->name}}</td>
