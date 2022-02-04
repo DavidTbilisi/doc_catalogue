@@ -220,7 +220,7 @@ class IoController extends Controller
         $data = DB::table($io_item->type->table)
             ->select()
             ->where("id", $io_item->data_id)
-            ->get();
+            ->first();
 
 
         return view("admin.io.io_view", [
@@ -271,12 +271,27 @@ class IoController extends Controller
     public function destroy($id)
     {
         // TODO: add deletion test
-        $item = Io::findOrFail($id);
-        $status = $item->delete();
+
+        DB::beginTransaction();
+        try{
+            $io = Io::findOrFail($id);
+            $type = Io_type::findOrFail($io->io_type_id);
+
+            $status = DB::table($type->table)->delete($io->data_id);
+            Log::channel("app")->info("'{$type->table}'-{$io->data_id} deletion status", [$status]);
+
+            $status = $io->delete();
+            Log::channel("app")->info("'{$io->id}' Deletion status", [$status]);
+
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return redirect(route('io.index'))->withErrors("message", $exception->getMessage());
+        }
+
         if($status) {
             return redirect(route("io.index"));
         }
-        Log::channel("app")->info("Deletion status", [$status]);
     }
 
 

@@ -4,6 +4,7 @@
 <div class="container">
 
 {{--@dump($io->children)--}}
+    <x-error-alert></x-error-alert>
 <br>
 {{--TODO: get all children from parent--}}
 <div id="jstree_demo_div" class="mt-5">
@@ -39,13 +40,21 @@
 
   <ul class="list-group mt-5 mb-5">
     <li class="list-group-item active"><a id="go-to-data" href="{{route("data.edit",["id"=>$io->data_id, "table"=>$table])}}" class="link-light">მონაცემი</a> </li>
-    @foreach((array)$data[0] as $key => $value)
+
+  @if($data)
+    @foreach((array)$data as $key => $value)
       @if ( !preg_match("/_at|_id|^id$/i", $key) )
         <li class="list-group-item"> <b> {{$translation[$key]}}: </b> <span> {{$value}} </span> </li>
       @endif
     @endforeach
+  @endif
+
   </ul>
 
+    <form action="{{route('io.delete', ["id"=>$io->id])}}" method="POST">
+        @csrf
+    <button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete?')">წაშლა</button>
+    </form>
   <x-add-button route="{{route('io.add',['io_parent_id'=> $io->id])}}"></x-add-button>
 
 <script>

@@ -21,7 +21,7 @@ class Io extends Model
         'data_id',
         'parent_id',
     ];
-    use SoftDeletes;
+//    use SoftDeletes;
 
     public function type()
     {

@@ -25,7 +25,7 @@
                 @csrf
                 <a href="{{route("io.show", ["id"=>$io->id])}}" class="btn btn-success">View</a>
                 <a href="{{route("io.edit", ["id"=>$io->id])}}" class="btn btn-info">Edit</a>
-                <button onclick="return confirm('Are you sure you want to delete?')"class="btn btn-danger">Delete</button>
+                <button onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger">Delete</button>
             </form>
             </td>
         </tr>
