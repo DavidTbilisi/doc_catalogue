@@ -109,7 +109,9 @@ return [
             // 'formatter' => Monolog\Formatter\JsonFormatter::class,
             'formatter' => Monolog\Formatter\LineFormatter::class,
             'formatter_with' => [
+                'dateFormat' => 'Y-m-d H:i:s,v',
                 'format' => "[%datetime%]: ----> %message% <---- \n\t%context%\n",
+
             ],
         ],
 

@@ -37,11 +37,62 @@ class IoTypesController extends Controller
 
 
 
+    public function convert_to_tech_name($str)
+    {
+        $convert_array = [
+            "ა" => "a",
+            "ბ" => "b",
+            "გ" => "g",
+            "დ" => "d",
+            "ე" => "e",
+            "ვ" => "v",
+            "ზ" => "z",
+            "თ" => "t",
+            "ი" => "i",
+            "კ" => "k",
+            "ლ" => "l",
+            "მ" => "m",
+            "ნ" => "n",
+            "ო" => "o",
+            "პ" => "p",
+            "ჟ" => "J",
+            "რ" => "r",
+            "ს" => "s",
+            "ტ" => "t",
+            "უ" => "u",
+            "ფ" => "f",
+            "ქ" => "q",
+            "ღ" => "r",
+            "ყ" => "y",
+            "შ" => "s",
+            "ჩ" => "c",
+            "ც" => "c",
+            "ძ" => "z",
+            "წ" => "w",
+            "ჭ" => "W",
+            "ხ" => "x",
+            "ჯ" => "j",
+            "ჰ" => "h",
+            "\""=> "",
+        ];
+        $return = "";
+
+        $re = '/[ \?\d]/m';
+        $converted = preg_replace($re, "", $str);
+
+        foreach(mb_str_split($converted) as $char)  in_array( $char, $convert_array ) ? $return .= $convert_array[$char]: $char;
+        $return = trim(filter_var ($return, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH));
+        return $return;
+    }
+
+
     private function create_type_table($toCreateTable, $request) {
 
         $fields = new stdClass();
 
         // create Type Table
+        $toCreateTable = $this->convert_to_tech_name($toCreateTable);
+
         if (!Schema::hasTable($toCreateTable)) {
 
             Schema::create( $toCreateTable,
@@ -50,8 +101,9 @@ class IoTypesController extends Controller
                     $table->id();
                     // იქმნება გადმოცემული Column-ები მითითებული Type-ებით
                     foreach ($request->get("type") as $i => $type){
-                        $field = $request->get("field")[$i];
                         $name = $request->get("names")[$i];
+                        $field = $request->get("field")[$i];
+                        $field = $this->convert_to_tech_name($name);
 
                         // build return couples
                         $fields->$field = $name;
@@ -94,7 +146,7 @@ class IoTypesController extends Controller
 
         $request->validate([
             'name'          => 'required|max:50',
-            'tablename'     => 'required|alpha|max:20',
+//            'tablename'     => 'required|alpha|max:20',
             'field'         => 'required|max:100',
             'type'          => 'required|max:20',
         ]);
@@ -103,14 +155,14 @@ class IoTypesController extends Controller
 
         DB::beginTransaction();
         try {
-            $toCreateTable = $request->get("tablename");
+            $toCreateTable = $this->convert_to_tech_name($request->get("name"));
 
             $fields = $this->create_type_table($toCreateTable, $request); // Return fields array
 
             // თუ შეიქმნა Table -ი ვქმნით ჩანაწერს მის შესახებ io_types-შიც
             $ioType = new Io_type();
             $ioType->name = $request->get("name");
-            $ioType->table = $request->get("tablename");
+            $ioType->table = $toCreateTable;
             $status = $ioType->save();
 
 
