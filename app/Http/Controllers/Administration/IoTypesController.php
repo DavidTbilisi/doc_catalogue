@@ -69,7 +69,7 @@ class IoTypesController extends Controller
             "ც" => "c",
             "ძ" => "z",
             "წ" => "w",
-            "ჭ" => "W",
+            "ჭ" => "w",
             "ხ" => "x",
             "ჯ" => "j",
             "ჰ" => "h",
@@ -80,7 +80,8 @@ class IoTypesController extends Controller
         $re = '/[ \?\d]/m';
         $converted = preg_replace($re, "", $str);
 
-        foreach(mb_str_split($converted) as $char)  in_array( $char, $convert_array ) ? $return .= $convert_array[$char]: $char;
+        foreach(mb_str_split($converted) as $char)  in_array( $char, array_keys($convert_array) ) ? $return .= $convert_array[$char]: $return .= $char;
+        //
         $return = trim(filter_var ($return, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH));
         return $return;
     }
@@ -127,17 +128,13 @@ class IoTypesController extends Controller
     private function register_type_table_translation($io_types_table_id, $fields) {
 
         $io_type = Io_type::find($io_types_table_id);
-        $fhuman = Io_types_translation::firstOrCreate([
-            "io_type_id"=>$io_type->id
-        ],[
+        $fhuman = Io_types_translation::firstOrCreate(["io_type_id"=>$io_type->id],[
             "fields" => json_encode($fields, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         ]);
 
-
         $fhuman->io_type_id = $io_type->id;
         $fhuman->fields = json_encode($fields, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $fhuman->save();
-
+        return $fhuman->save();
     }
 
 
@@ -146,11 +143,9 @@ class IoTypesController extends Controller
 
         $request->validate([
             'name'          => 'required|max:50',
-//            'tablename'     => 'required|alpha|max:20',
             'field'         => 'required|max:100',
             'type'          => 'required|max:20',
         ]);
-
 
 
         DB::beginTransaction();
@@ -164,12 +159,13 @@ class IoTypesController extends Controller
             $ioType->name = $request->get("name");
             $ioType->table = $toCreateTable;
             $status = $ioType->save();
+            Log::channel("app")->debug("Type Table Created Successfully", [$status]);
 
 
-            $this->register_type_table_translation($ioType->id, $fields);
+            $status = $this->register_type_table_translation($ioType->id, $fields);
+            Log::channel("app")->debug("Type Table Translation Registered Successfully", [$status]);
 
             DB::commit();
-            Log::channel("app")->debug("Type Table Created Successfully", [$status]);
 
             return redirect(route('types.index'));
 
@@ -177,9 +173,7 @@ class IoTypesController extends Controller
             DB::rollback();
             Log::channel("app")->debug("Type Table Not Created ", [$e]);
             return redirect(route('types.add'))
-                ->withErrors([
-                    "msg"=>$e->getMessage()
-                ]);
+                ->withErrors([ "msg"=>$e->getMessage() ]);
         }
     }
 

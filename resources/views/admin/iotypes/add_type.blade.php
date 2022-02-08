@@ -20,10 +20,10 @@
                     <label for="typename">ობიექტის ტიპის სახელი</label>
                     <input type="text" class="form-control" id="typename" name="name" placeholder="Type name">
                 </div>
-                <div class="col">
-                    <label for="tablename">ობიექტის ტიპის ტექნიკური სახელი</label>
-                    <input type="text" class="form-control" id="tablename" name="tablename" placeholder="Type name" pattern="[a-z]{1,20}">
-                </div>
+{{--                <div class="col">--}}
+{{--                    <label for="tablename">ობიექტის ტიპის ტექნიკური სახელი</label>--}}
+{{--                    <input type="text" class="form-control" id="tablename" name="tablename" placeholder="Type name" pattern="[a-z]{1,20}">--}}
+{{--                </div>--}}
 
             </div>
         </div>
@@ -34,7 +34,7 @@
             <div class="form-group mt-2">
                 <div class="row">
 
-                    <div class="col-4 mt-2">
+                    <div class="col-8 mt-2">
 
                         <label for="field1 mb-1">ტიპის აღწერის ველის დასახელება</label>
                         <input type="text"
@@ -46,17 +46,17 @@
                                 value="">
                     </div>
 
-                    <div class="col-4 mt-2">
+{{--                    <div class="col-4 mt-2">--}}
 
-                        <label for="field1 mb-1">ველის ტექნიკური დასახელება</label>
-                        <input type="text"
+{{--                        <label for="field1 mb-1">ველის ტექნიკური დასახელება</label>--}}
+                        <input type="hidden"
                                 name="field[]"
                                 class="form-control"
                                 id="field1"
                                 placeholder="Field"
                                 pattern="[a-z]{1,20}"
                                 value="">
-                    </div>
+{{--                    </div>--}}
 
 
                     <div class="col mt-2">
