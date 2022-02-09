@@ -103,7 +103,6 @@ class IoTypesController extends Controller
                     // იქმნება გადმოცემული Column-ები მითითებული Type-ებით
                     foreach ($request->get("type") as $i => $type){
                         $name = $request->get("names")[$i];
-                        $field = $request->get("field")[$i];
                         $field = $this->convert_to_tech_name($name);
 
                         // build return couples
@@ -143,7 +142,7 @@ class IoTypesController extends Controller
 
         $request->validate([
             'name'          => 'required|max:50',
-            'field'         => 'required|max:100',
+            'names'         => 'required|max:100',
             'type'          => 'required|max:20',
         ]);
 
@@ -245,18 +244,22 @@ class IoTypesController extends Controller
     public function columnChange(Request $request){
 
         $request->validate([
-            'cols'          => 'required',
+//            'cols'          => 'required',
             'table'         => 'required',
             'names'         => 'required',
         ]);
 
 
         $table = $request->get("table");
-        $requestCols = $request->get('cols');
+        $requestCols = $request->get('names');
+        $cols = [];
+        foreach($requestCols as $col)  $cols[] = $this->convert_to_tech_name($col);
+        $requestCols = $cols;
+        Log::channel('app')->info("Add or Rename cols",["cols" => $requestCols] );
         $requestColTranslations = $request->get('names');
 
         $tableColumns = Io_type::getColNames($table);
-        $technicalNames = new stdClass();
+//        $technicalNames = new stdClass();
         $table_type = Io_type::where("table",$table)->first();
 
 

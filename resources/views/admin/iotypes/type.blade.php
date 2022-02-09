@@ -27,10 +27,10 @@
                 </div>
 
                 <!-- ტექნიკური  -->
-                <div class="col">
-                    <label for="{{$col->Field}}">ტექნიკური სახელი <span onclick="removeColumn(event)" class="material-icons md-light">delete</span> </label>
-                    <input type="text" oninput="changeName(event)" data-oldName="{{$col->Field}}" class="form-control" id="{{$col->Field}}" name="cols[]" value="{{$col->Field}}" >
-                </div>
+{{--                <div class="col">--}}
+{{--                    <label for="{{$col->Field}}">ტექნიკური სახელი <span onclick="removeColumn(event)" class="material-icons md-light">delete</span> </label>--}}
+{{--                    <input type="text" oninput="changeName(event)" data-oldName="{{$col->Field}}" class="form-control" id="{{$col->Field}}" name="cols[]" value="{{$col->Field}}" >--}}
+{{--                </div>--}}
 
 
             </div>
@@ -50,7 +50,7 @@
     </form>
     <div class="add-button">
         <div style="position:fixed; right: 100px; bottom: 100px; border-radius: 50%; background-color: #00fa9a; padding: 5px; border: 1px solid black; cursor:pointer">
-            <div" onclick="addColumn()"> <span class="material-icons md-light">add</span> </div>
+            <div onclick="addColumn()"> <span class="material-icons md-light">add</span> </div>
         </div>
     </div>
 
@@ -86,7 +86,7 @@
             }
 
 
-            This.setAttribute("name", "cols[]"); // Required
+            This.setAttribute("name", "names[]"); // Required
             This.setAttribute("id", val);
             This.value =  newValue();
 

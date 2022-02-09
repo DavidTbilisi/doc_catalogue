@@ -18,7 +18,14 @@
             <div class="row">
                 <div class="col">
                     <label for="typename">ობიექტის ტიპის სახელი</label>
-                    <input type="text" class="form-control" id="typename" name="name" placeholder="Type name">
+                    <input type="text"
+                           class="form-control"
+                           id="typename"
+                           name="name"
+                           placeholder="Type name"
+                           pattern="[ა-ჰ0-9 ]{1,20}"
+                           oninvalid="this.setCustomValidity('სახელი უნდა შედგებოდეს ქართული სიმბოლოებისგან')"
+                    >
                 </div>
 {{--                <div class="col">--}}
 {{--                    <label for="tablename">ობიექტის ტიპის ტექნიკური სახელი</label>--}}
@@ -43,19 +50,20 @@
                                 id="field1"
                                 placeholder="Field"
                                 pattern="[ა-ჰ0-9 ]{1,20}"
-                                value="">
+                               oninvalid="this.setCustomValidity('სახელი უნდა შედგებოდეს ქართული სიმბოლოებისგან')"
+                               value="">
                     </div>
 
 {{--                    <div class="col-4 mt-2">--}}
 
 {{--                        <label for="field1 mb-1">ველის ტექნიკური დასახელება</label>--}}
-                        <input type="hidden"
-                                name="field[]"
-                                class="form-control"
-                                id="field1"
-                                placeholder="Field"
-                                pattern="[a-z]{1,20}"
-                                value="">
+{{--                        <input type="hidden"--}}
+{{--                                name="field[]"--}}
+{{--                                class="form-control"--}}
+{{--                                id="field1"--}}
+{{--                                placeholder="Field"--}}
+{{--                                pattern="[a-z]{1,20}"--}}
+{{--                                value="">--}}
 {{--                    </div>--}}
 
 
