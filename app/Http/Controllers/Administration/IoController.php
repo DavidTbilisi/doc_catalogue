@@ -38,9 +38,10 @@ class IoController extends Controller
 
         $io = Io::find($io_id);
 
+
         $ioParent = ($io && property_exists($io, 'identifier')) ? $io->parent : false; // Returns parent ID
 
-        $method = $ioParent == null ? "create" : 'update';
+        $method = $ioParent == null && $io_id == null ? "create" : 'update';
 
         Log::channel("app")->info("Reference Builder: ", [
             "io_ref" => $io,
@@ -85,7 +86,7 @@ class IoController extends Controller
     {
         $ioList = Io::with("type")
             ->with("children")
-//            ->where("parent_id", null)
+            ->where("parent_id", null)
             ->get();
 
 
