@@ -40,11 +40,14 @@ class Io extends Model
 
     public function listChildren($io)
     {
+
+//        TODO: get children recursively
+        dd("TODO get children recursively");
         $children = [];
-        $ioParent = $io->parent;
-        while ($ioParent) {
-            $children[] = $ioParent;
-            $ioParent = Io::find($ioParent->id)->parent;
+        $child = $io->children;
+        while ($child) {
+            $children[] = $child;
+            $child = Io::find($child->id)->children;
         }
         return $children;
     }
