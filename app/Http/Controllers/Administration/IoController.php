@@ -38,9 +38,10 @@ class IoController extends Controller
 
         $io = Io::find($io_id);
 
+
         $ioParent = ($io && property_exists($io, 'identifier')) ? $io->parent : false; // Returns parent ID
 
-        $method = $ioParent == null ? "create" : 'update';
+        $method = $ioParent == null && $io_id == null ? "create" : 'update';
 
         Log::channel("app")->info("Reference Builder: ", [
             "io_ref" => $io,
@@ -85,7 +86,7 @@ class IoController extends Controller
     {
         $ioList = Io::with("type")
             ->with("children")
-//            ->where("parent_id", null)
+            ->where("parent_id", null)
             ->get();
 
 
@@ -216,6 +217,7 @@ class IoController extends Controller
             ->with('type')
             ->where('id',$id)
             ->first();
+
         $trTable = Io_type::with('translation')->where("id", $io_item->io_type_id)->first();
         $translation = $trTable->translation;
         $translation = json_decode($translation->fields, true);
@@ -226,12 +228,14 @@ class IoController extends Controller
             ->where("id", $io_item->data_id)
             ->first();
 
+        $children = Io::listChildren($io_item);
 
         return view("admin.io.io_view", [
             "io"=> $io_item,
             "data" => $data,
             "translation" => $translation,
-            "table" => $table
+            "table" => $table,
+            "children" => $children,
         ]);
     }
 
