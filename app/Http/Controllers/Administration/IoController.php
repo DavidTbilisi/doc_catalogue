@@ -34,12 +34,13 @@ class IoController extends Controller
         return $parentReference;
     }
 
-    private function buildReference($io_id, $request, string $method = 'create') {
+    private function buildReference($io_id, $request) {
 
         $io = Io::find($io_id);
 
         $ioParent = ($io && property_exists($io, 'identifier')) ? $io->parent : false; // Returns parent ID
 
+        $method = $ioParent == null ? "create" : 'update';
 
         Log::channel("app")->info("Reference Builder: ", [
             "io_ref" => $io,
@@ -52,7 +53,10 @@ class IoController extends Controller
         // init values
         $refsArray = [$currentIoReference];
         // dd($this->getRefParent($io));
-        if ($method === 'create' && $io) array_push($refsArray, $this->getRefParent($io));
+        if ($method === 'create' && $io) {
+            $ioParent = $io->parent;
+            $refsArray[] = $this->getRefParent($io);
+        }
 
         // უნილაკურობის გარეშე ედიტორების დროს მეორდება ელემენტები
         $refsArray = array_unique($refsArray); // generalize for editing and inserting
@@ -61,7 +65,7 @@ class IoController extends Controller
 
         while ($ioParent) {
             $parentRef = $this->getRefParent($ioParent); // Get reference by parent
-            array_push($refsArray, $parentRef);
+            $refsArray[] = $parentRef;
             $ioParent = Io::find($ioParent->id)->parent;
         }
 
@@ -258,7 +262,7 @@ class IoController extends Controller
         $io->suffix = $post['suffix'];
         $io->io_type_id = $post['io_type_id'];
 
-        $io->reference = $this->buildReference($id, $request, 'update');
+        $io->reference = $this->buildReference($id, $request);
         $isSaved = $io->save();
 
         Log::channel("app")->info("Io Update: ", ['Is Io Saved'=> $isSaved]);
