@@ -244,29 +244,39 @@ class IoTypesController extends Controller
     public function columnChange(Request $request){
 
         $request->validate([
-//            'cols'          => 'required',
             'table'         => 'required',
             'names'         => 'required',
         ]);
 
 
         $table = $request->get("table");
-        $requestCols = $request->get('names');
-        $cols = [];
-        foreach($requestCols as $col)  $cols[] = $this->convert_to_tech_name($col);
-        $requestCols = $cols;
-        Log::channel('app')->info("Add or Rename cols",["cols" => $requestCols] );
-        $requestColTranslations = $request->get('names');
-
-        $tableColumns = Io_type::getColNames($table);
-//        $technicalNames = new stdClass();
         $table_type = Io_type::where("table",$table)->first();
 
+        $requestColsWithTranslation = $request->get('names');
+
+        $cols = [];
+        // adding translation
+        foreach($requestColsWithTranslation as $index => $col)  $cols[$this->convert_to_tech_name($col)] = $requestColsWithTranslation[$index];
+        $requestColsWithTranslation = $cols;
+        $this->register_type_table_translation($table_type->id, $requestColsWithTranslation);
 
 
-        if ($requestCols != null ):
+        Log::channel('app')->info("Add or Rename cols",["cols" => $requestColsWithTranslation] );
 
-            foreach ($requestCols as $col):
+
+        $dbCol = Io_type::getColNames($table);
+
+
+
+
+        if ($requestColsWithTranslation != null ): // if there is a request
+
+            foreach ($requestColsWithTranslation as $col => $translation):
+                Log::channel("app")->info("Cols and Translations", [
+                    "col" => $col,
+                    "translation" => $translation,
+                ]);
+
 
                 // prepare table columns
                 $prepared = $this->prepareColumnConditions($table, $col);
@@ -300,27 +310,25 @@ class IoTypesController extends Controller
 
 
 
-        $toRemove = array_diff($tableColumns, $requestCols); // Get Deleted Columns
+        $toRemove = array_diff($dbCol, array_keys($requestColsWithTranslation)); // Get Deleted Columns
 
-        Log::channel("app")->debug("To Remove Fields", [$toRemove]);
-        Log::channel("app")->info("All Fields of {$table} table ".__FILE__.":", [
-            "TableColumns" => $tableColumns,
-            "TableColumnsTranslation" => $requestColTranslations,
+        Log::channel("app")->debug("To Remove Fields", [
+            'to_remove'=>$toRemove,
+            'with request'=> $requestColsWithTranslation,
+            'from database'=> $dbCol,
         ]);
+
+
+        Log::channel("app")->info("All Fields of {$table} table ".__FILE__.":", [
+            "TableColumns" => $dbCol,
+            "TableColumnsTranslation" => $requestColsWithTranslation,
+        ]);
+
+
         foreach ($toRemove as $col) {
             Io_type::rmCol($table, $col);
         }
 
-
-        // TODO: აქ გვინდა შევადაროთ არსებული ველები ყველა მანიპულაციის მერე
-        // გადმოცემულ ველებთან რომისგანაც უნდა შევადგინოთ ასოციაციური მასივი (zip)
-        $type_col_names = Io_type::getColNames($table);
-        if(count($type_col_names) == count($requestColTranslations)){
-            foreach ($tableColumns as $index => $technicalName):
-                $fieldsAndTranslations[$technicalName] = $requestColTranslations[$index];
-            endforeach;
-            $this->register_type_table_translation($table_type->id, $fieldsAndTranslations);
-        }
 
 
         return redirect(route("types.show",["id"=>$table]));
