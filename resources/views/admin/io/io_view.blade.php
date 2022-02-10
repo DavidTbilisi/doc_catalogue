@@ -11,7 +11,7 @@
     <ul>
         <li> ფონდები
             <ul>
-                @foreach($io->children as $i)
+                @foreach($children as $i)
                     <li>
                         <a href="{{route('io.show',["id"=>$i->id])}}">{{$i->reference}}</a>
                     </li>

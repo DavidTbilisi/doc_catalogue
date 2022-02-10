@@ -216,6 +216,7 @@ class IoController extends Controller
             ->with('type')
             ->where('id',$id)
             ->first();
+
         $trTable = Io_type::with('translation')->where("id", $io_item->io_type_id)->first();
         $translation = $trTable->translation;
         $translation = json_decode($translation->fields, true);
@@ -226,12 +227,14 @@ class IoController extends Controller
             ->where("id", $io_item->data_id)
             ->first();
 
+        $children = Io::listChildren($io_item);
 
         return view("admin.io.io_view", [
             "io"=> $io_item,
             "data" => $data,
             "translation" => $translation,
-            "table" => $table
+            "table" => $table,
+            "children" => $children,
         ]);
     }
 

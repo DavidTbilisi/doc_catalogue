@@ -37,4 +37,15 @@ class Io extends Model
     {
         return $this->belongsTo(Io::class, 'parent_id');
     }
+
+    public function listChildren($io)
+    {
+        $children = [];
+        $ioParent = $io->parent;
+        while ($ioParent) {
+            $children[] = $ioParent;
+            $ioParent = Io::find($ioParent->id)->parent;
+        }
+        return $children;
+    }
 }
