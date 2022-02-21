@@ -39,9 +39,9 @@ class IoController extends Controller
         $io = Io::find($io_id);
 
 
-        $ioParent = ($io && property_exists($io, 'identifier')) ? $io->parent : false; // Returns parent ID
+        $ioParent = $io ? $io->parent : false; // Returns parent ID
 
-        $method = $ioParent == null && $io_id == null ? "create" : 'update';
+        $method = $ioParent == null && $io_id == null ?  'update' : "create";
 
         Log::channel("app")->info("Reference Builder: ", [
             "io_ref" => $io,
@@ -191,7 +191,7 @@ class IoController extends Controller
                 }
 
                 $io['reference'] = $this->buildReference($io['parent_id'], $request);
-
+                $io["level"] = count(explode("_",$io["reference"]))-1; // TODO: test if it's working correctly
                 $result = Io::create($io);
 
                 DB::commit();
@@ -228,7 +228,7 @@ class IoController extends Controller
             ->where("id", $io_item->data_id)
             ->first();
 
-        $children = Io::listChildren($io_item);
+        $children = $io_item->children;
 
         return view("admin.io.io_view", [
             "io"=> $io_item,
@@ -267,6 +267,8 @@ class IoController extends Controller
         $io->io_type_id = $post['io_type_id'];
 
         $io->reference = $this->buildReference($id, $request);
+        $io->level = count(explode("_",$io->reference))-1; // TODO: test if it's working correctly
+
         $isSaved = $io->save();
 
         Log::channel("app")->info("Io Update: ", ['Is Io Saved'=> $isSaved]);

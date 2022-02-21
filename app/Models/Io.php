@@ -38,17 +38,5 @@ class Io extends Model
         return $this->belongsTo(Io::class, 'parent_id');
     }
 
-    public function listChildren($io)
-    {
 
-//        TODO: get children recursively
-        dd("TODO get children recursively");
-        $children = [];
-        $child = $io->children;
-        while ($child) {
-            $children[] = $child;
-            $child = Io::find($child->id)->children;
-        }
-        return $children;
-    }
 }
