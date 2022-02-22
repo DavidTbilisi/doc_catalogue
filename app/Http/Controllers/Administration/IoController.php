@@ -13,6 +13,12 @@ use Symfony\Component\HttpFoundation\Response as Code;
 class IoController extends Controller
 {
 
+    private function detectLevel($reference){
+        $referenceArray = explode("_", $reference);
+        return count($referenceArray)-1;
+    }
+
+
 
     private function getRefRequest($request) {
         // Get reference from Current io
@@ -191,7 +197,8 @@ class IoController extends Controller
                 }
 
                 $io['reference'] = $this->buildReference($io['parent_id'], $request);
-                $io["level"] = count(explode("_",$io["reference"]))-1; // TODO: test if it's working correctly
+                $io["level"] = $this->detectLevel($io['reference']);
+
                 $result = Io::create($io);
 
                 DB::commit();
@@ -230,12 +237,19 @@ class IoController extends Controller
 
         $children = $io_item->children;
 
+        $ch = [];
+        foreach($children as $child) {
+            $ch[] = $child;
+        }
+
+        dump($ch);
+
         return view("admin.io.io_view", [
             "io"=> $io_item,
             "data" => $data,
             "translation" => $translation,
             "table" => $table,
-            "children" => $children,
+            "children" => $io_item->children,
         ]);
     }
 
@@ -267,7 +281,7 @@ class IoController extends Controller
         $io->io_type_id = $post['io_type_id'];
 
         $io->reference = $this->buildReference($id, $request);
-        $io->level = count(explode("_",$io->reference))-1; // TODO: test if it's working correctly
+        $io->level = $this->detectLevel($io->reference);
 
         $isSaved = $io->save();
 

@@ -30,13 +30,12 @@ class Io extends Model
 
     public function children()
     {
-        return $this->hasMany(Io::class, 'parent_id');
+        return $this->hasMany(Io::class, 'parent_id', 'id');
     }
 
     public function parent()
     {
         return $this->belongsTo(Io::class, 'parent_id');
     }
-
 
 }

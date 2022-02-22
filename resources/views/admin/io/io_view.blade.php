@@ -12,9 +12,11 @@
         <li> ფონდები
             <ul>
                 @foreach($children as $i)
+                    @if($i->level >= 1)
                     <li>
-                        <a href="{{route('io.show',["id"=>$i->id])}}">{{$i->reference}}</a>
+                        <a href="{{route('io.show',["id"=>$i->id])}}"> {{$i->reference}} </a>
                     </li>
+                    @endif
                 @endforeach
             </ul>
         </li>
