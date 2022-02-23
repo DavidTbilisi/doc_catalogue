@@ -21,7 +21,7 @@ class Io extends Model
         'data_id',
         'parent_id',
     ];
-    use SoftDeletes;
+//    use SoftDeletes;
 
     public function type()
     {
@@ -37,4 +37,6 @@ class Io extends Model
     {
         return $this->belongsTo(Io::class, 'parent_id');
     }
+
+
 }

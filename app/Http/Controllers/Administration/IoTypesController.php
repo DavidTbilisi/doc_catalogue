@@ -37,23 +37,75 @@ class IoTypesController extends Controller
 
 
 
+    public function convert_to_tech_name($str)
+    {
+        $convert_array = [
+            "ა" => "a",
+            "ბ" => "b",
+            "გ" => "g",
+            "დ" => "d",
+            "ე" => "e",
+            "ვ" => "v",
+            "ზ" => "z",
+            "თ" => "t",
+            "ი" => "i",
+            "კ" => "k",
+            "ლ" => "l",
+            "მ" => "m",
+            "ნ" => "n",
+            "ო" => "o",
+            "პ" => "p",
+            "ჟ" => "J",
+            "რ" => "r",
+            "ს" => "s",
+            "ტ" => "t",
+            "უ" => "u",
+            "ფ" => "f",
+            "ქ" => "q",
+            "ღ" => "r",
+            "ყ" => "y",
+            "შ" => "s",
+            "ჩ" => "c",
+            "ც" => "c",
+            "ძ" => "z",
+            "წ" => "w",
+            "ჭ" => "w",
+            "ხ" => "x",
+            "ჯ" => "j",
+            "ჰ" => "h",
+            "\""=> "",
+        ];
+        $return = "";
+
+        $re = '/[ \?\d]/m';
+        $converted = preg_replace($re, "", $str);
+
+        foreach(mb_str_split($converted) as $char)  in_array( $char, array_keys($convert_array) ) ? $return .= $convert_array[$char]: $return .= $char;
+        //
+        $return = trim(filter_var ($return, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH));
+        return $return;
+    }
+
+
     private function create_type_table($toCreateTable, $request) {
 
         $fields = new stdClass();
 
-        // create Type Table 
+        // create Type Table
+        $toCreateTable = $this->convert_to_tech_name($toCreateTable);
+
         if (!Schema::hasTable($toCreateTable)) {
 
-            Schema::create( $toCreateTable, 
+            Schema::create( $toCreateTable,
                 function (Blueprint $table) use ($request, $fields) {
-                
+
                     $table->id();
                     // იქმნება გადმოცემული Column-ები მითითებული Type-ებით
                     foreach ($request->get("type") as $i => $type){
-                        $field = $request->get("field")[$i];
                         $name = $request->get("names")[$i];
-                        
-                        // build return couples 
+                        $field = $this->convert_to_tech_name($name);
+
+                        // build return couples
                         $fields->$field = $name;
 
                         $table->$type($field)->nullable();
@@ -75,49 +127,44 @@ class IoTypesController extends Controller
     private function register_type_table_translation($io_types_table_id, $fields) {
 
         $io_type = Io_type::find($io_types_table_id);
-        $fhuman = Io_types_translation::firstOrCreate([
-            "io_type_id"=>$io_type->id
-        ],[
+        $fhuman = Io_types_translation::firstOrCreate(["io_type_id"=>$io_type->id],[
             "fields" => json_encode($fields, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         ]);
 
-
         $fhuman->io_type_id = $io_type->id;
         $fhuman->fields = json_encode($fields, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $fhuman->save();
-        
+        return $fhuman->save();
     }
-        
+
 
     public function store(Request $request)
     {
 
         $request->validate([
             'name'          => 'required|max:50',
-            'tablename'     => 'required|alpha|max:20',
-            'field'         => 'required|max:100',
+            'names'         => 'required|max:100',
             'type'          => 'required|max:20',
         ]);
 
 
-
         DB::beginTransaction();
         try {
-            $toCreateTable = $request->get("tablename");
+            $toCreateTable = $this->convert_to_tech_name($request->get("name"));
 
-            $fields = $this->create_type_table($toCreateTable, $request); // returns fields array
+            $fields = $this->create_type_table($toCreateTable, $request); // Return fields array
 
             // თუ შეიქმნა Table -ი ვქმნით ჩანაწერს მის შესახებ io_types-შიც
             $ioType = new Io_type();
             $ioType->name = $request->get("name");
-            $ioType->table = $request->get("tablename");
+            $ioType->table = $toCreateTable;
             $status = $ioType->save();
+            Log::channel("app")->debug("Type Table Created Successfully", [$status]);
 
-            
-            $this->register_type_table_translation($ioType->id, $fields);
+
+            $status = $this->register_type_table_translation($ioType->id, $fields);
+            Log::channel("app")->debug("Type Table Translation Registered Successfully", [$status]);
 
             DB::commit();
-            Log::channel("app")->debug("Type Table Created Successfully", [$status]);
 
             return redirect(route('types.index'));
 
@@ -125,9 +172,7 @@ class IoTypesController extends Controller
             DB::rollback();
             Log::channel("app")->debug("Type Table Not Created ", [$e]);
             return redirect(route('types.add'))
-                ->withErrors([
-                    "msg"=>$e->getMessage()
-                ]);
+                ->withErrors([ "msg"=>$e->getMessage() ]);
         }
     }
 
@@ -139,10 +184,10 @@ class IoTypesController extends Controller
 
         $translation = $tablename->translation->fields;
         $translation = json_decode($translation, true);
-      
+
         return view("admin.iotypes.type", [
-            "tablename"=>$tablename, 
-            "translation"=>$translation, 
+            "tablename"=>$tablename,
+            "translation"=>$translation,
             "columns"=>$columns
         ]);
     }
@@ -154,7 +199,7 @@ class IoTypesController extends Controller
         $columns = Io_type::getColumns($table);
 
         return view("admin.iotypes.type", [
-            "tablename"=>$tablename, 
+            "tablename"=>$tablename,
             "columns"=>$columns
         ]);
     }
@@ -162,7 +207,7 @@ class IoTypesController extends Controller
 
     public function update(Request $request, $id)
     {
-        // TODO: type updated 
+        // TODO: type updated
     }
 
     private function prepareColumnConditions($table, $col){
@@ -180,7 +225,7 @@ class IoTypesController extends Controller
             $tableHasColumn = in_array($old, $tableColumns);
 
             Log::channel("app")->info("is_renameable", [
-                "Field"=> $aCol, 
+                "Field"=> $aCol,
                 "is_renameable"=> $is_renameable,
                 "exists_{$table}:{$old}"=> $tableHasColumn,
             ]);
@@ -199,33 +244,45 @@ class IoTypesController extends Controller
     public function columnChange(Request $request){
 
         $request->validate([
-            'cols'          => 'required',
             'table'         => 'required',
             'names'         => 'required',
         ]);
 
 
-
         $table = $request->get("table");
-        $requestCols = $request->get('cols');
-        $requestColTranslations = $request->get('names');
-
-        $tableColumns = Io_type::getColNames($table);
-        $technicalNames = new stdClass();
         $table_type = Io_type::where("table",$table)->first();
 
-     
-        
-        if ($requestCols != null ):
+        $requestColsWithTranslation = $request->get('names');
+
+        $cols = [];
+        // adding translation
+        foreach($requestColsWithTranslation as $index => $col)  $cols[$this->convert_to_tech_name($col)] = $requestColsWithTranslation[$index];
+        $requestColsWithTranslation = $cols;
+        $this->register_type_table_translation($table_type->id, $requestColsWithTranslation);
 
 
-            foreach ($requestCols as $col):
+        Log::channel('app')->info("Add or Rename cols",["cols" => $requestColsWithTranslation] );
+
+
+        $dbCol = Io_type::getColNames($table);
+
+
+
+
+        if ($requestColsWithTranslation != null ): // if there is a request
+
+            foreach ($requestColsWithTranslation as $col => $translation):
+                Log::channel("app")->info("Cols and Translations", [
+                    "col" => $col,
+                    "translation" => $translation,
+                ]);
+
 
                 // prepare table columns
                 $prepared = $this->prepareColumnConditions($table, $col);
 
                 list($is_renameable, $tableHasColumn) = $prepared;
-    
+
                 if (Schema::hasTable($table)):
 
                     if ( $is_renameable && $tableHasColumn ) {
@@ -233,10 +290,10 @@ class IoTypesController extends Controller
                         list($old, $new) = explode(",", $col);
 
                         Log::channel("app")->info("renaming", [
-                            "Old name"=> $old, 
+                            "Old name"=> $old,
                             "New name"=> $new
                         ]);
-                        Io_type::rnCol($table, [$old, $new]); 
+                        Io_type::rnCol($table, [$old, $new]);
 
                     } else if (! $tableHasColumn && ! $is_renameable){
 
@@ -253,39 +310,37 @@ class IoTypesController extends Controller
 
 
 
-        $toRemove = array_diff($tableColumns, $requestCols); // Get Deleted Columns
+        $toRemove = array_diff($dbCol, array_keys($requestColsWithTranslation)); // Get Deleted Columns
 
-        Log::channel("app")->debug("To Remove Fields", [$toRemove]);
-        Log::channel("app")->info("All Fields of {$table} table ".__FILE__.":", [
-            "TableColumns" => $tableColumns,
-            "TableColumnsTranslation" => $requestColTranslations,
+        Log::channel("app")->debug("To Remove Fields", [
+            'to_remove'=>$toRemove,
+            'with request'=> $requestColsWithTranslation,
+            'from database'=> $dbCol,
         ]);
+
+
+        Log::channel("app")->info("All Fields of {$table} table ".__FILE__.":", [
+            "TableColumns" => $dbCol,
+            "TableColumnsTranslation" => $requestColsWithTranslation,
+        ]);
+
+
         foreach ($toRemove as $col) {
             Io_type::rmCol($table, $col);
         }
 
 
-        // TODO: აქ გვინდა შევადაროთ არსებული ველები ყველა მანიპულაციის მერე
-        // გადმოცემულ ველებთან რომისგანაც უნდა შევადგინოთ ასოციაციური მასივი (zip)
-        $type_col_names = Io_type::getColNames($table);
-        if(count($type_col_names) == count($requestColTranslations)){
-            foreach ($tableColumns as $index => $technicalName):
-                $fieldsAndTranslations[$technicalName] = $requestColTranslations[$index]; 
-            endforeach;
-            $this->register_type_table_translation($table_type->id, $fieldsAndTranslations);
-        }
-
 
         return redirect(route("types.show",["id"=>$table]));
     }
 
-   
+
 
     public function destroy($id)
     {
         // https://laravel.com/docs/8.x/database#database-transactions
         // https://www.php.net/manual/en/pdo.begintransaction.php
-        
+
         DB::beginTransaction();
         try {
             // ვშლი ჩანაწერს io_type tabel-დან და თავად table-ს
@@ -297,7 +352,7 @@ class IoTypesController extends Controller
 
             Schema::dropIfExists(request()->get("table"));
 
-            DB::commit(); 
+            DB::commit();
             return redirect(route('types.index'));
         } catch (\Exception $e) {
 

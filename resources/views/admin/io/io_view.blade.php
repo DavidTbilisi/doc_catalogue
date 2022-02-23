@@ -3,22 +3,29 @@
 
 <div class="container">
 
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
+{{--@dump($io->children)--}}
+    <x-error-alert></x-error-alert>
 <br>
+{{--TODO: get all children from parent--}}
+<div id="jstree_demo_div" class="mt-5">
+    <ul>
+        <li> ფონდები
+            <ul>
+                @foreach($children as $i)
+                    <li>
+                        <a href="{{route('io.show',["id"=>$i->id])}}">{{$i->reference}}</a>
+                    </li>
+                @endforeach
+            </ul>
+        </li>
+    </ul>
+</div>
+
+
 
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
-    <h1 class="display-4"> საინფორმაციო ობიექტი </h1>
-    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+    <h1 class="display-4"> საინფორმაციო ობიექტი <a href="{{route('io.edit', ['id'=>$io->id])}}" class="material-icons md-light">edit</a></h1>
   </div>
 </div>
 
@@ -32,17 +39,32 @@
 
 
   <ul class="list-group mt-5 mb-5">
-    <li class="list-group-item active">მონაცემი</li>
-    @foreach((array)$data[0] as $key => $value)
-    {{-- Don't show fileds with _at, _id or id itself --}}
-      @if ( !preg_match("/_at|_id|^id$/i", $key) ) 
-        <li class="list-group-item"> <b> {{$key}}: </b> <span> {{$value}} </span> </li>
+    <li class="list-group-item active"><a id="go-to-data" href="{{route("data.edit",["id"=>$io->data_id, "table"=>$table])}}" class="link-light">მონაცემი</a> </li>
+
+  @if($data)
+    @foreach((array)$data as $key => $value)
+      @if ( !preg_match("/_at|_id|^id$/i", $key) )
+        <li class="list-group-item"> <b> {{$translation[$key]}}: </b> <span> {{$value}} </span> </li>
       @endif
     @endforeach
+  @endif
+
   </ul>
 
-<div style="position:fixed; right: 100px; bottom: 100px; border-radius: 50%; background-color: #00fa9a; padding: 5px; border: 1px solid black; ">
-    <a href="{{route("io.add",["io_parent_id"=> $io->id])}}"> <span class="material-icons md-light">add</span> </a>
-</div>
+    <form action="{{route('io.delete', ["id"=>$io->id])}}" method="POST">
+        @csrf
+    <button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete?')">წაშლა</button>
+    </form>
+  <x-add-button route="{{route('io.add',['io_parent_id'=> $io->id])}}"></x-add-button>
 
+<script>
+
+    $(function () {
+        $('#jstree_demo_div').jstree();
+        $("#jstree_demo_div").bind("select_node.jstree", function(e, data) {
+            window.location.href = data.node.a_attr.href;
+        });
+    });
+
+</script>
 @endsection

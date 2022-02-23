@@ -8,15 +8,8 @@
         ტექნიკური სახელები უნდა შედგებოდეს მხოლოდ ლათინური ასოებისგან.
     </div>
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <x-error-alert></x-error-alert>
+
 
         @csrf
 
@@ -25,12 +18,19 @@
             <div class="row">
                 <div class="col">
                     <label for="typename">ობიექტის ტიპის სახელი</label>
-                    <input type="text" class="form-control" id="typename" name="name" placeholder="Type name">
+                    <input type="text"
+                           class="form-control"
+                           id="typename"
+                           name="name"
+                           placeholder="Type name"
+                           pattern="[ა-ჰ0-9 ]{1,20}"
+                           oninvalid="this.setCustomValidity('სახელი უნდა შედგებოდეს ქართული სიმბოლოებისგან')"
+                    >
                 </div>
-                <div class="col">
-                    <label for="tablename">ობიექტის ტიპის ტექნიკური სახელი</label>
-                    <input type="text" class="form-control" id="tablename" name="tablename" placeholder="Type name" pattern="[a-z]{1,20}">
-                </div>
+{{--                <div class="col">--}}
+{{--                    <label for="tablename">ობიექტის ტიპის ტექნიკური სახელი</label>--}}
+{{--                    <input type="text" class="form-control" id="tablename" name="tablename" placeholder="Type name" pattern="[a-z]{1,20}">--}}
+{{--                </div>--}}
 
             </div>
         </div>
@@ -40,32 +40,33 @@
         <div class="inputs" id="fields">
             <div class="form-group mt-2">
                 <div class="row">
-                    
-                    <div class="col-4 mt-2">
-                        
+
+                    <div class="col-8 mt-2">
+
                         <label for="field1 mb-1">ტიპის აღწერის ველის დასახელება</label>
-                        <input type="text" 
-                                name="names[]" 
-                                class="form-control" 
-                                id="field1" 
+                        <input type="text"
+                                name="names[]"
+                                class="form-control"
+                                id="field1"
                                 placeholder="Field"
                                 pattern="[ა-ჰ0-9 ]{1,20}"
-                                value="">
+                               oninvalid="this.setCustomValidity('სახელი უნდა შედგებოდეს ქართული სიმბოლოებისგან')"
+                               value="">
                     </div>
-                    
-                    <div class="col-4 mt-2">
-                        
-                        <label for="field1 mb-1">ველის ტექნიკური დასახელება</label>
-                        <input type="text" 
-                                name="field[]" 
-                                class="form-control" 
-                                id="field1" 
-                                placeholder="Field"
-                                pattern="[a-z]{1,20}"
-                                value="">
-                    </div>
-                    
-                    
+
+{{--                    <div class="col-4 mt-2">--}}
+
+{{--                        <label for="field1 mb-1">ველის ტექნიკური დასახელება</label>--}}
+{{--                        <input type="hidden"--}}
+{{--                                name="field[]"--}}
+{{--                                class="form-control"--}}
+{{--                                id="field1"--}}
+{{--                                placeholder="Field"--}}
+{{--                                pattern="[a-z]{1,20}"--}}
+{{--                                value="">--}}
+{{--                    </div>--}}
+
+
                     <div class="col mt-2">
                         <label for="type">ტიპი</label>
                         <select name="type[]" class="form-control" id="Type">
@@ -74,8 +75,8 @@
                             <option value="longText">Long text</option>
                         </select>
                     </div>
-                    
-                    
+
+
                 </div>
             </div>
         </div>

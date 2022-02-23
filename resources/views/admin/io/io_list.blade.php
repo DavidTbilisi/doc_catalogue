@@ -1,23 +1,7 @@
 @extends('layouts.admin')
 @section('body')
-<div id="jstree_demo_div" class="mt-5">
-    <ul>
-        <li>ფონდები
-            <ul>
-            @foreach($iolist as $io)
-                    <li>
-                        {{$io->type->name}} {{$io->prefix . $io->identifier . $io->suffix . $io->type->id}}
-                    </li>
-            @endforeach
-            </ul>
 
-        </li>
-    </ul>
-</div>
-
-
-
-<table class="table">
+<table class="table mt-4">
     <thead>
     <tr>
         <th scope="col">#</th>
@@ -32,7 +16,7 @@
         <tr>
             <th scope="row">{{++$loop->index}}</th>
             <td class="identifier">
-                {{$io->prefix}}-{{$io->identifier}}-{{$io->suffix }}
+                {{$identifiers[$loop->index-1]}}
             </td>
             <td class="reference">{{$io->reference}}</td>
             <td class="type">{{$io->type->name}}</td>
@@ -41,7 +25,7 @@
                 @csrf
                 <a href="{{route("io.show", ["id"=>$io->id])}}" class="btn btn-success">View</a>
                 <a href="{{route("io.edit", ["id"=>$io->id])}}" class="btn btn-info">Edit</a>
-                <button onclick="return confirm('Are you sure you want to delete?')"class="btn btn-danger">Delete</button>
+                <button onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger">Delete</button>
             </form>
             </td>
         </tr>
