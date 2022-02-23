@@ -235,14 +235,16 @@ class IoController extends Controller
             ->where("id", $io_item->data_id)
             ->first();
 
-        $children = $io_item->children;
+        function getSome($node){
+            $visited = [];
 
-        $ch = [];
-        foreach($children as $child) {
-            $ch[] = $child;
+            if ($node) return;
+            getSome($node->left);
+            print($node);
+            getSome($node->right);
         }
 
-        dump($ch);
+        getSome($io_item->children);
 
         return view("admin.io.io_view", [
             "io"=> $io_item,
@@ -252,6 +254,7 @@ class IoController extends Controller
             "children" => $io_item->children,
         ]);
     }
+
 
 
     public function edit($id)
