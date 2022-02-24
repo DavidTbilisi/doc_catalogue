@@ -235,23 +235,28 @@ class IoController extends Controller
             ->where("id", $io_item->data_id)
             ->first();
 
-        function getSome($node){
-            $visited = [];
+        function getChildren($io){
+            static $visited = [];
+            static $informationObjects = [];
 
-            if ($node) return;
-            getSome($node->left);
-            print($node);
-            getSome($node->right);
+            if (!in_array($io->id, $visited )) {
+                $visited[] = $io->id;
+                $informationObjects[] = $io;
+                $ios = Io::where("parent_id", $io->id)->get();
+                foreach($ios as $io):
+                    getChildren($io);
+                endforeach;
+            }
+            return collect($informationObjects);
         }
-
-        getSome($io_item->children);
+        $ios = getChildren($io_item);
 
         return view("admin.io.io_view", [
             "io"=> $io_item,
             "data" => $data,
             "translation" => $translation,
             "table" => $table,
-            "children" => $io_item->children,
+            "children" => $ios,
         ]);
     }
 

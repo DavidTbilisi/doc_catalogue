@@ -8,26 +8,26 @@
 <br>
 {{--TODO: get all children from parent--}}
 <div id="jstree_demo_div" class="mt-5">
-    <ul>
-        <li> ფონდები
-            <ul>
-                @foreach($children as $i)
-                    @if($i->level >= 1)
-                    <li>
-                        <a href="{{route('io.show',["id"=>$i->id])}}"> {{$i->reference}} </a>
-                    </li>
-                    @endif
-                @endforeach
-            </ul>
-        </li>
-    </ul>
+
 </div>
 
 
+    @php
+        function drawUl($children) {
+                $output = "<ul>\n";
+                $output .= sprintf("<li><a href=\"#\"> $i </a></li>");
+                $output .= "</ul>\n";
+                return $output;
+        }
 
+
+
+    @endphp
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
-    <h1 class="display-4"> საინფორმაციო ობიექტი <a href="{{route('io.edit', ['id'=>$io->id])}}" class="material-icons md-light">edit</a></h1>
+    <h1 class="display-4"> საინფორმაციო ობიექტი
+        <a href="{{route('io.edit', ['id'=>$io->id])}}" class="material-icons md-light">edit</a>
+    </h1>
   </div>
 </div>
 
@@ -62,7 +62,18 @@
 <script>
 
     $(function () {
-        $('#jstree_demo_div').jstree();
+        $('#jstree_demo_div').jstree({
+            'core' : {
+                'data' :
+                    @php
+                    $arr = array_values( $children->where("parent_id", "!=", null)->toArray());
+
+
+                    echo json_encode($arr, JSON_HEX_AMP | JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK)
+                    @endphp
+
+            }
+        });
         $("#jstree_demo_div").bind("select_node.jstree", function(e, data) {
             window.location.href = data.node.a_attr.href;
         });
