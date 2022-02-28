@@ -2,42 +2,25 @@
 @section('body')
 
 <div class="container">
-
-{{--@dump($io->children)--}}
     <x-error-alert></x-error-alert>
-<br>
-{{--TODO: get all children from parent--}}
-<div id="jstree_demo_div" class="mt-5">
+    <br>
+    <div id="jstree_demo_div" class="mt-5">  </div>
 
-</div>
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h1 class="display-4"> საინფორმაციო ობიექტი
+            <a href="{{route('io.edit', ['id'=>$io->id])}}" class="material-icons md-light">edit</a>
+        </h1>
+      </div>
+    </div>
 
-
-    @php
-        function drawUl($children) {
-                $output = "<ul>\n";
-                $output .= sprintf("<li><a href=\"#\"> $i </a></li>");
-                $output .= "</ul>\n";
-                return $output;
-        }
-
-
-
-    @endphp
-<div class="jumbotron jumbotron-fluid">
-  <div class="container">
-    <h1 class="display-4"> საინფორმაციო ობიექტი
-        <a href="{{route('io.edit', ['id'=>$io->id])}}" class="material-icons md-light">edit</a>
-    </h1>
-  </div>
-</div>
-
-  <ul class="list-group">
+    <ul class="list-group">
     <li class="list-group-item"> <b> ტიპი: </b> <span>  {{$io->type->name}} </span> </li>
     <li class="list-group-item"> <b> რეფერენსი: </b> <span> {{$io->reference}} </span> </li>
     <li class="list-group-item"> <b> სუფიქსი: </b> <span> {{$io->suffix}} </span> </li>
     <li class="list-group-item"> <b> იდენტიფიკატორი: </b> <span> {{$io->identifier}} </span> </li>
     <li class="list-group-item"> <b> პრეფიქსი: </b> <span> {{$io->prefix}} </span> </li>
-  </ul>
+    </ul>
 
 
   <ul class="list-group mt-5 mb-5">
@@ -66,16 +49,15 @@
             'core' : {
                 'data' :
                     @php
-                    $arr = array_values( $children->where("parent_id", "!=", null)->toArray());
-
-
-                    echo json_encode($arr, JSON_HEX_AMP | JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK)
+                        $json = json_encode($children,  JSON_PRETTY_PRINT );
+                        echo $json;
                     @endphp
 
             }
         });
         $("#jstree_demo_div").bind("select_node.jstree", function(e, data) {
-            window.location.href = data.node.a_attr.href;
+            console.log(data.node.original)
+            window.location.href = data.node.original.a_attr;
         });
     });
 

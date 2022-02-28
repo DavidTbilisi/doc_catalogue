@@ -250,13 +250,23 @@ class IoController extends Controller
             return collect($informationObjects);
         }
         $ios = getChildren($io_item);
+        $arr = array_values( $ios->toArray() );
+        $newArr = [];
+        foreach($arr as $key => $val) {
+            // Documentation for jstree json params
+            // https://www.jstree.com/docs/json/
+            $newArr[$key]["id"] = (string)$arr[$key]['id'];
+            $newArr[$key]["a_attr"] = route("io.show", ["id" => $arr[$key]['id'] ]);
+            $newArr[$key]["text"] = $arr[$key]['reference'];
+            $newArr[$key]["parent"] = $arr[$key]['parent_id']==null || $arr[$key]['id'] ==  $id? "#" : (string)$arr[$key]['parent_id'];
+        }
 
         return view("admin.io.io_view", [
             "io"=> $io_item,
             "data" => $data,
             "translation" => $translation,
             "table" => $table,
-            "children" => $ios,
+            "children" => collect($newArr),
         ]);
     }
 
