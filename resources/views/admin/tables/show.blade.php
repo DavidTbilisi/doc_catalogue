@@ -23,6 +23,7 @@
         </div>
         @endforeach
         <button type="submit" class="btn btn-success">Save</button>
+        <a type="submit" href="{{route("io.show", ['id'=> $id])}}" class="btn btn-danger">Io</a>
     </form>
 
 @endsection
