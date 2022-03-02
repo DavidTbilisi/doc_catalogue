@@ -235,10 +235,6 @@ class IoController extends Controller
             ->where("id", $io_item->data_id)
             ->first();
 
-
-        $grandestParent = "GE_" . explode("_", $io_item->reference)[1];
-
-
         function getChildren($io){
             static $visited = [];
             static $informationObjects = [];
@@ -254,19 +250,22 @@ class IoController extends Controller
             return collect($informationObjects);
         }
 
+        // რეფერენსიდან ვიღებთ პირველ მშობელს, ხის საწყის წერტილს.
+        $grandestParent = "GE_" . explode("_", $io_item->reference)[1];
         $io_gp = Io::where("reference", $grandestParent)->first();
 
         $ios = getChildren($io_gp);
         $arr = array_values( $ios->toArray() );
-        $newArr = [];
+        $jstreeData = [];
         foreach($arr as $key => $val) {
+            // BUILDING JSON FOR JSTREE
             // Documentation for jstree json params
             // https://www.jstree.com/docs/json/
-            $newArr[$key]["id"] = (string)$arr[$key]['id'];
-            $newArr[$key]["a_attr"] = route("io.show", ["id" => $arr[$key]['id'] ]);
-            $newArr[$key]["text"] = $arr[$key]['reference'];
-            $newArr[$key]["parent"] = $arr[$key]['parent_id'] == null ? "#" : (string)$arr[$key]['parent_id'];
-            $newArr[$key]["state"]["selected"] =  $arr[$key]['id'] ==  $id;
+            $jstreeData[$key]["id"] = (string)$arr[$key]['id'];
+            $jstreeData[$key]["a_attr"] = route("io.show", ["id" => $arr[$key]['id'] ]);
+            $jstreeData[$key]["text"] = $arr[$key]['reference'];
+            $jstreeData[$key]["parent"] = $arr[$key]['parent_id'] == null ? "#" : (string)$arr[$key]['parent_id'];
+            $jstreeData[$key]["state"]["selected"] =  $arr[$key]['id'] ==  $id;
         }
 
         return view("admin.io.io_view", [
@@ -274,7 +273,7 @@ class IoController extends Controller
             "data" => $data,
             "translation" => $translation,
             "table" => $table,
-            "children" => collect($newArr),
+            "children" => collect($jstreeData),
         ]);
     }
 
