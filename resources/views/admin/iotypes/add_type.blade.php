@@ -54,28 +54,15 @@
                                value="">
                     </div>
 
-{{--                    <div class="col-4 mt-2">--}}
-
-{{--                        <label for="field1 mb-1">ველის ტექნიკური დასახელება</label>--}}
-{{--                        <input type="hidden"--}}
-{{--                                name="field[]"--}}
-{{--                                class="form-control"--}}
-{{--                                id="field1"--}}
-{{--                                placeholder="Field"--}}
-{{--                                pattern="[a-z]{1,20}"--}}
-{{--                                value="">--}}
-{{--                    </div>--}}
-
 
                     <div class="col mt-2">
                         <label for="type">ტიპი</label>
                         <select name="type[]" class="form-control" id="Type">
-                            <option value="string">Text</option>
+                            <option value="longText">Text</option>
                             <option value="integer">Number</option>
-                            <option value="longText">Long text</option>
+                            <option value="date">Date</option>
                         </select>
                     </div>
-
 
                 </div>
             </div>

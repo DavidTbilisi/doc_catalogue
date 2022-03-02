@@ -252,7 +252,7 @@ class IoController extends Controller
 
         // რეფერენსიდან ვიღებთ პირველ მშობელს, ხის საწყის წერტილს.
         $grandestParent = "GE_" . explode("_", $io_item->reference)[1];
-        $io_gp = Io::where("reference", $grandestParent)->first();
+        $io_gp = Io::where("reference", $grandestParent)->where("io_type_id", $io_item->io_type_id)->first();
 
         $ios = getChildren($io_gp);
         $arr = array_values( $ios->toArray() );

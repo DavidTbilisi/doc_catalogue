@@ -123,7 +123,6 @@ class IoTypesController extends Controller
     }
 
 
-
     private function register_type_table_translation($io_types_table_id, $fields) {
 
         $io_type = Io_type::find($io_types_table_id);
@@ -293,6 +292,7 @@ class IoTypesController extends Controller
                             "Old name"=> $old,
                             "New name"=> $new
                         ]);
+
                         Io_type::rnCol($table, [$old, $new]);
 
                     } else if (! $tableHasColumn && ! $is_renameable){
@@ -302,6 +302,15 @@ class IoTypesController extends Controller
                         ]);
 
                         Io_type::addCol($table, $col);
+                    }
+
+                    if ($request->get("type") !== null) {
+                        Schema::table($table, function (Blueprint $table) use ($request, $col, $cols){
+                            $cols = array_keys($cols);
+                            $index = array_search($col, $cols);
+                            $type = $request->get('type')[$index];
+                                $table->$type($col)->change();
+                        });
                     }
 
                 endif; // table exists
@@ -333,7 +342,6 @@ class IoTypesController extends Controller
 
         return redirect(route("types.show",["id"=>$table]));
     }
-
 
 
     public function destroy($id)
