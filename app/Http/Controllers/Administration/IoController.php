@@ -235,6 +235,10 @@ class IoController extends Controller
             ->where("id", $io_item->data_id)
             ->first();
 
+
+        $grandestParent = "GE_" . explode("_", $io_item->reference)[1];
+
+
         function getChildren($io){
             static $visited = [];
             static $informationObjects = [];
@@ -249,7 +253,10 @@ class IoController extends Controller
             }
             return collect($informationObjects);
         }
-        $ios = getChildren($io_item);
+
+        $io_gp = Io::where("reference", $grandestParent)->first();
+
+        $ios = getChildren($io_gp);
         $arr = array_values( $ios->toArray() );
         $newArr = [];
         foreach($arr as $key => $val) {
@@ -258,7 +265,8 @@ class IoController extends Controller
             $newArr[$key]["id"] = (string)$arr[$key]['id'];
             $newArr[$key]["a_attr"] = route("io.show", ["id" => $arr[$key]['id'] ]);
             $newArr[$key]["text"] = $arr[$key]['reference'];
-            $newArr[$key]["parent"] = $arr[$key]['parent_id']==null || $arr[$key]['id'] ==  $id? "#" : (string)$arr[$key]['parent_id'];
+            $newArr[$key]["parent"] = $arr[$key]['parent_id'] == null ? "#" : (string)$arr[$key]['parent_id'];
+            $newArr[$key]["state"]["selected"] =  $arr[$key]['id'] ==  $id;
         }
 
         return view("admin.io.io_view", [
