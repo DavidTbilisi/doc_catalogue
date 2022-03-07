@@ -250,9 +250,14 @@ class IoController extends Controller
             return collect($informationObjects);
         }
 
-        // რეფერენსიდან ვიღებთ პირველ მშობელს, ხის საწყის წერტილს.
-        $grandestParent = "GE_" . explode("_", $io_item->reference)[1];
-        $io_gp = Io::where("reference", $grandestParent)->where("io_type_id", $io_item->io_type_id)->first();
+
+
+
+        // ვიღებთ პირველ მშობელს, ხის საწყის წერტილს.
+        $io_gp = $io_item;
+        while($io_gp->parent != null) {
+            $io_gp = $io_gp->parent;
+        }
 
         $ios = getChildren($io_gp);
         $arr = array_values( $ios->toArray() );
