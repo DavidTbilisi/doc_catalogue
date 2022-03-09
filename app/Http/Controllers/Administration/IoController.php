@@ -131,7 +131,6 @@ class IoController extends Controller
         ]);
     }
 
-
     public function create()
     {
         $types = Io_type::with('translation')->get();
@@ -139,7 +138,6 @@ class IoController extends Controller
             'types'=>$types
         ]);
     }
-
 
     private function type_create($request){
 
@@ -168,7 +166,6 @@ class IoController extends Controller
                 "io_type_id" => $io_type_id
             ];
     }
-
 
     public function store(Request $request)
     {
@@ -236,6 +233,20 @@ class IoController extends Controller
         }
     }
 
+    private function getChildren($io){
+        static $visited = [];
+        static $informationObjects = [];
+
+        if (!in_array($io->id, $visited )) {
+            $visited[] = $io->id;
+            $informationObjects[] = $io;
+            $ios = Io::where("parent_id", $io->id)->get();
+            foreach($ios as $io):
+                $this->getChildren($io);
+            endforeach;
+        }
+        return collect($informationObjects);
+    }
     public function show($id)
     {
         $io_item =  IO::with("type")
@@ -255,20 +266,7 @@ class IoController extends Controller
             ->where("id", $io_item->data_id)
             ->first();
 
-        function getChildren($io){
-            static $visited = [];
-            static $informationObjects = [];
 
-            if (!in_array($io->id, $visited )) {
-                $visited[] = $io->id;
-                $informationObjects[] = $io;
-                $ios = Io::where("parent_id", $io->id)->get();
-                foreach($ios as $io):
-                    getChildren($io);
-                endforeach;
-            }
-            return collect($informationObjects);
-        }
 
 
 
@@ -279,7 +277,7 @@ class IoController extends Controller
             $io_gp = $io_gp->parent;
         }
 
-        $ios = getChildren($io_gp);
+        $ios = $this->getChildren($io_gp);
         $arr = array_values( $ios->toArray() );
         $jstreeData = [];
         foreach($arr as $key => $val) {
@@ -302,8 +300,6 @@ class IoController extends Controller
         ]);
     }
 
-
-
     public function edit($id)
     {
         $io = IO::with("type")
@@ -317,7 +313,6 @@ class IoController extends Controller
             'io'=>$io
         ]);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -341,7 +336,6 @@ class IoController extends Controller
         }
     }
 
-
     public function destroy($id)
     {
         DB::beginTransaction();
@@ -352,8 +346,13 @@ class IoController extends Controller
             $status = DB::table($type->table)->delete($io->data_id);
             Log::channel("app")->info("'{$type->table}'-{$io->data_id} deletion status", [$status]);
 
-            $status = $io->delete();
-            Log::channel("app")->info("'{$io->id}' Deletion status", [$status]);
+
+
+            foreach ($this->getChildren($io) as $index => $infoObject){
+                $status = $infoObject->delete();
+                Log::channel("app")->info("'{$io->id}' Deletion status", [$status]);
+            };
+
 
             DB::commit();
         } catch (\Exception $exception) {
