@@ -25,6 +25,7 @@
                            placeholder="Type name"
                            pattern="[ა-ჰ0-9 ]{1,20}"
                            oninvalid="this.setCustomValidity('სახელი უნდა შედგებოდეს ქართული სიმბოლოებისგან')"
+                           oninput="this.setCustomValidity('')"
                     >
                 </div>
 {{--                <div class="col">--}}
@@ -51,6 +52,7 @@
                                 placeholder="Field"
                                 pattern="[ა-ჰ0-9 ]{1,20}"
                                oninvalid="this.setCustomValidity('სახელი უნდა შედგებოდეს ქართული სიმბოლოებისგან')"
+                               oninput="this.setCustomValidity('')"
                                value="">
                     </div>
 
