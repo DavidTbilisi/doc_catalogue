@@ -29,7 +29,7 @@
   @if($data)
     @foreach((array)$data as $key => $value)
       @if ( !preg_match("/_at|_id|^id$/i", $key) )
-        <li class="list-group-item"> <b> {{$translation[$key]}}: </b> <span> {{$value}} </span> </li>
+        <li class="list-group-item"> <b> {{$translation[$key]?? $key}}: </b> <span> {{$value}} </span> </li>
       @endif
     @endforeach
   @endif

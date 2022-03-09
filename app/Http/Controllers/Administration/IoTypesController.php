@@ -304,7 +304,15 @@ class IoTypesController extends Controller
                         Io_type::addCol($table, $col);
                     }
 
+
                     if ($request->get("type") !== null) {
+                        $isset = DB::table($table)->get();
+                        if (count($isset) > 0) {
+                            return redirect(route('types.index'))->withErrors([
+                                "msg"=>"ტიპის შეცვლა შეუძლებელია, ცხრილი არ არის ცარიელი."
+                            ]);
+                        }
+
                         Schema::table($table, function (Blueprint $table) use ($request, $col, $cols){
                             $cols = array_keys($cols);
                             $index = array_search($col, $cols);

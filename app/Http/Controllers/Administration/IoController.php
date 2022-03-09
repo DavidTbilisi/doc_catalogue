@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response as Code;
 
 class IoController extends Controller
@@ -18,36 +19,55 @@ class IoController extends Controller
         return count($referenceArray)-1;
     }
 
+    private function referenceChecker($prefix, $identifier, $suffix)
+    {
+        if ($prefix && $identifier && $suffix) {
+            // "GE_p-1-s"
+            return"_{$prefix}-{$identifier}-{$suffix}";
 
+        } else if ($prefix == false && $identifier && $suffix) {
+            // "GE_1-s"
+            return "_{$identifier}-{$suffix}";
+
+        } else if ($prefix && $identifier && $suffix == false) {
+
+            // "GE_p-1"
+            return "_{$prefix}-{$identifier}";
+
+        } else if ($prefix == false && $identifier && $suffix == false) {
+
+            // "GE_1"
+            return "_{$identifier}";
+        }
+    }
 
     private function getRefRequest($request) {
         // Get reference from Current io
-        $reqReference  = '';
-        $reqReference .= $request->get("prefix") != NULL? "_{$request->get("prefix")}" : "";
-        $reqReference .= $request->get("identifier") != NULL? "-{$request->get("identifier")}" : "";
-        $reqReference .= $request->get('suffix') != NULL? "-{$request->get('suffix')}" : "";
-        return $reqReference;
+
+        $prefix = $request->get("prefix") != NULL? $request->get("prefix") : false;
+        $identifier = $request->get("identifier") != NULL? $request->get("identifier") : false;
+        $suffix = $request->get("suffix") != NULL? $request->get("suffix") : false;
+
+        return $this->referenceChecker($prefix, $identifier, $suffix);
     }
-
-
 
     private function getRefParent($ioParent) {
         // Get reference from Current io
-        $parentReference  = '';
-        $parentReference .= $ioParent->prefix != null?      "_" . $ioParent->prefix: "";
-        $parentReference .= $ioParent->identifier != null?  "-" .$ioParent->identifier: "";
-        $parentReference .= $ioParent->suffix != null?      "-" . $ioParent->suffix: "";
-        return $parentReference;
+        $prefix  = $ioParent->prefix != null?  $ioParent->prefix: false;
+        $identifier = $ioParent->identifier != null? $ioParent->identifier: false;
+        $suffix = $ioParent->suffix != null?  $ioParent->suffix: false;
+
+        return $this->referenceChecker($prefix, $identifier, $suffix);
     }
 
     private function buildReference($io_id, $request) {
 
         $io = Io::find($io_id);
 
-
+        $io_is_parent = $request->get("io_parent_id") ?? false;
         $ioParent = $io ? $io->parent : false; // Returns parent ID
+        $method = Str::endsWith($request->path(), "add") ? 'create' :  'update';
 
-        $method = $ioParent == null && $io_id == null ?  'update' : "create";
 
         Log::channel("app")->info("Reference Builder: ", [
             "io_ref" => $io,
@@ -324,8 +344,6 @@ class IoController extends Controller
 
     public function destroy($id)
     {
-        // TODO: add deletion test
-
         DB::beginTransaction();
         try{
             $io = Io::findOrFail($id);
@@ -347,6 +365,8 @@ class IoController extends Controller
             return redirect(route("io.index"));
         }
     }
+
+
 
 
 }
