@@ -316,8 +316,11 @@ class IoTypesController extends Controller
                         Schema::table($table, function (Blueprint $table) use ($request, $col, $cols){
                             $cols = array_keys($cols);
                             $index = array_search($col, $cols);
-                            $type = $request->get('type')[$index];
-                                $table->$type($col)->change();
+
+                            $types = $request->get('type');
+                            $type = $types[$index]??"longtext";
+
+                            $table->$type($col)->change();
                         });
                     }
 

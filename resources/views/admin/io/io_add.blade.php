@@ -60,12 +60,27 @@
     <script>
 
 
-        function drawFields(translation, fieldname){
-            $("#datatable .inputs").append(`
-            <div class="mb-3">
-                <label for="${fieldname}" class="form-label">${translation} </label>
-                <input type="text" class="form-control" name="${fieldname}" id="${fieldname}" placeholder="${fieldname}">
-            </div>`);
+        function drawFields(translation, fieldname, fieldType){
+            if (fieldType == "varchar(225)" || fieldType == "longtext" ) {
+                $("#datatable .inputs").append(`
+                    <div class="mb-3">
+                        <label for="${fieldname}" class="form-label">${translation} </label>
+                        <input type="text" class="form-control" name="${fieldname}" id="${fieldname}" placeholder="${translation}">
+                    </div>`);
+            } else if (fieldType == "date") {
+                $("#datatable .inputs").append(`
+                    <div class="mb-3">
+                        <label for="${fieldname}" class="form-label">${translation} </label>
+                        <input type="date" class="form-control" name="${fieldname}" id="${fieldname}" placeholder="${translation} ">
+                    </div>`);
+            } else {
+                $("#datatable .inputs").append(`
+                    <div class="mb-3">
+                        <label for="${fieldname}" class="form-label">${translation} </label>
+                        <input type="number" class="form-control" name="${fieldname}" id="${fieldname}" placeholder="${translation}">
+                    </div>`);
+            }
+
 
         }
 
@@ -82,8 +97,8 @@
                     for (let el in data.data){
                         let fieldName = data.data[el].Field;
                         let fieldType = data.data[el].Type;
-
-                        drawFields(data.translation[fieldName], fieldName)
+                        console.log(fieldType)
+                        drawFields(data.translation[fieldName], fieldName, fieldType)
                     }
 
                 },
