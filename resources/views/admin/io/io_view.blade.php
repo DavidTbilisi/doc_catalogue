@@ -29,12 +29,18 @@
   @if($data)
     @foreach((array)$data as $key => $value)
       @if ( !preg_match("/_at|_id|^id$/i", $key) )
-        <li class="list-group-item"> <b> {{$translation[$key]?? $key}}: </b> <span> {{$value}} </span> </li>
+        <li class="list-group-item"> <b> {{$translation[$key]??$key}}: </b> <span> {{$value}} </span> </li>
       @endif
     @endforeach
   @endif
 
   </ul>
+<div class="documents">
+    @foreach($io->documents as $doc)
+        <img src="{{asset($doc->filepath)}}" alt="{{$doc->filename}}">
+    @endforeach
+</div>
+    <br>
 
     <form action="{{route('io.delete', ["id"=>$io->id])}}" method="POST">
         @csrf

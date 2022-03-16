@@ -10,7 +10,7 @@
         <div class="mt-3">
             <p class="h1"> საინფორმაციო ობიექტის დამატება </p>
 
-            <form action="{{route("io.update",['id'=>$io->id])}}" method="post" id="io" >
+            <form action="{{route("io.update",['id'=>$io->id])}}" method="post" id="io" enctype="multipart/form-data">
             @csrf
 
             <input type="hidden" name="io_type_id" value="{{$io->io_type_id}}">
@@ -43,6 +43,10 @@
                 </select>
             </div>
 
+            <div class="docs">
+                <label for="files">Select files:</label>
+                <input type="file" id="files" name="files[]" multiple>
+            </div>
 
             <div class="mb-3">
                 <button class="btn btn-success" >განახლება</button>

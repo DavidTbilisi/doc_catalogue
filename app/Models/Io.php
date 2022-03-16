@@ -38,4 +38,9 @@ class Io extends Model
         return $this->belongsTo(Io::class, 'parent_id');
     }
 
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+
 }

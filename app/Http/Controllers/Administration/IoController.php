@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Administration;
 
+use App\Models\Document;
 use App\Models\Io;
 use App\Models\Io_type;
 use Illuminate\Http\Request;
@@ -253,6 +254,7 @@ class IoController extends Controller
             ->with('parent')
             ->with('children')
             ->with('type')
+            ->with('documents')
             ->where('id',$id)
             ->first();
 
@@ -265,11 +267,6 @@ class IoController extends Controller
             ->select()
             ->where("id", $io_item->data_id)
             ->first();
-
-
-
-
-
 
         // ვიღებთ პირველ მშობელს, ხის საწყის წერტილს.
         $io_gp = $io_item;
@@ -305,7 +302,7 @@ class IoController extends Controller
         $io = IO::with("type")
             ->with('parent')
             ->where('id',$id)
-            ->first();
+            ->firstOrFail();
 
         $types = Io_type::all();
         return view('admin.io.io_edit', [
@@ -328,6 +325,24 @@ class IoController extends Controller
         $io->reference = $this->buildReference($id, $request);
         $io->level = $this->detectLevel($io->reference);
 
+
+        if ($request->hasFile ("files") ) {
+            foreach ($request->file("files") as $file):
+
+                $doc = Document::where("io_id",$io->id)->firstOrCreate([
+                    "filename" => "1",
+                    'filepath'=>"/",
+                    "mimetype"=>1,
+                    "io_id"=>$io->id,
+                ]);
+                $path = $file->store('public/documents/'.$request->user()->id);
+
+                $doc->filename = $file->getClientOriginalName();
+                $doc->filepath = $path;
+                $doc->mimetype = $file->getMimeType();
+                $doc->save();
+            endforeach;
+        }
         $isSaved = $io->save();
 
         Log::channel("app")->info("Io Update: ", ['Is Io Saved'=> $isSaved]);

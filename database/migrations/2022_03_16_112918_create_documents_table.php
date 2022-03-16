@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFondTable extends Migration
+class CreateDocumentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateFondTable extends Migration
      */
     public function up()
     {
-        Schema::create('fonds', function (Blueprint $table) {
+        Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->longText("name");
-            $table->string("reference")->nullable();
-            $table->foreignId("io_type_id")->constrained()->onDelete("cascade")->change();
-            $table->softDeletes();
+            $table->string("filename");
+            $table->longText("filepath");
+            $table->string("mimetype");
+            $table->foreignId("io_id")->constrained("io");
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateFondTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fonds');
+        Schema::dropIfExists('documents');
     }
 }
