@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response as Code;
 
@@ -335,15 +336,22 @@ class IoController extends Controller
                     "mimetype"=>1,
                     "io_id"=>$io->id,
                 ]);
-                $path = $file->store('public/documents/'.$request->user()->id);
+
+
+
+                # Save Files
+                $path = $file->storeAs("public/documents/".$request->user()->id, $file->getClientOriginalName());
+                $db_path = substr($path, strpos( $path, "/")+1);
 
                 $doc->filename = $file->getClientOriginalName();
-                $doc->filepath = $path;
+                $doc->filepath = $db_path;
                 $doc->mimetype = $file->getMimeType();
                 $doc->save();
             endforeach;
         }
         $isSaved = $io->save();
+
+
 
         Log::channel("app")->info("Io Update: ", ['Is Io Saved'=> $isSaved]);
         if ($isSaved) {

@@ -37,7 +37,9 @@
   </ul>
 <div class="documents">
     @foreach($io->documents as $doc)
-        <img src="{{asset($doc->filepath)}}" alt="{{$doc->filename}}">
+        <a href="{{asset("/storage/".$doc->filepath)}}" target="_blank">
+        <img src="{{asset("/storage/".$doc->filepath)}}" alt="{{$doc->filename}}">
+        </a>
     @endforeach
 </div>
     <br>
