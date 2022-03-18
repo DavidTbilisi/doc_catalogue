@@ -40,6 +40,7 @@
                             <li><a class="dropdown-item" href="{{route('groups.index')}}">ადმინისტრირების ჯგუფები</a></li>
                             <li><a class="dropdown-item" href="{{route('permissions.index')}}">პრივილეგიები</a></li>
                             <li><a class="dropdown-item" href="{{route('types.index')}}">ობიექტების ტიპები</a></li>
+                            <li><a class="dropdown-item" href="{{route('elfinder.index')}}" target="_blank">ფაილები</a></li>
                         </ul>
                     </div>
                 </div>
