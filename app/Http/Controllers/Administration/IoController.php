@@ -355,7 +355,7 @@ class IoController extends Controller
 
         Log::channel("app")->info("Io Update: ", ['Is Io Saved'=> $isSaved]);
         if ($isSaved) {
-            return redirect(route("io.index"));
+            return redirect(route("io.show",["id"=>$id]));
         }
     }
 
@@ -372,6 +372,7 @@ class IoController extends Controller
 
 
             foreach ($this->getChildren($io) as $index => $infoObject){
+                Document::where("io_id",$infoObject->id)->delete();
                 $status = $infoObject->delete();
                 Log::channel("app")->info("'{$io->id}' Deletion status", [$status]);
             };

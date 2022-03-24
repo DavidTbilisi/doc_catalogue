@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
+use App\Models\Document;
 use Illuminate\Http\Request;
 
 class DocumentsController extends Controller
@@ -80,6 +81,7 @@ class DocumentsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Document::findOrFail($id)->delete();
+        return redirect(route());
     }
 }
