@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
 use App\Models\Document;
+use App\Models\Io;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentsController extends Controller
 {
@@ -71,6 +73,16 @@ class DocumentsController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+    public function clearDocuments($io_id)
+    {
+        $docs = Document::where("io_id",$io_id);
+        foreach ($docs->get() as $doc):
+            Storage::delete("public/".$doc->filepath);
+        endforeach;
+        $docs->delete();
+        return redirect(route("io.show", ["id"=>$io_id]));
     }
 
     /**

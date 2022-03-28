@@ -328,22 +328,25 @@ class IoController extends Controller
 
 
         if ($request->hasFile ("files") ) {
-            foreach ($request->file("files") as $file):
+            foreach ($request->file("files") as $index => $file):
 
-                $doc = Document::where("io_id",$io->id)->firstOrCreate([
+                $doc = Document::where("io_id", $io->id)->firstOrCreate([
                     "filename" => "1",
                     'filepath'=>"/",
                     "mimetype"=>1,
                     "io_id"=>$io->id,
                 ]);
 
-
+                $file_ext = $file->getClientOriginalExtension();
+                $index++;
+                $path = str_replace("_", "/", substr( $io->reference, 3));
+                $filename = "{$io->reference}_{$index}.{$file_ext}";
 
                 # Save Files
-                $path = $file->storeAs("public/documents/".$request->user()->id, $file->getClientOriginalName());
+                $path = $file->storeAs("public/documents/".$path, $filename);
                 $db_path = substr($path, strpos( $path, "/")+1);
 
-                $doc->filename = $file->getClientOriginalName();
+                $doc->filename = $filename;
                 $doc->filepath = $db_path;
                 $doc->mimetype = $file->getMimeType();
                 $doc->save();
@@ -371,8 +374,15 @@ class IoController extends Controller
 
 
 
-            foreach ($this->getChildren($io) as $index => $infoObject){
-                Document::where("io_id",$infoObject->id)->delete();
+            foreach ($this->getChildren($io) as $infoObject){
+
+                $docs = Document::where("io_id",$infoObject->id);
+
+                foreach($docs->get() as $d) :
+                Storage::delete("public/".$d->filepath);
+                endforeach;
+
+                $docs->delete();
                 $status = $infoObject->delete();
                 Log::channel("app")->info("'{$io->id}' Deletion status", [$status]);
             };
@@ -381,6 +391,8 @@ class IoController extends Controller
             DB::commit();
         } catch (\Exception $exception) {
             DB::rollBack();
+            Log::channel("app")->info("Deletion status", [$exception->getMessage()]);
+
             return redirect(route('io.index'))->withErrors("message", $exception->getMessage());
         }
 

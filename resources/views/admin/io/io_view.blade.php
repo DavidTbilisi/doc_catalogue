@@ -35,18 +35,26 @@
   @endif
 
   </ul>
-<div class="documents">
-    @foreach($io->documents as $doc)
-        <a href="{{asset("/storage/".$doc->filepath)}}" target="_blank">
-        <img src="{{asset("/storage/".$doc->filepath)}}" alt="{{$doc->filename}}">
-        </a>
-    @endforeach
-</div>
+
+    @if(count($io->documents) )
+    <form action="{{route('io.cleardocs', ["id"=>$io->id])}}" method="POST">
+        @csrf
+        <button class="btn btn-danger" onclick="return confirm('დარწმუნებული ხარ რომ გინდა დოკუმენტების წაშლა?')">დოკუმენტების გასუფთავება <span class="material-icons md-light"> delete </span></button>
+    </form>
+    @endif
+
+    <div class="documents mt-3">
+        @foreach($io->documents as $doc)
+            <a href="{{asset("/storage/".$doc->filepath)}}" target="_blank">
+            <img class="w-100" src="{{asset("/storage/".$doc->filepath)}}" alt="{{$doc->filename}}">
+            </a>
+        @endforeach
+    </div>
     <br>
 
     <form action="{{route('io.delete', ["id"=>$io->id])}}" method="POST">
         @csrf
-    <button class="btn btn-danger" onclick="return confirm('საინფორმაციო ობიექტის წაშლით იშლება ყველა მასზე მიბმული ობიექტი. დარწმუნებული ხარ?')">წაშლა</button>
+    <button class="btn btn-danger" onclick="return confirm('საინფორმაციო ობიექტის წაშლით იშლება ყველა მასზე მიბმული ობიექტი. დარწმუნებული ხარ?')">ობიექტის წაშლა</button>
     </form>
   <x-add-button route="{{route('io.add',['io_parent_id'=> $io->id])}}"></x-add-button>
 

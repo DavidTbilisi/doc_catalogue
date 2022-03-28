@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Administration\AdminController;
+use App\Http\Controllers\Administration\DocumentsController;
 use App\Http\Controllers\Administration\GroupController;
 use App\Http\Controllers\Administration\IoTypesController;
 use App\Http\Controllers\Administration\OtherTablesController;
@@ -140,6 +141,10 @@ Route::middleware(['auth', 'perms'])->group(function () {
                 Route::post('/delete/{id?}', [IoController::class, 'destroy'])
                     ->where('id', "[0-9]+")
                     ->name('delete');
+
+                Route::post('/io_docs/clear/{id?}', [DocumentsController::class, 'clearDocuments'])
+                    ->where('id', "[0-9]+")
+                    ->name('cleardocs');
             });
         });
 

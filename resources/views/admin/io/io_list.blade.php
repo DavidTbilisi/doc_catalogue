@@ -1,6 +1,10 @@
 @extends('layouts.admin')
 @section('body')
 
+<div class="container">
+    <x-error-alert></x-error-alert>
+</div>
+
 <table class="table mt-4">
     <thead>
     <tr>
@@ -12,6 +16,7 @@
     </tr>
     </thead>
     <tbody>
+
 @foreach($iolist as $io)
         <tr>
             <th scope="row">{{++$loop->index}}</th>
