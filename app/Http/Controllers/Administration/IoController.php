@@ -298,17 +298,29 @@ class IoController extends Controller
         ]);
     }
 
+    private function el_start_dir($path){
+        $volumeId = 'l1_';
+        $hash = $volumeId . rtrim(strtr(base64_encode($path), '+/=', '-_.'), '.');
+        return $hash;
+    }
+
+
     public function edit($id)
     {
         $io = IO::with("type")
             ->with('parent')
+            ->with('documents')
             ->where('id',$id)
             ->firstOrFail();
 
         $types = Io_type::all();
+        $path = substr($io->reference, 3);
+        $path = str_replace("_","/", $path);
+
         return view('admin.io.io_edit', [
             'types'=>$types,
-            'io'=>$io
+            'io'=>$io,
+            'startPath' => $this->el_start_dir("documents/".$path)
         ]);
     }
 
