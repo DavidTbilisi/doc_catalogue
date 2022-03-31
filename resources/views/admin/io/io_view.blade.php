@@ -54,7 +54,11 @@
 
     <form action="{{route('io.delete', ["id"=>$io->id])}}" method="POST">
         @csrf
-    <button class="btn btn-danger" onclick="return confirm('საინფორმაციო ობიექტის წაშლით იშლება ყველა მასზე მიბმული ობიექტი. დარწმუნებული ხარ?')">ობიექტის წაშლა</button>
+    <button class="btn btn-danger" onclick="return confirm('საინფორმაციო ობიექტის წაშლით იშლება ყველა მასზე მიბმული ობიექტი. დარწმუნებული ხარ?')">
+        <span class="material-icons md-light">delete_outline</span>
+
+        ობიექტის წაშლა
+    </button>
     </form>
   <x-add-button route="{{route('io.add',['io_parent_id'=> $io->id])}}"></x-add-button>
 

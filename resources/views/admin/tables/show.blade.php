@@ -22,8 +22,14 @@
             <input type="text" name="{{$index}}" class="form-control" id="{{$index}}" value="{{$value}}" placeholder="{{$translation[$index]}}">
         </div>
         @endforeach
-        <button type="submit" class="btn btn-success">Save</button>
-        <a type="submit" href="{{route("io.show", ['id'=> $id])}}" class="btn btn-danger">Io</a>
+        <button type="submit" class="btn btn-success">
+            <span class="material-icons md-light">save</span>
+            შენახვა
+        </button>
+        <a type="submit" href="{{route("io.show", ['id'=> $id])}}" class="btn btn-danger">
+            <span class="material-icons md-light">arrow_back</span>
+            დაბრუნება
+        </a>
     </form>
 
 @endsection

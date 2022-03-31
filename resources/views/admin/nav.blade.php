@@ -28,7 +28,7 @@
             </ul>
             <div class="right w-25 d-flex justify-content-around align-items-center">
                 <div class=" d-flex justify-content-around align-items-center">
-                    <a class="me-2" href="#"><span class="material-icons md-light">add</span></a>
+                    <a class="me-2" href="{{route("search")}}"><span class="material-icons md-light">search</span></a>
                     <a class="me-2" href="#"><span class="material-icons md-light">edit</span></a>
                     <a class="me-2" href="#"><span class="material-icons md-light">file_download</span></a>
                     <div class="dropdown">

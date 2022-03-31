@@ -28,9 +28,17 @@
             <td>
             <form action="{{route("io.delete", ["id"=>$io->id])}}" method="POST">
                 @csrf
-                <a href="{{route("io.show", ["id"=>$io->id])}}" class="btn btn-success">View</a>
-                <a href="{{route("io.edit", ["id"=>$io->id])}}" class="btn btn-info">Edit</a>
-                <button onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger">Delete</button>
+                <a href="{{route("io.show", ["id"=>$io->id])}}" class="btn btn-success">
+                    <span class="material-icons md-light">visibility</span>
+                </a>
+                <a href="{{route("io.edit", ["id"=>$io->id])}}" class="btn btn-info">
+                    <span class="material-icons md-light">edit</span>
+
+                </a>
+                <button onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger">
+                    <span class="material-icons md-light">delete</span>
+
+                </button>
             </form>
             </td>
         </tr>

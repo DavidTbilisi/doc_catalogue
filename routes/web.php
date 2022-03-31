@@ -7,6 +7,7 @@ use App\Http\Controllers\Administration\IoTypesController;
 use App\Http\Controllers\Administration\OtherTablesController;
 use App\Http\Controllers\Administration\PermissionController;
 use App\Http\Controllers\Administration\IoController;
+use App\Http\Controllers\Administration\SearchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -222,9 +223,9 @@ Route::middleware(['auth', 'perms'])->group(function () {
             });
         });
 
+        Route::get('/search', [SearchController::class, 'index'])->name('search');
 
     });
-
 
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
