@@ -21,11 +21,33 @@
 
 
         <script>
+
+            function drawInputs(type = "text", placeholder = "ადგილის დამკავებელი") {
+
+// debugger
+                let input = `<input class="dynamic form-control mb-3" type="${type}" placeholder="${placeholder}">`
+                    // input = parser.parseFromString(input, "text/html");
+
+                let input_count = document.querySelector("form").childElementCount -2
+                let referenceNode = document.querySelector("form").children[input_count]
+                referenceNode.insertAdjacentHTML( "beforebegin", input);
+            }
+
+
+
             function getFields(event){
                 $.ajax({
                     url: "{{route("columns")}}/"+event.target.value,
                     success:function(data) {
                         console.log(data)
+                        $(".dynamic").remove()
+                        for (const [key, value] of Object.entries(data.data)) {
+                            let technicalName = value.Field
+                            let translation = data.translation[technicalName];
+                            let type = value.Type;
+                            drawInputs(type, translation)
+                        }
+
                     },
                     error:function() {
                         $("#datatable .inputs").empty();
