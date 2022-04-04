@@ -224,6 +224,7 @@ Route::middleware(['auth', 'perms'])->group(function () {
         });
 
         Route::get('/search', [SearchController::class, 'index'])->name('search');
+        Route::post('/search', [SearchController::class, 'search'])->name('searchresults');
 
     });
 
