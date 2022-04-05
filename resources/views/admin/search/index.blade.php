@@ -7,9 +7,12 @@
         <form action="{{route('searchresults')}}" method="POST">
             @csrf
             <select id="table-selector" class="form-select form-select-lg mb-3" name="table" aria-label=".form-select">
-                <option selected>აირჩიე ტიპი</option>
             @foreach($types as $type)
-                <option value="{{$type->table}}">{{$type->name}}</option>
+                @if(Session::has("search_table") && Session::get("search_table") == $type->table)
+                    <option selected value="{{$type->table}}">{{$type->name}}</option>
+                @else
+                    <option value="{{$type->table}}">{{$type->name}}</option>
+                @endif
             @endforeach
             </select>
 
@@ -28,7 +31,7 @@
       <input class="dynamic form-control mb-3" type="button" disabled value="${placeholder}">
     </div>
     <div class="col">
-        <input class="dynamic form-control mb-3" type="${type}" placeholder="${placeholder}" name="${technical}">
+        <input class="dynamic dinput form-control mb-3" type="${type}" placeholder="${placeholder}" name="${technical}">
     </div>
   </div>
 `
@@ -41,9 +44,11 @@
 
 
 
-            function getFields(event){
+            function getFields(event, table = false){
+                table = table == false? event.target.value: table;
+
                 $.ajax({
-                    url: "{{route("columns")}}/"+event.target.value,
+                    url: "{{route("columns")}}/"+table,
                     success:function(data) {
                         console.log(data)
                         $(".dynamic").remove()
@@ -72,11 +77,28 @@
             }
 
 
+            function fill_from_session() {
+                let inputs = document.querySelectorAll(".dynamic.dinput");
+                let values = JSON.parse('{!! json_encode(Session::get("search_fields"), JSON_FORCE_OBJECT| JSON_UNESCAPED_UNICODE) !!}')
+                values = Object.values(values)
+
+                inputs.forEach((element, index)=>{
+                    console.log(index, element)
+                    element.value = values[index]
+                })
+
+            }
+
+
+
             $("#table-selector").on("change", function() {
                 getFields(event)
             })
 
-
+            @if(Session::has("search_table"))
+            getFields(false,"{{ Session::get("search_table")}}")
+            setTimeout(() => { fill_from_session() }, 500)
+            @endif
         </script>
     </div>
 @endsection
