@@ -11,7 +11,6 @@ class SearchController extends Controller
 {
     public function index()
     {
-
         $types = Io_type::all();
 
         return view("admin/search/index", [
@@ -36,8 +35,6 @@ class SearchController extends Controller
             "reference",
         ]);
 
-
-
         foreach ($fields as $name => $value):
             if ($value) {
                 $builder->where($name, "like","%{$value}%");
@@ -50,7 +47,6 @@ class SearchController extends Controller
             $join->on('io.io_type_id',"=",$table.'.io_type_id');
             $join->on('io.data_id',"=",$table.'.id');
         });
-
 
 
         $results = $builder->get();

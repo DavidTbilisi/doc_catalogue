@@ -10,7 +10,11 @@
                 <div class="card-body">
                     <h5 class="card-title"> {{$result->reference}} </h5>
                     <h6 class="card-subtitle mb-2 text-muted">საინფორმაციო ობიექტის ID: {{$result->io_id}}</h6>
-{{--                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>--}}
+                    <p class="card-text">
+                        @foreach(Session::get("search_fields") as $key => $value)
+                        {{$key}}: {{$value}}
+                        @endforeach
+                    </p>
                     <a target="_blank" href="{{route("io.show",["id"=>$result->io_id])}}" class="card-link">გადასვლა</a>
                 </div>
             </div>

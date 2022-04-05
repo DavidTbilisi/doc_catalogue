@@ -24,7 +24,6 @@
 
             function drawInputs(type = "text", placeholder = "ადგილის დამკავებელი", technical="") {
 
-// debugger
                 let input = `
   <div class="row" id="${technical}">
     <div class="col">
@@ -35,13 +34,11 @@
     </div>
   </div>
 `
-                    // input = parser.parseFromString(input, "text/html");
 
                 let input_count = document.querySelector("form").childElementCount -1
                 let referenceNode = document.querySelector("form").children[input_count]
                 referenceNode.insertAdjacentHTML( "beforebegin", input);
             }
-
 
 
             function getFields(event, table = false){
@@ -75,8 +72,6 @@
                 })
 
             }
-
-
             function fill_from_session() {
                 let inputs = document.querySelectorAll(".dynamic.dinput");
                 let values = JSON.parse('{!! json_encode(Session::get("search_fields"), JSON_FORCE_OBJECT| JSON_UNESCAPED_UNICODE) !!}')
@@ -90,12 +85,14 @@
             }
 
 
-
             $("#table-selector").on("change", function() {
                 getFields(event)
             })
 
+
+
             @if(Session::has("search_table"))
+            {{-- აბრუნებს წინა სერჩს --}}
             getFields(false,"{{ Session::get("search_table")}}")
             setTimeout(() => { fill_from_session() }, 500)
             @endif
