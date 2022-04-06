@@ -43,16 +43,25 @@
                 </select>
             </div>
 
-            <div class="docs mb-3">
-                <label for="files">Select files:</label>
-                <input type="file" class="form-control" id="files" name="files[]" multiple>
+
+            <div class="docs row">
+                <div class="col">
+                    <label for="files">ფაილების ატვირთვა:</label>
+                    <input type="file" class="form-control" id="files" name="files[]" multiple>
+                </div>
+                <div class="col">
+                    <a class="btn btn-primary mt-4 w-100" target="_blank" href="{{route("elfinder.index")."#elf_".$startPath}}">ფაილების დათვალიერება</a>
+                </div>
             </div>
 
-            <a class="btn btn-primary" target="_blank" href="{{route("elfinder.index")."#elf_".$startPath}}">ფაილების დათვალიერება</a>
 
-            <div class="mb-3 mt-3">
-                <button class="btn btn-success" >განახლება</button>
-                <a class="btn btn-danger" href="{{route('io.index')}}">უკან</a>
+            <div class="mb-3 mt-5 row">
+                <div class="col">
+                    <button class="btn btn-success w-100" >განახლება</button>
+                </div>
+                <div class="col">
+                    <a class="btn btn-danger w-100" href="{{route('io.index')}}">უკან</a>
+                </div>
             </div>
 
             </form>

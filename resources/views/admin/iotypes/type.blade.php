@@ -43,16 +43,24 @@
     </div>
         <div class="row">
             <div class="col">
-                <a href="{{route('types.index')}}" class="btn btn-danger w-100">უკან</a>
+                <a href="{{route('types.index')}}" class="btn btn-danger w-100">
+                    <span class="material-icons md-light"> arrow_back </span>
+                    უკან
+                </a>
             </div>
             <div class="col">
-                <button class="btn btn-success w-100">შენახვა</button>
+                <button class="btn btn-success w-100">
+                    <span class="material-icons md-light"> save </span>
+                    შენახვა
+                </button>
             </div>
         </div>
     </form>
     <div class="add-button">
         <div style="position:fixed; right: 100px; bottom: 100px; border-radius: 50%; background-color: #00fa9a; padding: 5px; border: 1px solid black; cursor:pointer">
-            <div onclick="addColumn()"> <span class="material-icons md-light">add</span> </div>
+            <div onclick="addColumn()">
+                <span class="material-icons md-light">add</span>
+            </div>
         </div>
     </div>
 

@@ -27,7 +27,11 @@
             <form action="{{route("types.delete",['id'=>$type->id])}}" method="post">
                 @csrf
                 <input type="hidden" name="table" value="{{$type->table}}">
-                <td><button class="btn btn-danger" onclick="return confirm('Do you really want to delete?')">Delete</button></td>
+                <td>
+                    <button class="btn btn-danger" onclick="return confirm('Do you really want to delete?')">
+                        <span class="material-icons md-light"> delete_outline </span>
+                    </button>
+                </td>
             </form>
         </tr>
         @endforeach
