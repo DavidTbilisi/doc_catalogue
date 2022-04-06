@@ -34,9 +34,10 @@ class SearchController extends Controller
             "io_types.name as io_types_name",
             "reference",
         ]);
-
+        $not_null_fields = [];
         foreach ($fields as $name => $value):
             if ($value) {
+                $not_null_fields[] = $name;
                 $builder->where($name, "like","%{$value}%");
             }
         endforeach;
@@ -52,7 +53,8 @@ class SearchController extends Controller
         $results = $builder->get();
 //        return dd($results);
         return view("admin/search/results", [
-            "results"=> $results
+            "results"=> $results,
+            "fields" => $not_null_fields
         ]);
     }
 }
