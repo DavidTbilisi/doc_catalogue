@@ -164,7 +164,7 @@ return [
         /*
          * Package Service Providers...
          */
-
+        App\Providers\CustomPermissionServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -231,6 +231,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'Perms' => App\Facades\Perms::class,
     ],
 
 ];

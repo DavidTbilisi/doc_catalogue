@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Administration;
 
+use App\Facades\Perms;
 use App\Models\Document;
 use App\Models\Io;
 use App\Models\Io_type;
+use App\Tutsmake\Tutsmake;
+use App\Perms\CustomPermission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response as Code;
@@ -251,6 +255,9 @@ class IoController extends Controller
     }
     public function show($id)
     {
+
+        dd(Perms::test());
+
         $io_item =  IO::with("type")
             ->with('parent')
             ->with('children')
