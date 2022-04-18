@@ -32,7 +32,7 @@
             <td>{{$user->group->alias}}</td>
             <td>
                 @foreach($user->permissions as $perm)
-                    <span>{{$perm->name}}</span>
+                    <span class="btn btn-info m-1">{{$perm->name}}</span>
                 @endforeach
             </td>
         </tr>

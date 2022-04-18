@@ -35,14 +35,14 @@
             <td>{{$group->users->count()}}</td>
             <td>
                 @foreach($group->permissions as $perm)
-                   <span>{{$perm->name}}</span>
+                    <span class="btn btn-info m-1">{{$perm->name}}</span>
                 @endforeach
             </td>
         </tr>
         @endforeach
         </tbody>
     </table>
-    
+
     <x-add-button route="{{route('groups.add')}}"></x-add-button>
 
 
