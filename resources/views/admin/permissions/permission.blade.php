@@ -7,7 +7,7 @@
 
         <div class="mb-3">
             <label for="name" class="form-label">Permission Name</label>
-            <input type="text" class="form-control" id="name" value="{{$permission->name}}">
+            <input type="text" class="form-control" disabled id="name" value="{{$permission->name}}">
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Permission Description</label>

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,5 +25,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+
+        Blade::directive('hasPerm', function ($expression) {
+            return "<?php if ( Perms::hasPerm({$expression}) )  : ?>";
+        });
+
+        Blade::directive('hasPermEnd', function () {
+            return '<?php endif; ?>';
+        });
     }
 }

@@ -3,6 +3,7 @@
 
 @section('body')
 <div class="container pt-4">
+    <x-error-alert></x-error-alert>
 
 
     @if (session()->has("message"))
@@ -28,9 +29,13 @@
         <tr>
             <th scope="row"> {{$index + 1}} </th>
             <td>
+                @if($group->id > 1)
                 <a href="{{route("groups.update", ['id'=>$group->id])}}">
                 {{$group->alias}}
                 </a>
+                @else
+                <p>{{$group->alias}}</p>
+                @endif
             </td>
             <td>{{$group->users->count()}}</td>
             <td>

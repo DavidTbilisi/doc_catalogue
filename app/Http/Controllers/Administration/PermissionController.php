@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Models\Permission;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -39,6 +40,14 @@ class PermissionController extends Controller
         $p->created_at = now();
         $p->updated_at = now();
         $p->save();
+
+        $user = User::with("group")
+            ->with("permissions")
+            ->where("email", $this->only('email'))
+            ->first()->toArray();
+
+        $this->session()->put("user",$user );
+
         return redirect(route("permissions.index"));
     }
 

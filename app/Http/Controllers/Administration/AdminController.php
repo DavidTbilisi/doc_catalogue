@@ -110,6 +110,7 @@ class AdminController extends Controller
 
             DB::table("permission_user")->where('user_id', '=', $id)->delete();
 
+            if ($request->permissions):
             foreach($request->permissions as $permission_id):
                 DB::table("permission_user")->insert([
                     "user_id" => $id,
@@ -117,7 +118,7 @@ class AdminController extends Controller
                     "updated_at" => now(),
                 ]);
             endforeach;
-
+            endif;
         });
         return redirect(route("users.index"));
 

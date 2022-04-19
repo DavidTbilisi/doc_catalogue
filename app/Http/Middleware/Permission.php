@@ -23,25 +23,27 @@ class Permission
             ->where('id',Auth::id())
             ->first();
 
-        $userPerms = 1;
-        $groupPerm = 1;
+        $userPerms = [];
+        $groupPerms = [];
 
 
         foreach($user->permissions as $up) {
             if(!empty($up)) {
-                $userPerms = $userPerms < $up->power? $up->power : $userPerms;
+                $userPerms[$up->id] = $up->name;
             }
         }
 
         foreach($user->group->permissions as $gp) {
             if(!empty($gp)) {
-                $groupPerm = $groupPerm < $gp->power? $gp->power : $groupPerm;
+                $groupPerms[$gp->id] = $gp->name;
             }
         }
 
-        session()->put("perms", "{$userPerms},{$groupPerm}");
+        $all_permissions = $userPerms + $groupPerms;
 
-        if ($groupPerm == false && $userPerms == false) {
+        session()->put("perms", ["userPerms"=>$userPerms, "groupPerms"=>$groupPerms, 'perms'=> $all_permissions]);
+
+        if (!count($all_permissions)) {
             return redirect(route("welcome"))
                 ->with(
                     "message",

@@ -256,8 +256,12 @@ class IoController extends Controller
     public function show($id)
     {
 
-        dd(Perms::test());
+//        dump(Perms::list());
+//        dd(Perms::hasPerms(['Edit Object','Delete Object']));
 
+        if (!Perms::hasPerm(1)):
+            return redirect(route('io.index'))->withErrors([ "msg"=>"არ გაქვს წვდომა ობიექტების ნახვაზე" ]);
+        endif;
         $io_item =  IO::with("type")
             ->with('parent')
             ->with('children')

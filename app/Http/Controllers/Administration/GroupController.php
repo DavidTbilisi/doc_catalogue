@@ -57,6 +57,9 @@ class GroupController extends Controller
 
     public function edit($id)
     {
+        if ($id < 2) return redirect(route("groups.index"))->withErrors(["msg"=>"ადმინისტრატორის შეცვლა შეუძლებელია"]);
+
+
         $group = Group::with("permissions")->where("id", $id )->firstOrFail();
         $permissions = Permission::all();
         $gp = [];
