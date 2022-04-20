@@ -353,12 +353,15 @@ class IoController extends Controller
         if ($request->hasFile ("files") ) {
             foreach ($request->file("files") as $index => $file):
 
-                $doc = Document::where("io_id", $io->id)->firstOrCreate([
-                    "filename" => "1",
-                    'filepath'=>"/",
-                    "mimetype"=>1,
-                    "io_id"=>$io->id,
-                ]);
+                $doc = Document::where("io_id", $io->id)->orderby('created_at', 'desc')->first();
+
+                if(!$doc){
+                    $doc = new Document();
+                } else {
+                    $name = explode('.', $doc->filename)[0];
+                    $index += substr($name, -1);
+                    $doc = new Document();
+                }
 
                 $file_ext = $file->getClientOriginalExtension();
                 $index++;
@@ -369,6 +372,7 @@ class IoController extends Controller
                 $path = $file->storeAs("public/documents/".$path, $filename);
                 $db_path = substr($path, strpos( $path, "/")+1);
 
+                $doc->io_id = $io->id;
                 $doc->filename = $filename;
                 $doc->filepath = $db_path;
                 $doc->mimetype = $file->getMimeType();
