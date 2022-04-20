@@ -9,7 +9,7 @@
     <div class="jumbotron jumbotron-fluid">
       <div class="container">
         <h1 class="display-4"> საინფორმაციო ობიექტი
-            @hasPerm(2)
+            @hasPerm('editObject')
             <a href="{{route('io.edit', ['id'=>$io->id])}}" class="material-icons md-light">edit</a>
             @hasPermEnd
         </h1>
@@ -26,7 +26,7 @@
 
   <ul class="list-group mt-5 mb-5">
     <li class="list-group-item active">
-        @hasPerm(2)
+        @hasPerm('editObject')
         <a id="go-to-data" class="link-light" href="{{route("data.edit",["id"=>$io->data_id, "table"=>$table])}}" >
         @hasPermEnd
             <span class="material-icons md-light"> source </span>
@@ -45,8 +45,8 @@
   </ul>
 
     <div class="row">
-    @hasPerm(6)
-    @if(count($io->documents) )
+    @hasPerm('deleteDocument')
+    @if(count($io->documents))
     <div class="col">
         <form action="{{route('io.cleardocs', ["id"=>$io->id])}}" method="POST">
             @csrf
@@ -60,7 +60,7 @@
     @endif
     @hasPermEnd
 
-    @hasPerm(3)
+    @hasPerm('deleteObject')
     <div class="col">
         <form action="{{route('io.delete', ["id"=>$io->id])}}" method="POST">
             @csrf
@@ -74,11 +74,16 @@
     @hasPermEnd
     </div>
 
-    @hasPerm(4)
+    @hasPerm('viewDocument')
     <div class="documents mt-3">
         @foreach($io->documents as $doc)
+
             <a href="{{asset("/storage/".$doc->filepath)}}" target="_blank">
-            <img class="w-100" src="{{asset("/storage/".$doc->filepath)}}" alt="{{$doc->filename}}">
+                @if(str_contains($doc->mimetype, "image"))
+                <img class="w-100" src="{{asset("/storage/".$doc->filepath)}}" alt="{{$doc->filename}}">
+                @else
+                <a target="_blank" href="{{asset("/storage/".$doc->filepath)}}">{{$doc->filename}}</a>
+                @endif
             </a>
         @endforeach
     </div>

@@ -33,5 +33,19 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('hasPermEnd', function () {
             return '<?php endif; ?>';
         });
+
+
+
+        Blade::directive('isGroup', function ($expression) {
+            return "<?php if ( Perms::isGroup({$expression}) )  : ?>";
+        });
+
+        Blade::directive('notGroup', function () {
+            return '<?php else: ?>';
+        });
+
+        Blade::directive('isGroupEnd', function () {
+            return '<?php endif; ?>';
+        });
     }
 }

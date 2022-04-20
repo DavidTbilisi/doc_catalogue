@@ -29,13 +29,13 @@
         <tr>
             <th scope="row"> {{$index + 1}} </th>
             <td>
-                @if($group->id > 1)
+                @isGroup("admin")
                 <a href="{{route("groups.update", ['id'=>$group->id])}}">
                 {{$group->alias}}
                 </a>
-                @else
+                @notGroup()
                 <p>{{$group->alias}}</p>
-                @endif
+                @isGroupEnd
             </td>
             <td>{{$group->users->count()}}</td>
             <td>
@@ -48,8 +48,9 @@
         </tbody>
     </table>
 
+    @isGroup('admin')
     <x-add-button route="{{route('groups.add')}}"></x-add-button>
-
+    @isGroupEnd()
 
 </div>
 @endsection

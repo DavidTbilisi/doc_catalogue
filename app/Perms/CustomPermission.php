@@ -70,7 +70,7 @@ class CustomPermission{
         foreach($this->userPerms['perms'] as $id => $name):
             $permissions[$name] = $id;
         endforeach;
-        return $permissions[$permName];
+        return $permissions[strtolower($permName)];
     }
 
     public function getPermName(int $permId)
@@ -80,9 +80,13 @@ class CustomPermission{
          * */
         $permissions = $this->list();
         return $permissions[$permId];
-
-
     }
+
+    public function isGroup($name)
+    {
+        return Session::get("user")["group"]["name"] == strtolower($name);
+    }
+
 
 
 

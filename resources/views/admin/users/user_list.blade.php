@@ -24,9 +24,14 @@
         <tr>
             <th scope="row"> {{$index + 1}} </th>
             <td>
+                @isGroup("admin")
                <a href="{{route("users.edit", ['id'=>$user->id])}}">
                     {{$user->name}}
                 </a>
+                @notGroup()
+                <p>{{$user->name}}</p>
+                @isGroupEnd()
+
             </td>
             <td>{{$user->email}}</td>
             <td>{{$user->group->alias}}</td>
@@ -40,9 +45,10 @@
         </tbody>
     </table>
 
+
+    @isGroup('admin')
     <x-add-button route="{{route('users.add')}}"></x-add-button>
-
-
+    @isGroupEnd()
 
 </div>
 @endsection
