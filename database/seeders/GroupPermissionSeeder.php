@@ -14,30 +14,33 @@ class GroupPermissionSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('group_permission')->insert([
-            'group_id' => 1,
-            'permission_id' => 1,
-        ]);
+        $permission_count = range(1,7);
+        $groups = [
+            "Admin" => 1,
+            'Editor' => 2,
+            'User' => 3,
+            ];
+        foreach($permission_count as $permission_id):
+            DB::table("group_permission")->insert([
+                'permission_id' => $permission_id,
+                'group_id' => $groups['Admin'],
+            ]);
+        endforeach;
 
-        DB::table('group_permission')->insert([
-            'group_id' => 1,
-            'permission_id' => 2,
-        ]);
+        foreach([1,2,3,5,6] as $permission_id):
+            DB::table("group_permission")->insert([
+                'permission_id' => $permission_id,
+                'group_id' => $groups['Editor'],
+            ]);
+        endforeach;
 
-        DB::table('group_permission')->insert([
-            'group_id' => 1,
-            'permission_id' => 3,
-        ]);
 
-        DB::table('group_permission')->insert([
-            'group_id' => 2,
-            'permission_id' => 1,
-        ]);
-
-        DB::table('group_permission')->insert([
-            'group_id' => 3,
-            'permission_id' => 1,
-        ]);
+        foreach([2,5] as $permission_id):
+            DB::table("group_permission")->insert([
+                'permission_id' => $permission_id,
+                'group_id' => $groups['User'],
+            ]);
+        endforeach;
 
     }
 }

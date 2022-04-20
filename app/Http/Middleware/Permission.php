@@ -29,13 +29,13 @@ class Permission
 
         foreach($user->permissions as $up) {
             if(!empty($up)) {
-                $userPerms[$up->id] = $up->name;
+                $userPerms[$up->id] = $up->const_name;
             }
         }
 
         foreach($user->group->permissions as $gp) {
             if(!empty($gp)) {
-                $groupPerms[$gp->id] = $gp->name;
+                $groupPerms[$gp->id] = $gp->const_name;
             }
         }
 

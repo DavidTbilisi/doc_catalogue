@@ -14,40 +14,65 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
+
+        // OBJECTS
+        DB::table('permissions')->insert([
+            'name' => "Add Object",
+            'const_name' => "addObject",
+            'description' => "Can add document",
+            'power' => 1,
+        ]);
+
         DB::table('permissions')->insert([
             'name' => "View Object",
+            'const_name' => "viewObject",
             'description' => "Can view object",
             'power' => 1,
         ]);
 
         DB::table('permissions')->insert([
             'name' => "Edit Object",
+            'const_name' => "editObject",
             'description' => "Can edit object",
-            'power' => 2,
+            'power' => 1,
         ]);
 
         DB::table('permissions')->insert([
             'name' => "Delete Object",
+            'const_name' => "deleteObject",
             'description' => "Can delete object",
-            'power' => 4,
+            'power' => 1,
         ]);
+
+
+
+        // DOCUMENTS
+
         DB::table('permissions')->insert([
             'name' => "View Document",
+            'const_name' => "viewDocument",
             'description' => "Can view document",
-            'power' => 8,
+            'power' => 1,
         ]);
 
         DB::table('permissions')->insert([
-            'name' => "Edit Document",
-            'description' => "Can edit document",
-            'power' => 16,
+            'name' => "Add Document",
+            'const_name' => "addDocument",
+            'description' => "Can add document",
+            'power' => 1,
         ]);
 
         DB::table('permissions')->insert([
             'name' => "Delete Document",
+            'const_name' => "deleteDocument",
             'description' => "Can delete document",
-            'power' => 32,
+            'power' => 1,
         ]);
+
+
+
+
+
 
 
     }

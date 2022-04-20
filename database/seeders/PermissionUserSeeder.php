@@ -14,24 +14,14 @@ class PermissionUserSeeder extends Seeder
      */
     public function run()
     {
-        DB::table("permission_user")->insert([
-            'permission_id' => 1,
-            'user_id' => 1,
-        ]);
 
-        DB::table("permission_user")->insert([
-            'permission_id' => 2,
-            'user_id' => 1,
-        ]);
+        foreach(range(1,7) as $i):
+            DB::table("permission_user")->insert([
+                'permission_id' => $i,
+                'user_id' => 1,
+            ]);
+        endforeach;
 
-        DB::table("permission_user")->insert([
-            'permission_id' => 3,
-            'user_id' => 1,
-        ]);
 
-        DB::table("permission_user")->insert([
-            'permission_id' => 3,
-            'user_id' => 1,
-        ]);
     }
 }
