@@ -24,6 +24,7 @@
         <tr>
             <th scope="row">{{++$loop->index}}</th>
             <td><a href="{{route("types.show",['id'=>$type->table])}}">{{$type->name}}</a></td>
+            @isGroup("admin")
             <form action="{{route("types.delete",['id'=>$type->id])}}" method="post">
                 @csrf
                 <input type="hidden" name="table" value="{{$type->table}}">
@@ -33,6 +34,13 @@
                     </button>
                 </td>
             </form>
+            @notGroup()
+            <td>
+                <button class="btn btn-danger" disabled>
+                    <span class="material-icons md-light"> delete_outline </span>
+                </button>
+            </td>
+            @isGroupEnd
         </tr>
         @endforeach
         </tbody>

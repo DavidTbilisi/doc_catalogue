@@ -76,7 +76,33 @@ return array(
     |
     */
 
-    'options' => array(),
+    'options' => array(
+        "uiOptions"=> [
+    // toolbar configuration
+    "toolbar"=> [
+        ['home', 'back', 'forward', 'up', 'reload'],
+        // ['mkdir', 'mkfile', 'upload'],
+        // ['open', 'download', 'getfile'],
+        // ['undo', 'redo'],
+        // ['copy', 'cut', 'paste'],
+        // ['duplicate', 'rename', 'edit', 'resize', 'chmod'],
+        // ['selectall', 'selectnone', 'selectinvert'],
+        // ['quicklook', 'info'],
+        // ['extract', 'archive'],
+        // ['search'],
+        // ['view', 'sort'],
+        // ['fullscreen']
+    ]
+                    ],
+                    "contextmenu"=> [
+    // navbarfolder menu
+    "navbar"=> ['open', 'download', '|', 'upload', 'mkdir', '|', 'copy', 'cut', 'paste', 'duplicate', '|', '|', 'rename', '|', 'places', 'info', 'chmod', 'netunmount'],
+                        // current directory menu
+                        "cwd"=> ['undo', 'redo', '|', 'back', 'up', 'reload', '|', 'upload', 'mkdir', 'mkfile', 'paste', '|', '|', 'view', 'sort', 'selectall', 'colwidth', '|', 'info', '|', 'fullscreen', '|'],
+                        // current directory file menu
+                        "files"=> ['getfile', '|', 'open', 'download', 'opendir', 'quicklook', '|', 'upload', 'mkdir', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'empty', '|', 'rename', 'edit', 'resize', '|', 'archive', 'extract', '|', 'selectall', 'selectinvert', '|', 'places', 'info', 'chmod', 'netunmount']
+                    ],
+    ),
 
     /*
     |--------------------------------------------------------------------------
