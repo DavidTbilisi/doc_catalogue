@@ -40,10 +40,13 @@
                             <li><a class="dropdown-item" href="{{route('groups.index')}}">ადმინისტრირების ჯგუფები</a></li>
                             <li><a class="dropdown-item" href="{{route('permissions.index')}}">პრივილეგიები</a></li>
                             <li><a class="dropdown-item" href="{{route('types.index')}}">ობიექტების ტიპები</a></li>
-                            <li><a class="dropdown-item" href="{{route('elfinder.index')}}" target="_blank">ფაილები</a></li>
+                            <li><a class="dropdown-item" href="{{route('elfinder.ckeditor')}}" target="_blank">ფაილები</a></li>
                         </ul>
                     </div>
                 </div>
+
+
+
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="profile" data-bs-toggle="dropdown" aria-expanded="false">
                         {{\Illuminate\Support\Facades\Auth::user()->name}}

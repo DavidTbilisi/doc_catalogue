@@ -39,9 +39,55 @@
                     @if($locale)
                         lang: '{{ $locale }}', // locale
                     @endif
-                    customData: { 
+                    customData: {
                         _token: '{{ csrf_token() }}'
                     },
+                    @hasPerms(["addDocument", "deleteDocument"])
+
+                    @hasNot
+
+                    @hasPerm("addDocument")
+                    uiOptions: {
+                        // toolbar configuration
+                        toolbar: [
+                            ['home', 'back', 'forward', 'up', 'reload'],
+                            ['mkdir', 'mkfile', 'upload'],
+                            ['open', 'download', 'getfile'],
+                            ['undo', 'redo'],
+                            ['copy', 'cut', 'paste'],
+                            // ['duplicate', 'rename', 'edit', 'resize', 'chmod'],
+                            ['selectall', 'selectnone', 'selectinvert'],
+                            ['quicklook', 'info'],
+                            ['extract', 'archive'],
+                            ['search'],
+                            ['view', 'sort'],
+                            ['fullscreen']
+                        ]
+                    },
+                    @hasNot()
+                    uiOptions: {
+                        // toolbar configuration
+                        toolbar: [
+                            ['home', 'back', 'forward', 'up', 'reload'],
+                            // ['mkdir', 'mkfile', 'upload'],
+                            // ['open', 'download', 'getfile'],
+                            ['undo', 'redo'],
+                            // ['copy', 'cut', 'paste'],
+                            // ['duplicate', 'rename', 'edit', 'resize', 'chmod'],
+                            ['selectall', 'selectnone', 'selectinvert'],
+                            ['quicklook', 'info'],
+                            // ['extract', 'archive'],
+                            ['search'],
+                            ['view', 'sort'],
+                            ['fullscreen']
+                        ]
+                    },
+                    @hasPermEnd()
+
+                    @hasPermsEnd
+
+                    width: '100%',
+                    height: $(window).height() - 20,
                     url: '{{ route("elfinder.connector") }}',  // connector URL
                     soundPath: '{{ asset($dir.'/sounds') }}',
                     getFileCallback : function(file) {
