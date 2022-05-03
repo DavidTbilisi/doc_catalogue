@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Administration\AdminController;
 use App\Http\Controllers\Administration\DocumentsController;
+use App\Http\Controllers\Administration\FondPermsController;
 use App\Http\Controllers\Administration\GroupController;
 use App\Http\Controllers\Administration\IoTypesController;
 use App\Http\Controllers\Administration\OtherTablesController;
@@ -219,6 +220,16 @@ Route::middleware(['auth', 'perms'])->group(function () {
 
                 Route::post('/column', [OtherTablesController::class, 'columnChange'])
                     ->name('columnchange');
+
+            });
+        });
+
+
+        Route::prefix("permissions/root")->group(function () {
+            Route::name('perm_root.')->group(function () {
+                Route::get('/{id?}', [FondPermsController::class, 'show'])
+                    ->where('id', "[0-9]+")
+                    ->name('show');
 
             });
         });

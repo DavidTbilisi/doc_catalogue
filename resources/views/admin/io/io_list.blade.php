@@ -30,6 +30,8 @@
             @hasPerm('viewObject')
             <form action="{{route("io.delete", ["id"=>$io->id])}}" method="POST">
                 @csrf
+
+
                 <a href="{{route("io.show", ["id"=>$io->id])}}" class="btn btn-success">
                     <span class="material-icons md-light">visibility</span>
                 </a>
@@ -39,11 +41,19 @@
                 </a>
                 @hasPermEnd
 
+                @isGroup("admin")
+                <a href="{{route("perm_root.show", ["id"=>$io->id])}}" class="btn btn-primary">
+                    <span class="material-icons md-light">rule</span>
+                </a>
+                @isGroupEnd()
+
+
                 @hasPerm('deleteObject')
                 <button onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger">
                     <span class="material-icons md-light">delete</span>
                 </button>
                 @hasPermEnd
+
 
             </form>
             @hasPermEnd

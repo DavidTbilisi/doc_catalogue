@@ -112,6 +112,7 @@ class IoTypesController extends Controller
 
                     }
                     $table->foreignId("io_type_id")->constrained()->nallable();
+                    $table->integer("permission")->default("");
                     $table->softDeletes();
                     $table->timestamps();
             });
