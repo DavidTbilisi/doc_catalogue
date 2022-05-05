@@ -20,7 +20,7 @@ class PermissionSeeder extends Seeder
             'name' => "Add Object",
             'const_name' => "addObject",
             'description' => "Can add document",
-            'power' => 1,
+            'power' => 2,
         ]);
 
         DB::table('permissions')->insert([
@@ -34,14 +34,14 @@ class PermissionSeeder extends Seeder
             'name' => "Edit Object",
             'const_name' => "editObject",
             'description' => "Can edit object",
-            'power' => 1,
+            'power' => 4,
         ]);
 
         DB::table('permissions')->insert([
             'name' => "Delete Object",
             'const_name' => "deleteObject",
             'description' => "Can delete object",
-            'power' => 1,
+            'power' => 8,
         ]);
 
 
@@ -52,21 +52,21 @@ class PermissionSeeder extends Seeder
             'name' => "View Document",
             'const_name' => "viewDocument",
             'description' => "Can view document",
-            'power' => 1,
+            'power' => 16,
         ]);
 
         DB::table('permissions')->insert([
             'name' => "Add Document",
             'const_name' => "addDocument",
             'description' => "Can add document",
-            'power' => 1,
+            'power' => 32,
         ]);
 
         DB::table('permissions')->insert([
             'name' => "Delete Document",
             'const_name' => "deleteDocument",
             'description' => "Can delete document",
-            'power' => 1,
+            'power' => 64,
         ]);
 
 
