@@ -18,7 +18,7 @@ class CreateFondTable extends Migration
             $table->longText("name");
             $table->string("reference")->nullable();
             $table->foreignId("io_type_id")->constrained()->onDelete("cascade")->change();
-            $table->integer("permission")->default("");
+            $table->integer("permission")->default(127);
             $table->softDeletes();
             $table->timestamps();
         });

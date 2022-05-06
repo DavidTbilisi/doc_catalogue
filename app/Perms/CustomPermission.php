@@ -2,6 +2,7 @@
 namespace App\Perms;
 
 
+use App\Models\Permission;
 use Illuminate\Support\Facades\Session;
 
 class CustomPermission{
@@ -87,6 +88,29 @@ class CustomPermission{
         return Session::get("user")["group"]["name"] == strtolower($name);
     }
 
+
+    public function fondPerms(int $number)
+    {
+        $permissions = Permission::orderBy("power", "ASC")->get();
+
+        $permitedBin = strrev(decbin($number));
+
+        for ($i = 0; $i < strlen($permitedBin); $i++) {
+            $index = $i;
+            $binary = $permitedBin[$i];
+            $permission = $permissions[$i];
+
+            if ($binary == 1) {
+                $permited[$permission->id] = $permission->name;
+            }
+        }
+
+        return [
+            "all"=>$permissions,
+            "permited"=>$permited
+        ];
+
+    }
 
 
 
