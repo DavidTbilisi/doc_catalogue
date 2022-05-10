@@ -16,6 +16,7 @@ class CreateIoTable extends Migration
         Schema::create('io', function (Blueprint $table) {
             $table->id();
             $table->foreignId('io_type_id')->constrained();
+//            $table->foreignId('groups_id')->constrained();
             $table->string('suffix')->nullable();
             $table->integer('identifier')->nullable();
             $table->string('prefix')->nullable();

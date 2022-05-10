@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Administration;
 
 use App\Facades\Perms;
 use App\Models\Document;
+use App\Models\Group;
 use App\Models\Io;
 use App\Models\Io_type;
+use App\Models\IoGroupsPermissions;
 use App\Tutsmake\Tutsmake;
-use App\Perms\CustomPermission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response as Code;
@@ -222,7 +222,22 @@ class IoController extends Controller
                 $io['reference'] = $this->buildReference($io['parent_id'], $request);
                 $io["level"] = $this->detectLevel($io['reference']);
 
+
+
+
+
                 $result = Io::create($io);
+
+
+                $groups = Group::all();
+                foreach ($groups as $group):
+                    $igp = new IoGroupsPermissions;
+                    $igp->io_id = $result->id;
+                    $igp->groups_id = $group->id;
+                    $igp->permission = 127;
+                    $igp->save();
+                endforeach;
+
 
                 DB::commit();
 

@@ -5,19 +5,50 @@
         <x-error-alert></x-error-alert>
     </div>
 
-    <h1 class="mt-4">IO NAME</h1>
+    <h1 class="mt-4">{{$io->reference}} ({{$io->type->name}})</h1>
 
-    <form action="" method="post">
-    @foreach($data["all"] as $permission)
-        @if(in_array( $permission->name, $data['permited']))
-        <label for="#{{$permission->name}}" checked>{{$permission->name}}</label>
-        <input id="{{$permission->name}}" type="checkbox">
-        @else
-        <label for="#{{$permission->name}}">{{$permission->name}}</label>
-        <input id="{{$permission->name}}" type="checkbox">
-        @endif
-            <br>
+
+
+
+        @foreach($permissions as $index => $perms)
+
+            <h2 class="mb-4 mt-4">{{$perms['group']->alias}} </h2>
+
+          <form action="{{route("io.index")}}" method="POST">
+
+        <div class="row">
+
+        @foreach($perms["all"] as $permission)
+            @if(in_array( $permission->const_name, $permissions[$index]['permitted'] ))
+
+                <div class="col-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="{{$permission->const_name}}" checked>
+                        <label class="form-check-label" for="{{$permission->const_name}}">{{$permission->name}}</label>
+                    </div>
+                </div>
+
+            @else
+
+                <div class="col-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="{{$permission->const_name}}">
+                        <label class="form-check-label" for="{{$permission->const_name}}">{{$permission->name}}</label>
+                    </div>
+                </div>
+
+            @endif
+
+
+        @endforeach
+            <div class="col-3">
+                <input type="submit" value="შენახვა" class="btn btn-success">
+            </div>
+        </div>
+
+      </form>
+
+
+
     @endforeach
-    </form>
-
 @endsection

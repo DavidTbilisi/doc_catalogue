@@ -88,26 +88,31 @@ class CustomPermission{
         return Session::get("user")["group"]["name"] == strtolower($name);
     }
 
+    public function all()
+    {
+        return Permission::orderBy("power", "ASC")->get();
+    }
+
 
     public function fondPerms(int $number)
     {
-        $permissions = Permission::orderBy("power", "ASC")->get();
+        $permissions = $this->all();
+        $permittedBin = strrev(decbin($number));  // Converting decimal to binary + reverse str
+        $permitted = [];
 
-        $permitedBin = strrev(decbin($number));
-
-        for ($i = 0; $i < strlen($permitedBin); $i++) {
-            $index = $i;
-            $binary = $permitedBin[$i];
+        for ($i = 0; $i < strlen($permittedBin); $i++) {
+            $binary = $permittedBin[$i];
             $permission = $permissions[$i];
 
+
             if ($binary == 1) {
-                $permited[$permission->id] = $permission->name;
+                $permitted[$permission->id] = $permission->const_name;
             }
         }
 
         return [
             "all"=>$permissions,
-            "permited"=>$permited
+            "permitted"=>$permitted
         ];
 
     }

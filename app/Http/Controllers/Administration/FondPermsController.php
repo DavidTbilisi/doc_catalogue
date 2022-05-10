@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Administration;
 
 use App\Facades\Perms;
 use App\Http\Controllers\Controller;
+use App\Models\Group;
 use App\Models\Io;
 use App\Models\Io_type;
+use App\Models\IoGroupsPermissions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -50,32 +52,29 @@ class FondPermsController extends Controller
      */
     public function show($id)
     {
-//         boilerplate to get Fond
+
+        $io_item =  IO::with("permissions")
+            ->with("type")
+            ->where('id',$id)
+            ->first();
+
+        $perms = [];
 
 
-//        $io_item =  IO::with("type")
-//            ->with('parent')
-//            ->with('children')
-//            ->with('type')
-//            ->with('documents')
-//            ->where('id',$id)
-//            ->first();
-//
-//        $trTable = Io_type::with('translation')->where("id", $io_item->io_type_id)->first();
-//        $translation = $trTable->translation;
-//        $translation = json_decode($translation->fields, true);
-//
-//        $table = $io_item->type->table;
-//        $data = DB::table($io_item->type->table)
-//            ->select()
-//            ->where("id", $io_item->data_id)
-//            ->first();
+        $groups_permission = $io_item->permissions;
+        foreach ($groups_permission as $permission):
+            $group = Group::find($permission->groups_id);
+            $temp = Perms::fondPerms($permission->permission);
 
-//        $fond =
-        $perms = Perms::fondPerms($id);
+            $temp["group"] = $group;
+            $perms[] = $temp;
+        endforeach;
 
 
-        return view('admin.io.io_permissions', ["data"=>$perms]);
+        return view('admin.io.io_permissions', [
+            "permissions"=>$perms,
+            "io"=>$io_item,
+        ]);
 
     }
 

@@ -43,4 +43,9 @@ class Io extends Model
         return $this->hasMany(Document::class);
     }
 
+    public function permissions()
+    {
+        return $this->hasMany(IoGroupsPermissions::class);
+    }
+
 }
