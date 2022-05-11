@@ -28,7 +28,6 @@
             <td>
 
             @hasPerm('viewObject')
-            <form action="{{route("io.delete", ["id"=>$io->id])}}" method="POST">
                 @csrf
 
 
@@ -42,20 +41,21 @@
                 @hasPermEnd
 
                 @isGroup("admin")
-                <a href="{{route("perm_root.show", ["id"=>$io->id])}}" class="btn btn-primary">
+                <a href="{{route("io_perms.show", ["id"=>$io->id])}}" class="btn btn-primary">
                     <span class="material-icons md-light">rule</span>
                 </a>
                 @isGroupEnd()
 
 
                 @hasPerm('deleteObject')
-                <button onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger">
-                    <span class="material-icons md-light">delete</span>
-                </button>
+                <form action="{{route("io.delete", ["id"=>$io->id])}}" method="POST">
+                    @csrf()
+                    <button type="submit" onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger">
+                        <span class="material-icons md-light">delete</span>
+                    </button>
+                </form>
+
                 @hasPermEnd
-
-
-            </form>
             @hasPermEnd
             </td>
         </tr>

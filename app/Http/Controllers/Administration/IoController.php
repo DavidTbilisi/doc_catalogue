@@ -406,28 +406,33 @@ class IoController extends Controller
 
     public function destroy($id)
     {
+        echo $id;
         DB::beginTransaction();
         try{
             $io = Io::findOrFail($id);
             $type = Io_type::findOrFail($io->io_type_id);
-
-            $status = DB::table($type->table)->delete($io->data_id);
+            $type_table = $type->table;
+            $status = DB::table($type_table)->where("id",$io->data_id)->delete();
             Log::channel("app")->info("'{$type->table}'-{$io->data_id} deletion status", [$status]);
 
+            $io_children = $this->getChildren($io);
 
+            if (count($io_children) > 0){ // todo: დასაზუსტებელია პირობა
+                foreach ($io_children as $infoObject){
 
-            foreach ($this->getChildren($io) as $infoObject){
+                    $docs = Document::where("io_id",$infoObject->id);
 
-                $docs = Document::where("io_id",$infoObject->id);
+                    foreach($docs->get() as $d) :
+                    Storage::delete("public/".$d->filepath);
+                    endforeach;
 
-                foreach($docs->get() as $d) :
-                Storage::delete("public/".$d->filepath);
-                endforeach;
+                    IoGroupsPermissions::where("io_id", $io->id)->delete();
 
-                $docs->delete();
-                $status = $infoObject->delete();
-                Log::channel("app")->info("'{$io->id}' Deletion status", [$status]);
-            };
+                    $docs->delete();
+                    $status = $infoObject->delete();
+                    Log::channel("app")->info("'{$io->id}' Deletion status", [$status]);
+                };
+            }
 
 
             DB::commit();
@@ -435,12 +440,11 @@ class IoController extends Controller
             DB::rollBack();
             Log::channel("app")->info("Deletion status", [$exception->getMessage()]);
 
-            return redirect(route('io.index'))->withErrors("message", $exception->getMessage());
+            return redirect(route('io.index'))->withErrors("msg", $exception->getMessage());
         }
 
-        if($status) {
-            return redirect(route("io.index"));
-        }
+
+        return redirect(route("io.index"))->withErrors("msg", "Deleted");
     }
 
 

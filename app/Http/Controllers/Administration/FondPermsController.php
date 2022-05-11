@@ -41,7 +41,7 @@ class FondPermsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
@@ -96,9 +96,16 @@ class FondPermsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $group_id, $io_id)
     {
-        //
+        $igp = IoGroupsPermissions::where("groups_id",$group_id)->where("io_id", $io_id)->first();
+        $powers = array_keys($request->except(['_token']));
+        $all_power = array_sum($powers);
+
+        $igp->permission = $all_power;
+        $igp->save();
+
+        return redirect(route("io_perms.show",['id'=>$io_id]));
     }
 
     /**

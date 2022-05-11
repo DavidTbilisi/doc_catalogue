@@ -225,11 +225,18 @@ Route::middleware(['auth', 'perms'])->group(function () {
         });
 
 
-        Route::prefix("permissions/root")->group(function () {
-            Route::name('perm_root.')->group(function () {
+        Route::prefix("io/permissions")->group(function () {
+            Route::name('io_perms.')->group(function () {
+
+
                 Route::get('/{id?}', [FondPermsController::class, 'show'])
                     ->where('id', "[0-9]+")
                     ->name('show');
+
+                Route::post('/{group_id}/{io_id}', [FondPermsController::class, 'update'])
+                    ->where('group_id', "[0-9]+")
+                    ->where('io_id', "[0-9]+")
+                    ->name('update');
 
             });
         });
@@ -239,7 +246,7 @@ Route::middleware(['auth', 'perms'])->group(function () {
 
     });
 
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard',  [IoController::class, 'index'])->name('dashboard');
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
 });
 

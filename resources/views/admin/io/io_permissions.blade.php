@@ -14,8 +14,8 @@
 
             <h2 class="mb-4 mt-4">{{$perms['group']->alias}} </h2>
 
-          <form action="{{route("io.index")}}" method="POST">
-
+          <form action="{{route("io_perms.update", ['group_id'=>$perms['group']->id, 'io_id'=>$io->id])}}" method="POST">
+            @csrf()
         <div class="row">
 
         @foreach($perms["all"] as $permission)
@@ -23,8 +23,8 @@
 
                 <div class="col-3">
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="{{$permission->const_name}}" checked>
-                        <label class="form-check-label" for="{{$permission->const_name}}">{{$permission->name}}</label>
+                        <input class="form-check-input" name="{{$permission->power}}" type="checkbox" role="switch" id="{{$permission->const_name.$perms['group']->alias}}" checked>
+                        <label class="form-check-label" for="{{$permission->const_name.$perms['group']->alias}}">{{$permission->name}}</label>
                     </div>
                 </div>
 
@@ -32,8 +32,8 @@
 
                 <div class="col-3">
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="{{$permission->const_name}}">
-                        <label class="form-check-label" for="{{$permission->const_name}}">{{$permission->name}}</label>
+                        <input class="form-check-input" name="{{$permission->power}}" type="checkbox" role="switch" id="{{$permission->const_name.$perms['group']->alias}}">
+                        <label class="form-check-label" for="{{$permission->const_name.$perms['group']->alias}}">{{$permission->name}}</label>
                     </div>
                 </div>
 
