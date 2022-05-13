@@ -48,7 +48,7 @@
 
 
                 @hasPerm('deleteObject')
-                <form action="{{route("io.delete", ["id"=>$io->id])}}" method="POST">
+                <form class="form-check-inline" action="{{route("io.delete", ["id"=>$io->id])}}" method="POST">
                     @csrf()
                     <button type="submit" onclick="return confirm('Are you sure you want to delete?')" class="btn btn-danger">
                         <span class="material-icons md-light">delete</span>

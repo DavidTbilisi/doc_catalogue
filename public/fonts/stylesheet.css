@@ -1,0 +1,22 @@
+@font-face {
+    font-family: "FiraGO";
+    src: url("FiraGO-Regular.eot");
+    src: url("FiraGO-Regular.eot?#iefix") format("embedded-opentype"),
+        url("FiraGO-Regular.woff2") format("woff2"),
+        url("FiraGO-Regular.woff") format("woff"),
+        url("FiraGO-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.caps {
+    font-family: "FiraGO" !important;
+    font-feature-settings: "case" on;
+}
+
+html,
+body,
+samp {
+    font-family: "FiraGO";
+}

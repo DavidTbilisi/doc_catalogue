@@ -260,4 +260,10 @@ Route::prefix("test")->group(function () {
     });
 });
 
+
+
+Route::get('/viewer', function () {
+    return view("admin.viewer");
+});
+
 require __DIR__ . '/auth.php';
