@@ -9,6 +9,7 @@ use App\Http\Controllers\Administration\OtherTablesController;
 use App\Http\Controllers\Administration\PermissionController;
 use App\Http\Controllers\Administration\IoController;
 use App\Http\Controllers\Administration\SearchController;
+use App\Http\Controllers\Administration\ViewerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -260,10 +261,7 @@ Route::prefix("test")->group(function () {
     });
 });
 
-
-
-Route::get('/viewer', function () {
-    return view("admin.viewer");
-});
+Route::get('/viewer/{io_id}', [ViewerController::class, 'show'])->name('viewer');
+Route::any('/viewer/{io_id}/json', [ViewerController::class, 'dataJson'])->name('viewerjson');
 
 require __DIR__ . '/auth.php';

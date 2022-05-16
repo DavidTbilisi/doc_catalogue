@@ -13,13 +13,12 @@
     <link rel="stylesheet" href="{{asset('fonts/stylesheet.css')}} ">
 
     @yield('css')
-
-    @FilemanagerScript
 </head>
 
 <body class="hold-transition layout-top-nav">
     <div class="container-fluid">
-        @yield('content')
+        @section("content")
+        @show
     </div>
     <script src="{{asset('js/viewer.js')}}"></script>
     @yield('js')
