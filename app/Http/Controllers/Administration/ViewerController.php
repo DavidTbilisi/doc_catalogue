@@ -9,32 +9,43 @@ class ViewerController extends Controller
 {
     public function show($id)
     {
-        echo "<a href='".route('io.show',['id'=>$id])."' target='_blank'> Show IO </a>";
-        return view('admin.viewer',['sakme_id'=>$id]);
+        $io = Io::find($id);
+        return view('admin.viewer',[
+            'sakme_id'=>$id,
+            'title'=>$io->reference,
+        ]);
     }
 
     private function getData($id) {
         $io = Io::with("documents")->where("id",$id)->first();
         $images = [];
-        foreach ($io->documents as $index => $doc) {
+        $current_page = request('page')??1;
+        $per_page = request('per_page')??5;
+
+        $docs = $io->documents()->paginate(5);
+//        dd($docs);
+        foreach ($docs as $index => $doc) {
             $base64 = file_get_contents("storage/".$doc->filepath);
             $base64 = base64_encode($base64);
-
+            $index += 1;
             $images[] = [
-                'index' => $index,
+                'index' => $index+$per_page*$current_page,
 //                'path' => $doc->filepath,
                 'mime_type' => $doc->mimetype,
                 'file_base_64' => $base64,
                 'id' => $doc->id,
             ];
         }
-        $total = count($images);
+
+
+
+
         return [
             'data'=>$images,
-            'current_page'=>(int)$id,
-            'per_page'=>5,
+            'current_page'=>$docs->currentPage(),
+            'per_page'=>$docs->perPage(),
             'result'=>"success",
-            'total'=>$total,
+            'total'=> $docs->total(),
         ];
     }
 

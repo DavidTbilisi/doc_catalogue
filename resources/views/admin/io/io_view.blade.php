@@ -72,22 +72,33 @@
         </form>
     </div>
     @hasPermEnd
-    </div>
+    @hasPerm('viewDocument')
+        @if(count($io->documents))
+        <div class="col">
 
+                <a href="{{route('viewer', ['io_id'=>$io->id])}}" target="_blank" class="btn btn-success w-100">
+                    <span class="material-icons md-light"> photo_library </span>
+                    სურათების ნახვა
+                </a>
+        </div>
+        @endif
+
+        @hasPermEnd
+
+    </div>
     @hasPerm('viewDocument')
     <div class="documents mt-3">
         @foreach($io->documents as $doc)
-
             <a href="{{asset("/storage/".$doc->filepath)}}" target="_blank">
-                @if(str_contains($doc->mimetype, "image"))
-                <img class="w-100" src="{{asset("/storage/".$doc->filepath)}}" alt="{{$doc->filename}}">
-                @else
-                <a target="_blank" href="{{asset("/storage/".$doc->filepath)}}">{{$doc->filename}}</a>
+                @if(strpos($doc->mimetype, "image") == -1)
+{{--                    <img class="w-100" src="{{asset("/storage/".$doc->filepath)}}" alt="{{$doc->filename}}">--}}
+                    <a target="_blank" href="{{asset("/storage/".$doc->filepath)}}">{{$doc->mimetype}}</a>
                 @endif
             </a>
         @endforeach
     </div>
     @hasPermEnd
+
 
     <br>
 

@@ -7,18 +7,12 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link href="{{asset('favicon.ico')}}" rel="icon">
-    <title>VIEWER</title>
-    <link rel="stylesheet" href="{{asset("fonts/stylesheet.css")}}">
+    <title> {{$title." - Viewer" ?? "Viewer"}} </title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
-
-
-
     <style>
-
-
         #leftSide {
             background-color: white;
             position: fixed;
@@ -147,6 +141,7 @@
             color: black;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" integrity="sha512-6PM0qYu5KExuNcKt5bURAoT6KCThUmHRewN3zUFNaoI6Di7XJPTMoT6K0nsagZKk2OB4L7E3q1uQKHNHd4stIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body class="hold-transition layout-top-nav">
@@ -297,7 +292,7 @@
     let fullscreenMode = 'open';
 
     var current_page = {!! $current_page ?? 1 !!};
-    let per_page = {!! $per_page ?? 1 !!};
+    let per_page = {!! $per_page ?? 5 !!};
     let sakme_id = {!! json_encode($sakme_id ?? 1) !!};
     let url_ret = `/viewer/${sakme_id}/json`;
 
@@ -611,7 +606,7 @@
             }
         });
         $.ajax({
-            url: url_ret,
+            url: url_ret+"?page="+(parseInt(current_page)),
             type: "post",
             async: "false",
             data: {
@@ -633,7 +628,10 @@
                             '</li>'
                         );
                     });
-                    updateCurrentPage(current_page + 1);
+                    if (current_page <= data.total) {
+                        updateCurrentPage(current_page + 1);
+                    }
+
                     $('.totalCounter').html(data.total);
                     $('#maxImages').attr('maxImages', data.total);
 
