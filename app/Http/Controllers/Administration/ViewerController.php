@@ -22,14 +22,16 @@ class ViewerController extends Controller
         $current_page = request('page')??1;
         $per_page = request('per_page')??5;
 
-        $docs = $io->documents()->paginate(5);
+        $docs = $io->documents()->paginate($per_page);
 //        dd($docs);
         foreach ($docs as $index => $doc) {
             $base64 = file_get_contents("storage/".$doc->filepath);
             $base64 = base64_encode($base64);
-            $index += 1;
+            if ($current_page > 1) $index = $index+$per_page*($current_page-1);
+
+
             $images[] = [
-                'index' => $index+$per_page*$current_page,
+                'index' => $index,
 //                'path' => $doc->filepath,
                 'mime_type' => $doc->mimetype,
                 'file_base_64' => $base64,

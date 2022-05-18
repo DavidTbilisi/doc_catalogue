@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{route('dashboard')}}">
-            <img src="https://archive.gov.ge/images/front/logo_ge.png" alt="logo">
+            <img src="{{asset('Logo.png')}}" width="50" alt="logo">
         </a>
         <button class="navbar-toggler"
                 type="button"

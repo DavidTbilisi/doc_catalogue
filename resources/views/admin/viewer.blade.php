@@ -295,6 +295,7 @@
     let per_page = {!! $per_page ?? 5 !!};
     let sakme_id = {!! json_encode($sakme_id ?? 1) !!};
     let url_ret = `/viewer/${sakme_id}/json`;
+    let total_images = 0;
 
     loadResults(sakme_id, current_page, per_page);
 
@@ -315,7 +316,6 @@
             $('#leftOpenClose').css('left', '25%');
         }
     };
-
 
     // Thumb Click
     function thumbClick(index, url){
@@ -373,7 +373,6 @@
         }
     });
 
-
     // Next Prev
     function nextPrev(method){
         let newIndex = 0;
@@ -405,7 +404,6 @@
         activateThumb(newIndex -1);
     };
 
-
     // ROTATION
     function rotateContent(method){
         if(method === 'plus'){
@@ -416,8 +414,6 @@
         }
         $('#content_viewer').css({'transform' : 'rotate('+ rotation +'deg)'});
     };
-
-
 
     // ZOOM
     function zoomContent(method){
@@ -435,6 +431,7 @@
         }
         $("#content_viewer").animate({ 'zoom': zoom }, 0);
     };
+
     $(document).ready(function(){
         $('#middleBox').bind('wheel mousewheel', function(e){
             var delta;
@@ -592,8 +589,6 @@
         }
     }
 
-
-
     function updateCurrentPage(page){
         current_page = page;
     }
@@ -628,9 +623,11 @@
                             '</li>'
                         );
                     });
-                    if (current_page <= data.total) {
-                        updateCurrentPage(current_page + 1);
-                    }
+
+
+                    updateCurrentPage(current_page + 1);
+
+                    total_images = data.total;
 
                     $('.totalCounter').html(data.total);
                     $('#maxImages').attr('maxImages', data.total);
@@ -652,8 +649,10 @@
     // Load More Content AJAX
     $('.scrollpane').on('scroll', function() {
         let list = $(this).get(0);
-        if(list.scrollTop + list.clientHeight >= list.scrollHeight) {
-            loadResults(sakme_id, current_page, per_page);
+        if (current_page <= Math.ceil(total_images / per_page)) { // Don't loadResults if there is no images left.
+            if(list.scrollTop + list.clientHeight >= list.scrollHeight) {
+                loadResults(sakme_id, current_page, per_page);
+            }
         }
     });
 
