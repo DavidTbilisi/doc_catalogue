@@ -430,6 +430,7 @@
             img_a.style.left =  "auto";
         }
         $("#content_viewer").animate({ 'zoom': zoom }, 0);
+        $("#content_viewer").css("MozTransform", "scale(" + zoom + ")");
     };
 
     $(document).ready(function(){
@@ -443,10 +444,12 @@
             if(delta > 0) {
                 zoom += 0.3;
                 $("#content_viewer").animate({ 'zoom': zoom },0);
+                $("#content_viewer").css("MozTransform", "scale(" + zoom + ")");
             }
             else{
                 zoom -= 0.3;
                 $("#content_viewer").animate({ 'zoom': zoom },0);
+                $("#content_viewer").css("MozTransform", "scale(" + zoom + ")");
             }
         });
     });
