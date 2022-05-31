@@ -25,7 +25,7 @@ class ViewerController extends Controller
         $docs = $io->documents()->paginate($per_page);
 //        dd($docs);
         foreach ($docs as $index => $doc) {
-            $base64 = file_get_contents("storage/".$doc->filepath);
+            $base64 = file_get_contents(app_path("../storage/app/public/".$doc->filepath));
             $base64 = base64_encode($base64);
             if ($current_page > 1) $index = $index+$per_page*($current_page-1);
 

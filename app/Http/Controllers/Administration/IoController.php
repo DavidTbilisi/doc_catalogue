@@ -386,7 +386,7 @@ class IoController extends Controller
                 # Save Files
                 $path = $file->storeAs("public/documents/".$path, $filename);
                 $db_path = substr($path, strpos( $path, "/")+1);
-
+                Log::channel("app")->info("File was added to",["path" => $path] );
                 $doc->io_id = $io->id;
                 $doc->filename = $filename;
                 $doc->filepath = $db_path;
