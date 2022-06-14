@@ -34,7 +34,35 @@ admin@archive.gov.ge
 ```
 ---
 
-http://127.0.0.1:8000/admin/types/add - ერთხელ თუ გამოიტანა შეცდომა მერე სულ გამოაქვს
-io edit  - რეფერენსს ვერ ბილდავს სწორად. 
+---
+## Screenshots
+
+
+Integrated Image viewer  
+![ElFinder](Screenshots/Screenshot_20220614_104411.png)
+
+
+Integrated ElFinider  
+![ElFinder](Screenshots/Screenshot_20220614_104517.png)
+
+
+Information Object Permissions  
+![Information Object Permissions](Screenshots/Screenshot_20220614_104550.png)
+
+
+Information Object  
+![Information Object](Screenshots/Screenshot_20220614_104238.png)
+
+
+Main view  
+![Main View](Screenshots/Screenshot_20220614_104135.png)
+
+
+
+
+
+
+
+
 
 
