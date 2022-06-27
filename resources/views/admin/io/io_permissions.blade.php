@@ -11,7 +11,9 @@
 
 
         @foreach($permissions as $index => $perms)
-
+            @if ($perms['group']->name == "admin")
+                @continue
+            @endif
             <h2 class="mb-4 mt-4">{{$perms['group']->alias}} </h2>
 
           <form action="{{route("io_perms.update", ['group_id'=>$perms['group']->id, 'io_id'=>$io->id])}}" method="POST">
