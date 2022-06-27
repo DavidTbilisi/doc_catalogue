@@ -71,8 +71,8 @@
         </div>
 
         <div class="form-group mt-5">
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <button class="btn btn-success" onclick="addInput(event)">Add Input</button>
+            <button type="submit" class="btn btn-primary">ობიექტის შენახვა</button>
+            <button class="btn btn-success" onclick="addInput(event)">ველის დამატება</button>
         </div>
     </form>
 
