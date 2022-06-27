@@ -4,9 +4,9 @@
 
     <form action="{{route("types.store")}}" method="post" class="mt-5 ">
 
-    <div class="alert alert-warning" role="alert">
-        ტექნიკური სახელები უნდა შედგებოდეს მხოლოდ ლათინური ასოებისგან.
-    </div>
+{{--    <div class="alert alert-warning" role="alert">--}}
+{{--        ტექნიკური სახელები უნდა შედგებოდეს მხოლოდ ლათინური ასოებისგან.--}}
+{{--    </div>--}}
 
         <x-error-alert></x-error-alert>
 
