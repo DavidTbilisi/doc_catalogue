@@ -72,20 +72,7 @@
         </form>
     </div>
     @hasPermEnd
-    @hasPerm('viewDocument')
-        @if(count($io->documents))
-        <div class="col">
 
-                <a href="{{route('viewer', ['io_id'=>$io->id])}}" target="_blank" class="btn btn-success w-100">
-                    <span class="material-icons md-light"> photo_library </span>
-                    სურათების ნახვა
-                </a>
-        </div>
-        @endif
-
-        @hasPermEnd
-
-    </div>
     @hasPerm('viewDocument')
     <div class="documents mt-3">
         @foreach($io->documents as $doc)
@@ -125,4 +112,34 @@
     });
 
 </script>
+@endsection
+
+
+
+@section("iobuttons")
+        @hasPerm('viewDocument')
+        @if(count($io->documents))
+            <a href="{{route('viewer', ['io_id'=>$io->id])}}" target="_blank" class="btn btn-success w-100 m-2">
+                <span class="material-icons md-light"> photo_library </span>
+                სურათების ნახვა {{count($io->documents) >0? "(" .count($io->documents) . ")": ""}}
+            </a>
+        @endif
+        @hasPermEnd
+
+        @if($pool_count > 0 )
+        <a href="{{route("elfinder.ckeditor")."#elf_".$el_path}}" target="_blank" class="btn btn-success w-100 m-2">
+            <span class="material-icons md-light"> description </span>
+            ფაილების ნახვა ({{$pool_count}})
+        </a>
+        @elseif($pool_count <0)
+        <a href="{{route("elfinder.ckeditor")."#elf_".$el_path}}" target="_blank" class="btn btn-success w-100 m-2">
+            <span class="material-icons md-light"> description </span>
+            საქაღალდის შექმნა
+        </a>
+        @else
+        <a href="{{route("elfinder.ckeditor")."#elf_".$el_path}}" target="_blank" class="btn btn-success w-100 m-2">
+            <span class="material-icons md-light"> description </span>
+            ფაილების ნახვა ({{$pool_count}})
+        </a>
+        @endif
 @endsection

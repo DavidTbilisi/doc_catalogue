@@ -9,6 +9,7 @@ use App\Models\Io;
 use App\Models\Io_type;
 use App\Models\IoGroupsPermissions;
 use App\Tutsmake\Tutsmake;
+use FilesystemIterator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -304,6 +305,8 @@ class IoController extends Controller
 
         $ios = $this->getChildren($io_gp);
         $arr = array_values( $ios->toArray() );
+
+
         $jstreeData = [];
         foreach($arr as $key => $val) {
             // BUILDING JSON FOR JSTREE
@@ -316,12 +319,39 @@ class IoController extends Controller
             $jstreeData[$key]["state"]["selected"] =  $arr[$key]['id'] ==  $id;
         }
 
+
+/*
+ * COUNT FILES IN FOLDER
+ * https://stackoverflow.com/questions/12801370/count-how-many-files-in-directory-php
+ * $fi = new FilesystemIterator(__DIR__);
+ * printf("There were %d Files", iterator_count($fi));
+ *
+ */
+        $filepath = str_replace("GE_","public/files/", $io_item->reference);
+        $filepath = str_replace("_","/",$filepath) . "/";
+
+        $prefix = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
+        $absolute_path = $prefix.$filepath;
+        $file_pool_count = -1;
+
+        if(file_exists($absolute_path)) {
+            $fi = new FilesystemIterator($absolute_path);
+            $file_pool_count = iterator_count($fi);
+        } else {
+//            dump($absolute_path. " Do not exists");
+        }
+
+        $el_path0 = substr($filepath, strlen("public/files/"));
+        $el_path = $this->el_start_dir($el_path0);
+
         return view("admin.io.io_view", [
             "io"=> $io_item,
             "data" => $data,
             "translation" => $translation,
             "table" => $table,
             "children" => collect($jstreeData),
+            "el_path"=> $el_path,
+            "pool_count" => $file_pool_count
         ]);
     }
 
@@ -347,7 +377,7 @@ class IoController extends Controller
         return view('admin.io.io_edit', [
             'types'=>$types,
             'io'=>$io,
-            'startPath' => $this->el_start_dir("documents/".$path)
+            'startPath' => $this->el_start_dir("files/".$path)
         ]);
     }
 

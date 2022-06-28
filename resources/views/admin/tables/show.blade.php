@@ -1,7 +1,10 @@
 @extends('layouts.admin')
+
+
+
+
+
 @section('body')
-
-
     <x-error-alert></x-error-alert>
 
     <x-alert></x-alert>
@@ -34,3 +37,6 @@
     </form>
 
 @endsection
+
+
+
