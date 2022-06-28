@@ -38,13 +38,40 @@ class OtherTablesController extends Controller
     {
         $data = DB::table($table)->select("io_type_id")->where("id",$id)->first();
         $type = Io_type::with('translation')->where("id", $data->io_type_id)->first();
+
         $translation = $type->translation;
         $translation = json_decode($translation->fields, true);
-        $data = DB::table($table)->select(array_keys($translation))->where("id",$id)->first();
+        $fields = array_keys($translation);
+
+        $data = DB::table($table)->select($fields)->where("id",$id)->first();
+        $data_types = DB::select("show columns from {$table}");
+
+        $data_with_types_and_translation = [];
+        foreach($data_types as $index => $field):
+            if(in_array( $field->Field, $fields)) {
+
+                $type_for_input = "text";
+                if (str_contains($field->Type,"int")) {
+                    $type_for_input = "number";
+                } elseif (str_contains($field->Type,"date")) {
+                    $type_for_input = "date";
+                }
+
+
+                $data_with_types_and_translation[] = [
+                    "type" => $type_for_input,
+                    "row_type" => $field->Type,
+                    "field" => $field->Field,
+                    "translation" => $translation[$field->Field],
+                    "data"=> $data->{$field->Field}
+                    ];
+            }
+        endforeach;
+
+//        dd($data_with_types_and_translation);
 
         return view("admin.tables.show", [
-            "data"=>$data,
-            "translation"=>$translation,
+            "data"=>$data_with_types_and_translation,
             "type"=>$type,
             'id'=>$id
         ]);

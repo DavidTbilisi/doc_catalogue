@@ -17,9 +17,10 @@
         @csrf
         <input type="hidden" name="table" value="{{$type->table}}">
         @foreach($data as $index => $value)
+
         <div class="form-group mb-3">
-            <label for="{{$index}}" class="p-2">{{$translation[$index]}}</label>
-            <input type="text" name="{{$index}}" class="form-control" id="{{$index}}" value="{{$value}}" placeholder="{{$translation[$index]}}">
+            <label for="{{$value['field']}}" class="p-2">{{$value['translation']}}</label>
+            <input type="{{$value['type']}}" name="{{$value['field']}}" class="form-control" id="{{$value['field']}}" value="{{$value['data']}}" placeholder="{{$value['translation']}}">
         </div>
         @endforeach
         <button type="submit" class="btn btn-success">
