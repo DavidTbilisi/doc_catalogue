@@ -277,6 +277,7 @@ class IoController extends Controller
         if (!Perms::hasPerm(1)):
             return redirect(route('io.index'))->withErrors([ "msg"=>"არ გაქვს წვდომა ობიექტების ნახვაზე" ]);
         endif;
+
         $io_item =  IO::with("type")
             ->with('parent')
             ->with('children')

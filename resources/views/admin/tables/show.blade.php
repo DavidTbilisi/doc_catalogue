@@ -27,7 +27,7 @@
             <span class="material-icons md-light">save</span>
             შენახვა
         </button>
-        <a type="submit" href="{{route("io.show", ['id'=> $id])}}" class="btn btn-danger">
+        <a type="submit" href="javascript:void(0)" onclick="history.back()" class="btn btn-danger">
             <span class="material-icons md-light">arrow_back</span>
             დაბრუნება
         </a>

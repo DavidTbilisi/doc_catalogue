@@ -73,7 +73,8 @@ class OtherTablesController extends Controller
         return view("admin.tables.show", [
             "data"=>$data_with_types_and_translation,
             "type"=>$type,
-            'id'=>$id
+            "id"=>$id,
+            "type_id" =>$type->id
         ]);
     }
 
