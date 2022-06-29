@@ -123,23 +123,32 @@
                 <span class="material-icons md-light"> photo_library </span>
                 სურათების ნახვა {{count($io->documents) >0? "(" .count($io->documents) . ")": ""}}
             </a>
+        @else
+            <form action="{{route("io.update",['id'=>$io->id])}}" method="post" id="io" class="form-inline" enctype="multipart/form-data">
+                @csrf
+                <div class="input-group">
+                    <input type="file" class="form-control btn btn-success m-2" id="files" name="files[]" multiple>
+                    <input type="hidden" name="prefix" value="{{$io->prefix}}">
+                    <input type="hidden" name="identifier" value="{{$io->identifier}}">
+                    <input type="hidden" name="suffix" value="{{$io->suffix}}">
+                    <input type="hidden" name="io_type_id" value="{{$io->io_type_id}}">
+
+                    <button type="submit" class="btn btn-success">
+                        <span class="material-icons md-light"> upload_file </span>
+                    </button>
+                </div>
+{{--                <div class="input-group mb-3">--}}
+{{--                    <label class="input-group-text" for="files"><span class="material-icons md-light"> upload_file </span></label>--}}
+{{--                    <input type="file" class="form-control" id="inputGroupFile01">--}}
+{{--                    <input type="file" class="form-control" id="files" name="files[]" multiple>--}}
+{{--                </div>--}}
+            </form>
         @endif
         @hasPermEnd
 
-        @if($pool_count > 0 )
         <a href="{{route("elfinder.ckeditor")."#elf_".$el_path}}" target="_blank" class="btn btn-success w-100 m-2">
             <span class="material-icons md-light"> description </span>
             ფაილების ნახვა ({{$pool_count}})
         </a>
-        @elseif($pool_count <0)
-        <a href="{{route("elfinder.ckeditor")."#elf_".$el_path}}" target="_blank" class="btn btn-success w-100 m-2">
-            <span class="material-icons md-light"> description </span>
-            საქაღალდის შექმნა
-        </a>
-        @else
-        <a href="{{route("elfinder.ckeditor")."#elf_".$el_path}}" target="_blank" class="btn btn-success w-100 m-2">
-            <span class="material-icons md-light"> description </span>
-            ფაილების ნახვა ({{$pool_count}})
-        </a>
-        @endif
+
 @endsection
