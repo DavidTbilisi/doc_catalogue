@@ -42,7 +42,41 @@
                     customData: {
                         _token: '{{ csrf_token() }}'
                     },
+
+
+                    commands : [
+                        'open', 'reload', 'home', 'up', 'back', 'forward', 'getfile', 'quicklook',
+                        'download', 'duplicate', 'mkdir', 'mkfile', 'upload', 'copy',
+                         'paste', 'edit', 'extract', 'archive', 'search', 'info', 'view', 'help', 'sort', 'netmount'
+                    ],
                     @hasPerms(["addDocument", "deleteDocument"])
+                    uiOptions: {
+                        // toolbar configuration
+                        toolbar: [
+                            ['home', 'back', 'forward', 'up', 'reload'],
+                            ['mkdir', 'mkfile', 'upload'],
+                            ['open', 'download', 'getfile'],
+                            ['undo', 'redo'],
+                            // ['copy', 'cut', 'paste'],
+                            ['copy', 'paste'],
+                            // ['duplicate', 'rename', 'edit', 'resize', 'chmod'],
+                            ['selectall', 'selectnone', 'selectinvert'],
+                            ['quicklook', 'info'],
+                            ['extract', 'archive'],
+                            ['search'],
+                            ['view', 'sort'],
+                            ['fullscreen']
+                        ]
+                    },
+                    contextmenu : {
+                        navbar : ['open', '|', 'copy',  'paste', 'duplicate', '|', 'info'],
+                        // current directory menu
+                        cwd    : ['reload', 'back', '|', 'upload', 'mkdir', 'mkfile', 'paste', '|', 'sort', '|', 'info'],
+                        files  : [
+                            'getfile', '|','open', '|', 'copy', 'paste', 'duplicate', '|',
+                            '|', 'archive', 'extract', '|', 'info'
+                        ]
+                    },
 
                     @hasNot
 
@@ -51,6 +85,7 @@
                         // toolbar configuration
                         toolbar: [
                             ['home', 'back', 'forward', 'up', 'reload'],
+                            // ['mkdir', 'mkfile', 'upload'],
                             ['mkdir', 'mkfile', 'upload'],
                             ['open', 'download', 'getfile'],
                             ['undo', 'redo'],
@@ -62,6 +97,12 @@
                             ['search'],
                             ['view', 'sort'],
                             ['fullscreen']
+                        ]
+                    },
+                    contextmenu : {
+                        files  : [
+                            'getfile', '|','open', '|', 'copy', 'paste', 'duplicate', '|',
+                             '|', 'archive', 'extract', '|', 'info'
                         ]
                     },
                     @hasNot()
@@ -80,6 +121,12 @@
                             ['search'],
                             ['view', 'sort'],
                             ['fullscreen']
+                        ]
+                    },
+                    contextmenu : {
+                        files  : [
+                            'getfile', '|','open', '|', 'copy', 'paste', 'duplicate', '|',
+                            '|', 'archive', 'extract', '|', 'info'
                         ]
                     },
                     @hasPermEnd()

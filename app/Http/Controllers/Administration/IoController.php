@@ -334,12 +334,12 @@ class IoController extends Controller
         $absolute_path = $prefix.$filepath;
         $file_pool_count = -1;
 
-        if(file_exists($absolute_path)) {
-            $fi = new FilesystemIterator($absolute_path);
-            $file_pool_count = iterator_count($fi);
-        } else {
-//            dump($absolute_path. " Do not exists");
+        if(!file_exists($absolute_path)) {
+          mkdir($absolute_path, 0700, true);
         }
+
+        $fi = new FilesystemIterator($absolute_path);
+        $file_pool_count = iterator_count($fi);
 
         $el_path0 = substr($filepath, strlen("public/files/"));
         $el_path = $this->el_start_dir($el_path0);
