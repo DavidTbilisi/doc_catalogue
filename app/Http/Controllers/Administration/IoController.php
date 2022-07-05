@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use JildertMiedema\LaravelPlupload\Facades\Plupload;
 use Symfony\Component\HttpFoundation\Response as Code;
 
 class IoController extends Controller
@@ -370,6 +371,7 @@ class IoController extends Controller
             ->where('id',$id)
             ->firstOrFail();
 
+
         $types = Io_type::all();
         $path = substr($io->reference, 3);
         $path = str_replace("_","/", $path);
@@ -381,8 +383,64 @@ class IoController extends Controller
         ]);
     }
 
+
     public function update(Request $request, $id)
     {
+
+
+
+
+
+        $io = Io::findOrFail($id); // If Id not specified return code
+
+        $post = $request->except(["_token"]);
+
+        $io->prefix = $post['prefix'];
+        $io->identifier = $post['identifier'];
+        $io->suffix = $post['suffix'];
+        $io->io_type_id = $post['io_type_id'];
+
+        $io->reference = $this->buildReference($id, $request);
+        $io->level = $this->detectLevel($io->reference);
+
+
+        if ($request->hasFile ("file") ):
+            Plupload::receive('file', function ($file) use ($io){
+
+
+                // $file->move(storage_path() . '/test/', $file->getClientOriginalName());
+
+                $doc = Document::where("io_id", $io->id)->orderby('created_at', 'desc')->first();
+
+                if (!$doc) {
+                    $doc = new Document();
+                }
+
+                $file_ext = $file->getClientOriginalExtension();
+                $path = str_replace("_", "/", substr($io->reference, 3));
+                $filename = "{$io->reference}.{$file_ext}";
+
+                # Save Files
+                $path = $file->storeAs("public/documents/" . $path, $filename);
+                $db_path = substr($path, strpos($path, "/") + 1);
+                Log::channel("app")->info("File was added to", ["path" => $path]);
+                $doc->io_id = $io->id;
+                $doc->filename = $filename;
+                $doc->filepath = $db_path;
+                $doc->mimetype = $file->getMimeType();
+                $doc->save();
+                $isSaved = $io->save();
+
+                return $isSaved;
+            });
+        endif;
+    }
+
+
+    public function update_old(Request $request, $id)
+    {
+
+
         $io = Io::findOrFail($id); // If Id not specified return code
 
         $post = $request->except(["_token"]);

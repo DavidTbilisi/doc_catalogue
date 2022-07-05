@@ -176,6 +176,7 @@ return [
 
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\Elfinder\ElfinderServiceProvider::class,
+        JildertMiedema\LaravelPlupload\LaravelPluploadServiceProvider::class,
 
     ],
 
@@ -232,6 +233,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Perms' => App\Facades\Perms::class,
+        'Plupload' => JildertMiedema\LaravelPlupload\Facades\Plupload::class,
     ],
 
 ];
