@@ -9,7 +9,7 @@
 {{--    </div>--}}
 
         <x-error-alert></x-error-alert>
-
+        <h1>ობიექტის ტიპის დამატება</h1>
 
         @csrf
 
