@@ -412,26 +412,37 @@ class IoController extends Controller
 
                 $doc = Document::where("io_id", $io->id)->orderby('created_at', 'desc')->first();
 
+                $index = 0;
+
                 if (!$doc) {
+                    $doc = new Document();
+                }  else {
+                    $name = explode('.', $doc->filename)[0];
+                    $index += substr($name, -1);
                     $doc = new Document();
                 }
 
+                $index++;
                 $file_ext = $file->getClientOriginalExtension();
                 $path = str_replace("_", "/", substr($io->reference, 3));
-                $filename = "{$io->reference}.{$file_ext}";
+                $filename = "{$io->reference}_{$index}.{$file_ext}";
 
                 # Save Files
                 $path = $file->storeAs("public/documents/" . $path, $filename);
                 $db_path = substr($path, strpos($path, "/") + 1);
                 Log::channel("app")->info("File was added to", ["path" => $path]);
-                $doc->io_id = $io->id;
-                $doc->filename = $filename;
-                $doc->filepath = $db_path;
-                $doc->mimetype = $file->getMimeType();
-                $doc->save();
-                $isSaved = $io->save();
 
-                return $isSaved;
+                $alreadyInDb = Document::where("filename", $filename)->get()->count();
+                if(!$alreadyInDb){
+                    $doc->io_id = $io->id;
+                    $doc->filename = $filename;
+                    $doc->filepath = $db_path;
+                    $doc->mimetype = $file->getMimeType();
+                    $doc->save();
+                }
+                $IoIsSaved = $io->save();
+
+                return $IoIsSaved;
             });
         endif;
     }
