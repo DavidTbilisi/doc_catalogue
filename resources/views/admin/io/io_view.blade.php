@@ -30,7 +30,7 @@
         <a id="go-to-data" class="link-light" href="{{route("data.edit",["id"=>$io->data_id, "table"=>$table])}}" >
         @hasPermEnd
             <span class="material-icons md-light"> source </span>
-            მონაცემი
+            მონაცემების რედაქტირება
         </a>
     </li>
 
