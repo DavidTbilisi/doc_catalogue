@@ -44,15 +44,15 @@
             </div>
 
 
-            <div class="docs row">
-                <div class="col">
-                    <label for="files">ფაილების ატვირთვა:</label>
-                    <input type="file" class="form-control" id="files" name="files[]" multiple>
-                </div>
-                <div class="col">
-                    <a class="btn btn-primary mt-4 w-100" target="_blank" href="{{route("elfinder.ckeditor")."#elf_".$startPath}}">ფაილების დათვალიერება</a>
-                </div>
-            </div>
+{{--            <div class="docs row">--}}
+{{--                <div class="col">--}}
+{{--                    <label for="files">ფაილების ატვირთვა:</label>--}}
+{{--                    <input type="file" class="form-control" id="files" name="files[]" multiple>--}}
+{{--                </div>--}}
+{{--                <div class="col">--}}
+{{--                    <a class="btn btn-primary mt-4 w-100" target="_blank" href="{{route("elfinder.ckeditor")."#elf_".$startPath}}">ფაილების დათვალიერება</a>--}}
+{{--                </div>--}}
+{{--            </div>--}}
 
 
             <div class="mb-3 mt-5 row">
