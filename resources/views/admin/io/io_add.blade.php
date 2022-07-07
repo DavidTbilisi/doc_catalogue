@@ -4,8 +4,6 @@
 
         <x-error-alert></x-error-alert>
 
-
-
         <div class="mt-3">
             <p class="h1"> საინფორმაციო ობიექტის დამატება </p>
 
@@ -110,10 +108,13 @@
 
         }
 
-        function save(event) {
-            // XXX: replace with axios?
+        function rmNoneNumericsFrom(a) {
+            return a.replace(/[^0-9]/igm, "")
+        }
 
+        function save(event) {
             event.preventDefault();
+
             $.ajax({
                 data: $('#datatable').serialize(),
                 method:"post",
@@ -133,20 +134,24 @@
                             location.href = '{{route("io.index")}}'
                         }
                     });
-
-
                 }
             });
         }
 
 
-
-
         // EVENTS
-        $("#io").on('submit', function (event) {
+        $( document ).ready(function() {
+            $("body").on('keyup',"input[type='number']", function() {
+                let clr = rmNoneNumericsFrom(this.value);
+                $(this).val(clr)
+            })
 
-            save(event)
-        })
+            $("#io").on('submit', function (event) {
+                save(event)
+            })
+        });
+
+
 
     </script>
 @endsection
