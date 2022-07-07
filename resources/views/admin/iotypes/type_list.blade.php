@@ -10,7 +10,7 @@
 </div>
 @endif
 
-
+    <h2 class="text-center mt-3 mb-4">ობიექტის ტიპები</h2>
     <table class="table table-striped">
         <thead>
         <tr>

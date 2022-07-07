@@ -107,7 +107,6 @@ class IoTypesController extends Controller
 
                         // build return couples
                         $fields->$field = $name;
-
                         $table->$type($field)->nullable();
 
                     }

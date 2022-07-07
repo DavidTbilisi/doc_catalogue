@@ -4,7 +4,7 @@
 <div class="container">
     <x-error-alert></x-error-alert>
 </div>
-
+<h2 class="text-center mt-3 mb-4"> შესანახი ობიექტები </h2>
 <table class="table mt-4">
     <thead>
     <tr>
@@ -62,9 +62,11 @@
 @endforeach
     </tbody>
 </table>
-
+@if($ioTypeCount)
 <x-add-button route="{{route('io.add')}}"></x-add-button>
-
+@else
+<x-add-button route="{{route('types.index')}}"></x-add-button>
+@endif
 <script>
 
     $(function () {

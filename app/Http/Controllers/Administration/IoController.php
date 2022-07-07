@@ -122,7 +122,7 @@ class IoController extends Controller
             ->with("children")
             ->where("parent_id", null)
             ->get();
-
+        $typesCount = Io_type::all()->count();
 
         $identifiers = [];
         foreach($ioList as $io):
@@ -136,6 +136,7 @@ class IoController extends Controller
         return view("admin.io.io_list", [
             "iolist" => $ioList,
             "identifiers" => $identifiers,
+            "ioTypeCount" => $typesCount
         ]);
     }
 

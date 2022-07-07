@@ -28,10 +28,10 @@ class Io_type extends Model
     public static function getColumns($table, $json=true)
     {
         $sql = DB::raw('SHOW COLUMNS FROM '.$table);
-        
+
         $type = Io_type::where('table',$table)->first();
 
-        $all = Io_types_translation::all(); // TODO:testing 
+        $all = Io_types_translation::all(); // TODO:testing
 
         $translation = Io_types_translation::where("io_type_id", $type->id)->first();
         $translation = json_decode($translation->fields, true);
@@ -91,7 +91,7 @@ class Io_type extends Model
 
     public static function addCol($table, $col) {
         Schema::table($table, function (Blueprint $table) use ($col){
-            $table->string($col);
+            $table->string($col)->nullable();
         });
     }
 
