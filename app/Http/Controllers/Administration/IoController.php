@@ -277,10 +277,9 @@ class IoController extends Controller
 //        dump(Perms::list());
 //        dd(Perms::hasPerms(['Edit Object','Delete Object']));
 
-        if (!Perms::hasPerm(1)):
-            return redirect(route('io.index'))->withErrors([ "msg"=>"არ გაქვს წვდომა ობიექტების ნახვაზე" ]);
-        endif;
-
+        if (!Perms::hasPerm("viewObject")) {
+            return redirect(route("dashboard"))->withErrors(["msg"=>"წვდომა შეზღუდულია"]);
+        }
         $io_item =  IO::with("type")
             ->with('parent')
             ->with('children')

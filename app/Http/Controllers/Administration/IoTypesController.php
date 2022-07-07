@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Administration;
 
+use App\Facades\Perms;
 use App\Http\Controllers\Controller;
 use App\Models\Io_type;
 use App\Models\Io_types_translation;
@@ -177,11 +178,14 @@ class IoTypesController extends Controller
 
     public function show($table)
     {
+
+
         $tablename = Io_type::where("table","$table")->with("translation")->first();
         $columns = Io_type::getColumns($table, false);
 
         $translation = $tablename->translation->fields;
         $translation = json_decode($translation, true);
+
 
         return view("admin.iotypes.type", [
             "tablename"=>$tablename,

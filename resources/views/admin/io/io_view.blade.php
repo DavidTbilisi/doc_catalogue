@@ -28,10 +28,16 @@
     <li class="list-group-item active">
         @hasPerm('editObject')
         <a id="go-to-data" class="link-light" href="{{route("data.edit",["id"=>$io->data_id, "table"=>$table])}}" >
-        @hasPermEnd
             <span class="material-icons md-light"> source </span>
             მონაცემების რედაქტირება
         </a>
+        @else
+            <a class="link-light" href="javascript:void(0)">
+                <span class="material-icons md-light"> source </span>
+                მონაცემები
+            </a>
+        @hasPermEnd
+
     </li>
 
   @if($data)
@@ -123,18 +129,24 @@
                 სურათების ნახვა {{count($io->documents) >0? "(" .count($io->documents) . ")": ""}}
             </a>
         @else
+            @hasPerm("addDocument")
             <form action="{{route("io.update",['id'=>$io->id])}}" method="post" id="io" class="form-inline" enctype="multipart/form-data">
                 @csrf
                 @include("admin.io.io_plupload") {{-- Plupload Modal --}}
 
             </form>
+            @hasPermEnd
         @endif
 
+            @hasPerm("addDocument")
+            <a href="{{route("elfinder.ckeditor")."#elf_".$el_path}}" target="_blank" class="btn btn-success m-2 w-100">
+                <span class="material-icons md-light"> description </span>
+                ფაილების ნახვა ({{$pool_count}})
+            </a>
+            @hasPermEnd
+
+
         @hasPermEnd
-        <a href="{{route("elfinder.ckeditor")."#elf_".$el_path}}" target="_blank" class="btn btn-success m-2" style="width:95%">
-            <span class="material-icons md-light"> description </span>
-            ფაილების ნახვა ({{$pool_count}})
-        </a>
 
 
 @endsection

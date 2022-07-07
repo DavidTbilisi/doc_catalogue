@@ -4,7 +4,9 @@
 <div class="container">
     <x-error-alert></x-error-alert>
 </div>
+
 <h2 class="text-center mt-3 mb-4"> შესანახი ობიექტები </h2>
+
 <table class="table mt-4">
     <thead>
     <tr>
@@ -19,6 +21,8 @@
 
 @foreach($iolist as $io)
         <tr>
+            @hasPerm('viewObject')
+
             <th scope="row">{{++$loop->index}}</th>
             <td class="identifier">
                 {{$identifiers[$loop->index-1]}}
@@ -27,7 +31,6 @@
             <td class="type">{{$io->type->name}}</td>
             <td>
 
-            @hasPerm('viewObject')
                 @csrf
 
 
@@ -62,11 +65,17 @@
 @endforeach
     </tbody>
 </table>
+
+@hasPerm("addObject")
 @if($ioTypeCount)
 <x-add-button route="{{route('io.add')}}"></x-add-button>
 @else
 <x-add-button route="{{route('types.index')}}"></x-add-button>
 @endif
+@hasPermEnd
+
+
+
 <script>
 
     $(function () {

@@ -1,9 +1,9 @@
 <div class="input-group">
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary w-100 m-2" data-bs-toggle="modal" data-bs-target="#pluploadermodal">
+    <a type="button" class="btn btn-success w-100 m-2" data-bs-toggle="modal" data-bs-target="#pluploadermodal" href="javascript:void(0)">
         <span class="material-icons md-light"> photo </span>
         სურათების დამატება (0)
-    </button>
+    </a>
 
     <!-- Modal -->
     <div class="modal fade" id="pluploadermodal" tabindex="-1" aria-labelledby="pluploader" aria-hidden="true">
