@@ -2,6 +2,8 @@
 namespace App\Perms;
 
 
+use App\Facades\Perms;
+use App\Models\IoGroupsPermissions;
 use App\Models\Permission;
 use Illuminate\Support\Facades\Session;
 
@@ -54,7 +56,9 @@ class CustomPermission{
         $return = [];
 
         foreach($perms as $perm):
-            $return[] = in_array($perm, $permissin_names) or in_array($perm, $permissin_ids);
+            $inNames = in_array($perm, $permissin_names);
+            $inIds = in_array($perm, $permissin_ids);
+            $return[] =  ($inNames or $inIds);
         endforeach;
 
         // თუ გვხვდება ერთი false მაინც, მაშინ ვაბრუნებთ false-ს
@@ -94,6 +98,7 @@ class CustomPermission{
     }
 
 
+
     public function fondPerms(int $number)
     {
         $permissions = $this->all();
@@ -104,7 +109,6 @@ class CustomPermission{
             $binary = $permittedBin[$i];
             $permission = $permissions[$i];
 
-
             if ($binary == 1) {
                 $permitted[$permission->id] = $permission->const_name;
             }
@@ -114,9 +118,22 @@ class CustomPermission{
             "all"=>$permissions,
             "permitted"=>$permitted
         ];
-
     }
 
+    public function hasPermsIo($io_id)
+    {
+        // group has perm to interact with io
+        $current_user_group_id = Session("user")['group_id'];
+
+        $io_group_permissions = IoGroupsPermissions::
+        where("groups_id", $current_user_group_id)
+            ->where('io_id',$io_id)
+            ->first(); // ვიღებ ფერმიშენის რიცხვს
+
+        $permitted = Perms::fondPerms($io_group_permissions->permission)["permitted"];
+
+        return $permitted;
+    }
 
 
 

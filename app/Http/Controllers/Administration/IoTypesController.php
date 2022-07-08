@@ -178,14 +178,11 @@ class IoTypesController extends Controller
 
     public function show($table)
     {
-
-
         $tablename = Io_type::where("table","$table")->with("translation")->first();
         $columns = Io_type::getColumns($table, false);
 
         $translation = $tablename->translation->fields;
         $translation = json_decode($translation, true);
-
 
         return view("admin.iotypes.type", [
             "tablename"=>$tablename,

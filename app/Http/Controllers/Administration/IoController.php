@@ -277,9 +277,14 @@ class IoController extends Controller
 //        dump(Perms::list());
 //        dd(Perms::hasPerms(['Edit Object','Delete Object']));
 
-        if (!Perms::hasPerm("viewObject")) {
+        $permitted = Perms::hasPermsIo($id); // ვამოწმებ საინფორმ. ობიექტის უფლებებს.
+
+//        TODO: permissions
+        if (!Perms::hasPerms(array_values($permitted))) {
             return redirect(route("dashboard"))->withErrors(["msg"=>"წვდომა შეზღუდულია"]);
         }
+
+
         $io_item =  IO::with("type")
             ->with('parent')
             ->with('children')
@@ -287,6 +292,7 @@ class IoController extends Controller
             ->with('documents')
             ->where('id',$id)
             ->first();
+
 
         $trTable = Io_type::with('translation')->where("id", $io_item->io_type_id)->first();
         $translation = $trTable->translation;
