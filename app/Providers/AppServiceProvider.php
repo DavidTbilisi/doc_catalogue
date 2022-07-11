@@ -55,6 +55,29 @@ class AppServiceProvider extends ServiceProvider
 
 
 
+
+
+//      *************************************************
+        Blade::directive('hasPermsIo', function ($expression) {
+            $params = explode("has", $expression);
+
+            list($id, $perms) = $params;
+            $id = trim($id, ' ');
+            $perms = trim($perms, ' ');
+
+
+            return "<?php if ( Perms::hasPermsIo($id, $perms ) ) : ?>";
+        });
+
+        Blade::directive('hasPermsIoEnd', function () {
+            return '<?php endif; ?>';
+        });
+
+
+
+
+
+
 //      *************************************************
         Blade::directive('isGroup', function ($expression) {
             return "<?php if ( Perms::isGroup({$expression}) )  : ?>";
@@ -67,5 +90,11 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('isGroupEnd', function () {
             return '<?php endif; ?>';
         });
+
+
+
+
+
+
     }
 }

@@ -133,8 +133,12 @@
             <form action="{{route("io.update",['id'=>$io->id])}}" method="post" id="io" class="form-inline" enctype="multipart/form-data">
                 @csrf
                 @include("admin.io.io_plupload") {{-- Plupload Modal --}}
-
             </form>
+            @else
+            <a href="javascript:void(0)"class="btn btn-success w-100 m-2">
+                <span class="material-icons md-light"> photo_library </span>
+                სურათების ნახვა {{count($io->documents) >0? "(" .count($io->documents) . ")": "(0)"}}
+            </a>
             @hasPermEnd
         @endif
 

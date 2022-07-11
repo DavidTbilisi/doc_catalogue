@@ -120,7 +120,7 @@ class CustomPermission{
         ];
     }
 
-    public function hasPermsIo($io_id)
+    public function hasPermsIo($io_id, array $perms)
     {
         // group has perm to interact with io
         $current_user_group_id = Session("user")['group_id'];
@@ -131,8 +131,12 @@ class CustomPermission{
             ->first(); // ვიღებ ფერმიშენის რიცხვს
 
         $permitted = Perms::fondPerms($io_group_permissions->permission)["permitted"];
+        $permsBoolArray = [];
+        foreach ($perms as $perm) :
+            $permsBoolArray[] = in_array($perm, array_values($permitted)); // checks permission from param
+        endforeach;
 
-        return $permitted;
+        return !in_array(false, $permsBoolArray); // if one false -> have no permission
     }
 
 

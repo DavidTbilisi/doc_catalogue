@@ -277,10 +277,10 @@ class IoController extends Controller
 //        dump(Perms::list());
 //        dd(Perms::hasPerms(['Edit Object','Delete Object']));
 
-        $permitted = Perms::hasPermsIo($id); // ვამოწმებ საინფორმ. ობიექტის უფლებებს.
 
-//        TODO: permissions
-        if (!Perms::hasPerms(array_values($permitted))) {
+
+        $hasPerms = Perms::hasPermsIo($id, ["viewObject"]); // ვამოწმებ საინფორმ. ობიექტის უფლებებს.
+        if (!$hasPerms) {
             return redirect(route("dashboard"))->withErrors(["msg"=>"წვდომა შეზღუდულია"]);
         }
 

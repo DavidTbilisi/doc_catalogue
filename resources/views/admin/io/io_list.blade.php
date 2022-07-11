@@ -22,6 +22,7 @@
 @foreach($iolist as $io)
         <tr>
             @hasPerm('viewObject')
+            @hasPermsIo($io->id has ['viewObject'])
 
             <th scope="row">{{++$loop->index}}</th>
             <td class="identifier">
@@ -32,7 +33,6 @@
             <td>
 
                 @csrf
-
 
                 <a href="{{route("io.show", ["id"=>$io->id])}}" class="btn btn-success">
                     <span class="material-icons md-light">visibility</span>
@@ -59,7 +59,9 @@
                 </form>
 
                 @hasPermEnd
+            @hasPermsIoEnd
             @hasPermEnd
+
             </td>
         </tr>
 @endforeach
