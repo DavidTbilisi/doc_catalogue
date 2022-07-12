@@ -123,31 +123,44 @@
 
 @section("iobuttons")
         @hasPerm('viewDocument')
+
         @if(count($io->documents))
+            @hasPermsIo($io->id has ['viewDocument'])
             <a href="{{route('viewer', ['io_id'=>$io->id])}}" target="_blank" class="btn btn-success w-100 m-2">
                 <span class="material-icons md-light"> photo_library </span>
                 სურათების ნახვა {{count($io->documents) >0? "(" .count($io->documents) . ")": ""}}
             </a>
+            @hasPermsIoEnd
         @else
+            @hasPermsIo($io->id has ['addDocument'])
             @hasPerm("addDocument")
             <form action="{{route("io.update",['id'=>$io->id])}}" method="post" id="io" class="form-inline" enctype="multipart/form-data">
                 @csrf
                 @include("admin.io.io_plupload") {{-- Plupload Modal --}}
             </form>
-            @else
+            @hasPermsIoEnd
+
+            @hasNot()
+
+            @hasPermsIo($io->id has ['viewDocument'])
             <a href="javascript:void(0)"class="btn btn-success w-100 m-2">
                 <span class="material-icons md-light"> photo_library </span>
                 სურათების ნახვა {{count($io->documents) >0? "(" .count($io->documents) . ")": "(0)"}}
             </a>
+            @hasPermsIoEnd
+
             @hasPermEnd
         @endif
 
             @hasPerm("addDocument")
+            @hasPermsIo($io->id has ['addDocument'])
+
             <a href="{{route("elfinder.ckeditor")."#elf_".$el_path}}" target="_blank" class="btn btn-success m-2 w-100">
                 <span class="material-icons md-light"> description </span>
                 ფაილების ნახვა ({{$pool_count}})
             </a>
             @hasPermEnd
+            @hasPermsIoEnd
 
 
         @hasPermEnd
