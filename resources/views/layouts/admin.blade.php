@@ -37,8 +37,10 @@
         <div class="row">
             <div class="col-3">
                 @include('admin.sidenav')
+
                 @section("iobuttons")
                 @show
+
             </div>
             <div class="col-9">
                     @section("body")
