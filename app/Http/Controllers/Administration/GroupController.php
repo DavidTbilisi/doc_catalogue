@@ -86,16 +86,17 @@ class GroupController extends Controller
            $g->save();
 //
            DB::table("group_permission")->where('group_id', '=', $id)->delete();
-
-            foreach($request->permissions as $permission_id):
-                DB::table("group_permission")->insert([
-                    "group_id" => $id,
-                    "permission_id" => $permission_id,
-                    "updated_at" => now(),
-                ]);
-            endforeach;
-
-
+           if($request->permissions) {
+               foreach($request->permissions as $permission_id):
+                   DB::table("group_permission")->insert([
+                       "group_id" => $id,
+                       "permission_id" => $permission_id,
+                       "updated_at" => now(),
+                   ]);
+               endforeach;
+           } else {
+               DB::table("group_permission")->where('group_id', $id)->delete();
+           }
         });
         return redirect(route("groups.edit", ['id'=>$id]))->with("message", "ჯგუფი წარმატებით დარედაქტირდა");
 
