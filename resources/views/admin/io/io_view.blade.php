@@ -157,7 +157,7 @@
 
             <a href="{{route("elfinder.ckeditor")."#elf_".$el_path}}" target="_blank" class="btn btn-success m-2 w-100">
                 <span class="material-icons md-light"> description </span>
-                ფაილების ნახვა ({{$pool_count}})
+                ფაილების კატალოგი ({{$pool_count}})
             </a>
             @hasPermEnd
             @hasPermsIoEnd
