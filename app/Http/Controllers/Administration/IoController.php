@@ -413,7 +413,6 @@ class IoController extends Controller
         if ($request->hasFile ("file") ):
             Plupload::receive('file', function ($file) use ($io){
 
-
                 // $file->move(storage_path() . '/test/', $file->getClientOriginalName());
 
                 $doc = Document::where("io_id", $io->id)->orderby('created_at', 'desc')->first();
@@ -446,11 +445,14 @@ class IoController extends Controller
                     $doc->mimetype = $file->getMimeType();
                     $doc->save();
                 }
-                $IoIsSaved = $io->save();
 
-                return $IoIsSaved;
+
             });
-        endif;
+        endif; // images upload
+
+        $io->save();
+        return redirect(route('io.edit',["id"=>$io->id]));
+
     }
 
 
