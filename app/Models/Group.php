@@ -18,5 +18,17 @@ class Group extends Model
         return $this->belongsToMany(Permission::class);
     }
 
+    public static function permList($group_id)
+    {
 
+        $permissions = self::find($group_id)->permissions->toArray();
+
+        return array_map(
+            function($p) {
+                return $p['const_name'];
+            },
+            $permissions
+        );
+
+    }
 }

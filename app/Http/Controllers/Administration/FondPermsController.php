@@ -61,13 +61,20 @@ class FondPermsController extends Controller
         $perms = [];
 
 
-        $groups_permission = $io_item->permissions;
-        foreach ($groups_permission as $permission):
-            $group = Group::find($permission->groups_id);
-            $temp = Perms::fondPerms($permission->permission);
+        $io_groups_permission = $io_item->permissions;
 
-            $temp["group"] = $group;
-            $perms[] = $temp;
+
+        foreach ($io_groups_permission as $io_permission):
+            $group_id = $io_permission->groups_id;
+
+            $temp = Perms::fondPerms($io_permission->permission);
+            list($all, $permitted) = array_values($temp);
+            $perms[] = [
+                "group"=> Group::find($group_id),
+                "group_perms" => Group::permList($group_id),
+                "all" => $all,
+                "io_permitted" => $permitted,
+            ];
         endforeach;
 
 
