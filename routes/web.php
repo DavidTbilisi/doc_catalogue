@@ -152,7 +152,7 @@ Route::middleware(['auth', 'perms'])->group(function () {
         });
 
 
-// IO (information object)
+// TYPES
         Route::prefix("types")->group(function () {
             Route::name('types.')->group(function () {
                 Route::get('/{id?}', [IoTypesController::class, 'index'])
@@ -187,7 +187,7 @@ Route::middleware(['auth', 'perms'])->group(function () {
             });
         });
 
-
+// DATA
         Route::prefix("data")->group(function () {
             Route::name('data.')->group(function () {
                 Route::get('/{id?}', [OtherTablesController::class, 'index'])
@@ -225,7 +225,7 @@ Route::middleware(['auth', 'perms'])->group(function () {
             });
         });
 
-
+// IO PERMISSIONS
         Route::prefix("io/permissions")->group(function () {
             Route::name('io_perms.')->group(function () {
 
@@ -242,6 +242,7 @@ Route::middleware(['auth', 'perms'])->group(function () {
             });
         });
 
+// SEARCH
         Route::get('/search', [SearchController::class, 'index'])->name('search');
         Route::post('/search', [SearchController::class, 'search'])->name('searchresults');
 
@@ -250,6 +251,8 @@ Route::middleware(['auth', 'perms'])->group(function () {
     Route::get('/dashboard',  [IoController::class, 'index'])->name('dashboard');
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
 });
+
+
 
 Route::prefix("test")->group(function () {
     Route::get('/login', function () {
@@ -260,6 +263,8 @@ Route::prefix("test")->group(function () {
         return view("authoverride.register");
     });
 });
+
+// VIEWER
 
 Route::get('/viewer/{io_id}', [ViewerController::class, 'show'])->name('viewer');
 Route::any('/viewer/{io_id}/json', [ViewerController::class, 'dataJson'])->name('viewerjson');
