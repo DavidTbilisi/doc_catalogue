@@ -413,46 +413,70 @@ class IoController extends Controller
         if ($request->hasFile ("file") ):
             Plupload::receive('file', function ($file) use ($io){
 
-                // $file->move(storage_path() . '/test/', $file->getClientOriginalName());
-
-                $doc = Document::where("io_id", $io->id)->orderby('created_at', 'desc')->first();
-
-                $index = 0;
-
-                if (!$doc) {
-                    $doc = new Document();
-                }  else {
-                    $name = explode('.', $doc->filename)[0];
-                    $index += substr($name, -1);
-                    $doc = new Document();
-                }
-
-                $index++;
-                $file_ext = $file->getClientOriginalExtension();
-                $path = str_replace("_", "/", substr($io->reference, 3));
-                $filename = "{$io->reference}_{$index}.{$file_ext}";
-
                 # Save Files
-                $path = $file->storeAs("public/documents/" . $path, $filename);
-                $db_path = substr($path, strpos($path, "/") + 1);
-                Log::channel("app")->info("File was added to", ["path" => $path]);
-
-                $alreadyInDb = Document::where("filename", $filename)->get()->count();
-                if(!$alreadyInDb){
-                    $doc->io_id = $io->id;
-                    $doc->filename = $filename;
-                    $doc->filepath = $db_path;
-                    $doc->mimetype = $file->getMimeType();
-                    $doc->save();
-                }
-
-
+                list($path, $filename) = $this->build_filename($file, $io);
+                $db_path = $this->save_images($path, $filename, $file);
+                $this->save_images_path_to_db($filename, $db_path, $io, $file);
             });
-        endif; // images upload
+        endif;
 
         $io->save();
         return redirect(route('io.edit',["id"=>$io->id]));
 
+    }
+
+    private function last_image_index($io, $index=0){
+        $doc = Document::where("io_id", $io->id)->orderby('created_at', 'desc')->first();
+        if (!$doc) {
+            $doc = new Document();
+        } else {
+            $name = explode('.', $doc->filename)[0];
+            $index += substr($name, -1);
+        }
+        return $index;
+    }
+
+    private function build_filename($file, $io){
+        $index = $this->last_image_index($io);
+        $index++;
+
+
+        $file_ext = $file->getClientOriginalExtension();
+        $path = str_replace("_", "/", substr($io->reference, 3));
+        $filename = "{$io->reference}_{$index}.{$file_ext}";
+        return [$path, $filename];
+    }
+
+
+    private function save_images ($path, $filename, $file){
+        $path = $file->storeAs("public/documents/" . $path, $filename);
+        $db_path = substr($path, strpos($path, "/") + 1);
+        Log::channel("app")->info("File was added to", ["path" => $path]);
+        return $db_path;
+    }
+
+    private function save_images_path_to_db($filename, $db_path, $io, $file){
+        $doc = Document::where("io_id", $io->id)->orderby('created_at', 'desc')->first();
+
+        $index = 0;
+
+        if (!$doc) {
+            $doc = new Document();
+        }  else {
+            $name = explode('.', $doc->filename)[0];
+            $index += substr($name, -1);
+            $doc = new Document();
+        }
+
+        $alreadyInDb = Document::where("filename", $filename)->get()->count();
+        if(!$alreadyInDb){
+            $doc->io_id = $io->id;
+            $doc->filename = $filename;
+            $doc->filepath = $db_path;
+            $doc->mimetype = $file->getMimeType();
+            $doc->save();
+        }
+        return $index;
     }
 
 
