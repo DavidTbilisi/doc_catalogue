@@ -296,6 +296,8 @@
     let sakme_id = {!! json_encode($sakme_id ?? 1) !!};
     let url_ret = `/viewer/${sakme_id}/json`;
     let total_images = 0;
+    let loading_text = "იტვირთება..."
+    let no_more_files = "No more files..."
 
     loadResults(sakme_id, current_page, per_page);
 
@@ -596,6 +598,25 @@
         current_page = page;
     }
 
+    let appendThumbs = function () {
+        $('#thumbs').append(
+            '<li class="img-element" id="thumb-'+this.index+'" index="'+this.index+'" elID="'+this.id+'">'+
+            '<img src="data:image/'+this.mime_type + ';base64,'+ this.file_base_64 +'" />'+
+            '</li>'
+        );
+    }
+
+    function beforeSend(xhr) {
+        $("#thumbs").after($(`<li class='loading'>${loading_text}</li>`).fadeIn('slow')).data("loading", true);
+    }
+
+
+    function setTotal(data) {
+        total_images = data.total;
+        $('.totalCounter').html(data.total);
+        $('#maxImages').attr('maxImages', data.total);
+    }
+
     // Load Thumbs
     function loadResults(sakme_id, current_page, per_page) {
         $.ajaxSetup({
@@ -603,6 +624,7 @@
                 "X-CSRF-TOKEN": jQuery('meta[name="csrf-token"]').attr("content")
             }
         });
+
         $.ajax({
             url: url_ret+"?page="+(parseInt(current_page)),
             type: "post",
@@ -613,34 +635,23 @@
                 current_page: current_page,
                 per_page: per_page
             },
-            beforeSend: function(xhr) {
-                $("#thumbs").after($("<li class='loading'>Loading...</li>").fadeIn('slow')).data("loading", true);
-            },
+            beforeSend: beforeSend(),
             success: function(data) {
                 if(data.result === 'success'){
                     // Append Data To DOM
                     $.each(data.data, function() {
-                        $('#thumbs').append(
-                            '<li class="img-element" id="thumb-'+this.index+'" index="'+this.index+'" elID="'+this.id+'">'+
-                            '<img src="data:image/'+this.mime_type + ';base64,'+ this.file_base_64 +'" />'+
-                            '</li>'
-                        );
+                        appendThumbs.call(this)
                     });
 
-
                     updateCurrentPage(current_page + 1);
-
-                    total_images = data.total;
-
-                    $('.totalCounter').html(data.total);
-                    $('#maxImages').attr('maxImages', data.total);
-
-                }
-                else{
-                    if(data.message == 'No More Files'){
+                    setTotal(data)
+                } else {
+                    if(data.message == no_more_files){
                         $('.scrollpane').removeClass('scrollpane');
                     }
                 }
+
+
                 $(".loading").fadeOut('fast', function() {
                     $(this).remove();
                 });
@@ -651,9 +662,9 @@
 
     // Load More Content AJAX
     $('.scrollpane').on('scroll', function() {
-        let list = $(this).get(0);
+        let thumbView = $(this).get(0);
         if (current_page <= Math.ceil(total_images / per_page)) { // Don't loadResults if there is no images left.
-            if(list.scrollTop + list.clientHeight >= list.scrollHeight) {
+            if(thumbView.scrollTop + thumbView.clientHeight >= thumbView.scrollHeight) {
                 loadResults(sakme_id, current_page, per_page);
             }
         }
