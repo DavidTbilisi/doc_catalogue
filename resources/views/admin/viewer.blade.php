@@ -301,7 +301,6 @@
 
     loadResults(sakme_id, current_page, per_page);
 
-    // left side open close
     function leftOpenClose(){
         if(leftPanel === 'open'){
             $('#leftSide').hide();
@@ -319,7 +318,6 @@
         }
     };
 
-    // Thumb Click
     function thumbClick(index, url){
         alert(url);
         activateThumb(index);
@@ -375,7 +373,6 @@
         }
     });
 
-    // Next Prev
     function nextPrev(method){
         let newIndex = 0;
         if(method === 'next'){
@@ -406,7 +403,6 @@
         activateThumb(newIndex -1);
     };
 
-    // ROTATION
     function rotateContent(method){
         if(method === 'plus'){
             rotation += 90;
@@ -417,7 +413,6 @@
         $('#content_viewer').css({'transform' : 'rotate('+ rotation +'deg)'});
     };
 
-    // ZOOM
     function zoomContent(method){
         if(method === 'in'){
             zoom += 0.3;
@@ -560,6 +555,7 @@
 
     // DRAGGABLE
     dragElement(document.getElementById("content_viewer"));
+
     function dragElement(elmnt) {
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
         elmnt.onmousedown = dragMouseDown;
@@ -610,7 +606,6 @@
         $("#thumbs").after($(`<li class='loading'>${loading_text}</li>`).fadeIn('slow')).data("loading", true);
     }
 
-
     function setTotal(data) {
         total_images = data.total;
         $('.totalCounter').html(data.total);
@@ -638,7 +633,6 @@
             beforeSend: beforeSend(),
             success: function(data) {
                 if(data.result === 'success'){
-                    // Append Data To DOM
                     $.each(data.data, function() {
                         appendThumbs.call(this)
                     });
@@ -651,7 +645,6 @@
                     }
                 }
 
-
                 $(".loading").fadeOut('fast', function() {
                     $(this).remove();
                 });
@@ -660,14 +653,30 @@
         });
     };
 
-    // Load More Content AJAX
-    $('.scrollpane').on('scroll', function() {
+    function validateMaxImages() {
         let thumbView = $(this).get(0);
         if (current_page <= Math.ceil(total_images / per_page)) { // Don't loadResults if there is no images left.
             if(thumbView.scrollTop + thumbView.clientHeight >= thumbView.scrollHeight) {
                 loadResults(sakme_id, current_page, per_page);
             }
         }
+    }
+
+
+    // Load More Content AJAX
+    $('.scrollpane').on('scroll', function() {
+        let pagesNeedForAllImages = Math.ceil(total_images / per_page)
+
+        let thumbView = $(this).get(0);
+        let clientIsOnBottom = thumbView.scrollTop + thumbView.clientHeight >= thumbView.scrollHeight
+        let hasShownEverything = current_page > pagesNeedForAllImages
+
+        setTimeout(function (){
+            if (clientIsOnBottom && !hasShownEverything) {
+                    loadResults(sakme_id, current_page, per_page);
+                    console.log("Loaded more")
+            }
+        }, 1000)
     });
 
     // FULLSCREEN
