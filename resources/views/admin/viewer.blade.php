@@ -329,6 +329,7 @@
         // Change URL DEPENDING ON THUMB
         $('#infoButton').attr('url', urlToGo);
     }
+
     $(document).on("click", '.img-element', function(event) {
         activateThumb($(this).attr('index'));
         // Change Index
@@ -546,6 +547,7 @@
     }
     //When sliders change image will be updated via editImage() function
     $("input[type=range]").change(editImage).mousemove(editImage);
+
     // Reset sliders back to their original values on press of 'reset'
     $('#imageEditor').on('reset', function () {
         setTimeout(function() {
@@ -661,7 +663,6 @@
             }
         }
     }
-
 
     // Load More Content AJAX
     $('.scrollpane').on('scroll', function() {

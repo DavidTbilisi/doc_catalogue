@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 use JildertMiedema\LaravelPlupload\Facades\Plupload;
 use Symfony\Component\HttpFoundation\Response as Code;
 
@@ -393,10 +394,6 @@ class IoController extends Controller
     public function update(Request $request, $id)
     {
 
-
-
-
-
         $io = Io::findOrFail($id); // If Id not specified return code
 
         $post = $request->except(["_token"]);
@@ -449,7 +446,20 @@ class IoController extends Controller
 
 
     private function save_images ($path, $filename, $file){
+
         $path = $file->storeAs("public/documents/" . $path, $filename);
+
+        try{
+//            TODO: create thumbnails
+            $thumb_path = "public/documents/thumb/".$path;
+            $img = Image::make($path)->resize(300, 185, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $img->save($thumb_path);
+        } catch (\Exception $e) {
+            Log::channel("app")->info("thumb didn't created", ["message"=>$e->getMessage(), "path"=>$path]);
+        }
+
         $db_path = substr($path, strpos($path, "/") + 1);
         Log::channel("app")->info("File was added to", ["path" => $path]);
         return $db_path;
