@@ -444,23 +444,38 @@ class IoController extends Controller
         return [$path, $filename];
     }
 
+    private function create_thumb($db_path) {
+        try{
+//            TODO: create thumbnails
+            $thumb_path = base_path("public/storage/thumbs/".$db_path);
+            $thumb_path_without_filename = pathinfo($thumb_path, PATHINFO_DIRNAME);
+
+            if (!file_exists($thumb_path_without_filename)) {
+                if(!mkdir($thumb_path_without_filename, 01777, true)){
+                    Log::channel('app')->info("{$thumb_path_without_filename} can't be created");
+                };
+            }
+
+            $img = Image::make(app_path("../storage/app/public/".$db_path))->resize(300, 185, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $img->save($thumb_path);
+
+        } catch (\Exception $e) {
+            Log::channel("app")->info("thumb creation", [
+                "message"=>$e->getMessage(),
+                "dir"=>$thumb_path_without_filename,
+            ]);
+        }
+    }
+
+
 
     private function save_images ($path, $filename, $file){
 
         $path = $file->storeAs("public/documents/" . $path, $filename);
-
-        try{
-//            TODO: create thumbnails
-            $thumb_path = "public/documents/thumb/".$path;
-            $img = Image::make($path)->resize(300, 185, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $img->save($thumb_path);
-        } catch (\Exception $e) {
-            Log::channel("app")->info("thumb didn't created", ["message"=>$e->getMessage(), "path"=>$path]);
-        }
-
         $db_path = substr($path, strpos($path, "/") + 1);
+        $this->create_thumb($db_path);
         Log::channel("app")->info("File was added to", ["path" => $path]);
         return $db_path;
     }
