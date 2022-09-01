@@ -453,60 +453,99 @@
     });
 
     function activateThumb(index){
+        // TODO: უნდა დაეწეროს რომ სურათი იტვირთება...
+        // TODO:
+        // აქ ფუნქციით უნდა ჩაიტვირთოს დიდი ზომის სურათი.
+        let large_img = ((async () => await get_full_image(index))()); // returns Promise
 
-        var html = '';
-        $('.img-element').removeClass('active');
-        if(mode === 'single'){
-            $('#thumb-' + index).addClass('active');
-            let src = $('#thumb-' + index).children('img').attr('src');
-            html = '<img src="'+src+'" class="img-fluid img-element-viewer" />';
+        large_img.then(img_src => {
+            var html = '';
 
-            $('#pages').html(parseInt(index) + 1);
-
-        }
-        if(mode === 'double'){
-            var nextID = parseInt(index) + 1;
-            if($('#thumb-' + nextID).length){
-                let currentHTML = '';
-                let nextHTML = '';
-
+            $('.img-element').removeClass('active');
+            if(mode === 'single'){
                 $('#thumb-' + index).addClass('active');
-                let srcCurrent = $('#thumb-' + index).children('img').attr('src');
-                currentHTML = '<img src="'+srcCurrent+'" class="img-fluid img-element-viewer" />';
 
-
-                $('#thumb-' + nextID).addClass('active');
-                let srcNext = $('#thumb-' + nextID).children('img').attr('src');
-                nextHTML = '<img src="'+srcNext+'" class="img-fluid img-element-viewer"/>';
-
-                html = currentHTML + nextHTML;
-
-                let firstIndex = parseInt(index) + 1;
-                let secondIndex = parseInt(index) + 2;
-                $('#pages').html(firstIndex + ' - ' + secondIndex);
-
+                // let src = $('#thumb-' + index).children('img').attr('src');
+                html = '<img src="'+img_src+'" class="img-fluid img-element-viewer" />';
+                $('#pages').html(parseInt(index) + 1);
             }
-            else{
-                let currentHTML = '';
-                let nextHTML = '';
+            if(mode === 'double'){
+                var nextID = parseInt(index) + 1;
+                if($('#thumb-' + nextID).length){
+                    let currentHTML = '';
+                    let nextHTML = '';
 
-                $('#thumb-' + index).addClass('active');
-                let srcCurrent = $('#thumb-' + index).children('img').attr('src');
-                currentHTML = '<img src="'+srcCurrent+'" class="img-fluid img-element-viewer" />';
+                    $('#thumb-' + index).addClass('active');
+                    let srcCurrent = $('#thumb-' + index).children('img').attr('src');
+                    currentHTML = '<img src="'+srcCurrent+'" class="img-fluid img-element-viewer" />';
 
 
-                $('#thumb-0').addClass('active');
-                let srcNext = $('#thumb-0').children('img').attr('src');
-                nextHTML = '<img src="'+srcNext+'" class="img-fluid img-element-viewer"/>';
-                html = currentHTML + nextHTML;
+                    $('#thumb-' + nextID).addClass('active');
+                    let srcNext = $('#thumb-' + nextID).children('img').attr('src');
+                    nextHTML = '<img src="'+srcNext+'" class="img-fluid img-element-viewer"/>';
 
-                let firstIndex = parseInt(index) + 1;
-                let secondIndex = 1;
-                $('#pages').html(firstIndex + ' - ' + secondIndex);
+                    html = currentHTML + nextHTML;
 
+                    let firstIndex = parseInt(index) + 1;
+                    let secondIndex = parseInt(index) + 2;
+                    $('#pages').html(firstIndex + ' - ' + secondIndex);
+
+                }
+                else{
+                    let currentHTML = '';
+                    let nextHTML = '';
+
+                    $('#thumb-' + index).addClass('active');
+                    let srcCurrent = $('#thumb-' + index).children('img').attr('src');
+                    currentHTML = '<img src="'+srcCurrent+'" class="img-fluid img-element-viewer" />';
+
+
+                    $('#thumb-0').addClass('active');
+                    let srcNext = $('#thumb-0').children('img').attr('src');
+                    nextHTML = '<img src="'+srcNext+'" class="img-fluid img-element-viewer"/>';
+                    html = currentHTML + nextHTML;
+
+                    let firstIndex = parseInt(index) + 1;
+                    let secondIndex = 1;
+                    $('#pages').html(firstIndex + ' - ' + secondIndex);
+
+                }
             }
-        }
-        $('#content_viewer').html(html);
+            $('#content_viewer').html(html);
+        }) // async
+    }
+
+
+    function get_full_image(index){
+        // Travler
+        "data:image/'+this.mime_type + ';base64,'+ this.file_base_64 +'"
+        return new Promise((resolve, reject) =>{
+            const document_id = $(`#thumb-${index}`).attr("elid");
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRF-TOKEN": jQuery('meta[name="csrf-token"]').attr("content")
+                }
+            });
+            $.ajax({
+                url: `/viewer/single/${document_id}`,
+                type: "post",
+                async: "false",
+                data: {
+                    // delay: 3,
+                    sakme_id: sakme_id,
+                    current_page: current_page,
+                    per_page: per_page
+                },
+                success: function (data){
+                    let mime = data.data.mime_type;
+                    let base64 = data.data.file_base_64;
+                    resolve(`data:image/${mime};base64,${base64}`)
+                },
+                fail: function(reason){
+                    reject(reason)
+                }
+            });
+        });
     }
 
     // FILTERS

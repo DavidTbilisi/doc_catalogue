@@ -268,5 +268,6 @@ Route::prefix("test")->group(function () {
 
 Route::get('/viewer/{io_id}', [ViewerController::class, 'show'])->name('viewer');
 Route::any('/viewer/{io_id}/json', [ViewerController::class, 'dataJson'])->name('viewerjson');
+Route::any('/viewer/single/{document_id}', [ViewerController::class, 'get_image'])->name('singleimage');
 
 require __DIR__ . '/auth.php';

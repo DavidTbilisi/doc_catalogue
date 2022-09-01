@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
+use App\Models\Document;
 use App\Models\Io;
 
 class ViewerController extends Controller
@@ -25,7 +26,7 @@ class ViewerController extends Controller
         $docs = $io->documents()->paginate($per_page);
 //        dd($docs);
         foreach ($docs as $index => $doc) {
-            $base64bites = file_get_contents(app_path("../storage/app/public/".$doc->filepath));
+            $base64bites = file_get_contents(app_path("../storage/app/public/thumbs/".$doc->filepath));
             $base64 = base64_encode($base64bites);
 
             if ($current_page > 1) $index = $index+$per_page*($current_page-1);
@@ -39,9 +40,6 @@ class ViewerController extends Controller
             ];
         }
 
-
-
-
         return [
             'data'=>$images,
             'current_page'=>$docs->currentPage(),
@@ -50,6 +48,28 @@ class ViewerController extends Controller
             'total'=> $docs->total(),
         ];
     }
+
+
+    public function get_image($document_id)
+    {
+        $doc = Document::where("id",$document_id)->first();
+        $base64bites = file_get_contents(app_path("../storage/app/public/".$doc->filepath));
+        $base64 = base64_encode($base64bites);
+
+        $images = [
+            'mime_type' => $doc->mimetype,
+            'file_base_64' => $base64,
+            'id' => $doc->id,
+        ];
+
+        $data = [
+            'data'=>$images,
+            'result'=>"success",
+        ];
+
+        return response()->json($data);
+    }
+
 
     public function dataJson($id){
 
