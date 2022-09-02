@@ -32,7 +32,7 @@
                             chunk_size : '1mb',
                             unique_names : true,
 
-                            max_file_size : '10mb',
+                            max_file_size : '50mb',
                             filters : [
                                 {title : "Image files", extensions : "jpg,gif,png"},
                                 {title : "Zip files", extensions : "zip"}

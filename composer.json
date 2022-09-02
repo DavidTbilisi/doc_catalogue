@@ -10,6 +10,7 @@
         "doctrine/dbal": "^3.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "jeremytubbs/laravel-deepzoom": "^0.3.0",
         "jildertmiedema/laravel-plupload": "^0.8.0",
         "laravel/framework": "^8.54",
         "laravel/sanctum": "^2.11",

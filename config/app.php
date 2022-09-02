@@ -177,6 +177,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\Elfinder\ElfinderServiceProvider::class,
         JildertMiedema\LaravelPlupload\LaravelPluploadServiceProvider::class,
+        Jeremytubbs\LaravelDeepzoom\DeepzoomServiceProvider::class,
 
     ],
 

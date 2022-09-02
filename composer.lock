@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ff5bb6c42abf5d3d33980d047662c4c5",
+    "content-hash": "db1de199052a883e32f6fa310e55667b",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1508,6 +1508,125 @@
                 }
             ],
             "time": "2021-12-16T16:49:26+00:00"
+        },
+        {
+            "name": "jeremytubbs/deepzoom",
+            "version": "0.5.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jeremytubbs/deepzoom.git",
+                "reference": "4869a36f20925a36695b30c24f320d114169380e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jeremytubbs/deepzoom/zipball/4869a36f20925a36695b30c24f320d114169380e",
+                "reference": "4869a36f20925a36695b30c24f320d114169380e",
+                "shasum": ""
+            },
+            "require": {
+                "intervention/image": "^2.3",
+                "league/flysystem": "^1.0",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jeremytubbs\\Deepzoom\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremy Tubbs",
+                    "email": "jeremytubbs@gmail.com",
+                    "homepage": "http://jeremytubbs.com"
+                }
+            ],
+            "description": "Deepzoom Tile Generator for OpenSeadragon",
+            "keywords": [
+                "Flysystem",
+                "ImageMagick",
+                "deepzoom",
+                "dzi",
+                "gd",
+                "image",
+                "imagick",
+                "intervention",
+                "openseadragon",
+                "tiled",
+                "zoom",
+                "zoomable"
+            ],
+            "support": {
+                "issues": "https://github.com/jeremytubbs/deepzoom/issues",
+                "source": "https://github.com/jeremytubbs/deepzoom/tree/master"
+            },
+            "time": "2016-02-18T20:40:46+00:00"
+        },
+        {
+            "name": "jeremytubbs/laravel-deepzoom",
+            "version": "0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jeremytubbs/laravel-deepzoom.git",
+                "reference": "6c73e0ba5a91578cbad796e79b7a7323c39be103"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jeremytubbs/laravel-deepzoom/zipball/6c73e0ba5a91578cbad796e79b7a7323c39be103",
+                "reference": "6c73e0ba5a91578cbad796e79b7a7323c39be103",
+                "shasum": ""
+            },
+            "require": {
+                "jeremytubbs/deepzoom": "0.5.*",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "larapack/dd": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Jeremytubbs\\LaravelDeepzoom\\DeepzoomServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Jeremytubbs\\LaravelDeepzoom\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremy Tubbs",
+                    "email": "jeremytubbs@gmail.com",
+                    "homepage": "http://jeremytubbs.com"
+                }
+            ],
+            "description": "Laravel Deepzoom Tile Generator for OpenSeadragon",
+            "keywords": [
+                "deepzoom",
+                "dzi",
+                "laravel",
+                "laravel5",
+                "openseadragon",
+                "tiled",
+                "zoom",
+                "zoomable"
+            ],
+            "support": {
+                "issues": "https://github.com/jeremytubbs/laravel-deepzoom/issues",
+                "source": "https://github.com/jeremytubbs/laravel-deepzoom/tree/0.3.0"
+            },
+            "time": "2019-01-13T18:42:27+00:00"
         },
         {
             "name": "jildertmiedema/laravel-plupload",
