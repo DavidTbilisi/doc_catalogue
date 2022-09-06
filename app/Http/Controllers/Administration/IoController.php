@@ -19,9 +19,13 @@ use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use JildertMiedema\LaravelPlupload\Facades\Plupload;
 use Symfony\Component\HttpFoundation\Response as Code;
+use Jeremytubbs\LaravelDeepzoom\Commands\MakeTiles;
+
 
 class IoController extends Controller
 {
+
+    use \Illuminate\Foundation\Bus\DispatchesJobs;
 
     private function detectLevel($reference){
         $referenceArray = explode("_", $reference);
@@ -446,7 +450,6 @@ class IoController extends Controller
 
     private function create_thumb($db_path) {
         try{
-//            TODO: create thumbnails
             $thumb_path = base_path("public/storage/thumbs/".$db_path);
             $thumb_path_without_filename = pathinfo($thumb_path, PATHINFO_DIRNAME);
 
@@ -470,12 +473,23 @@ class IoController extends Controller
     }
 
 
+    private function tile_create($image, $filename = null, $folder = null){
+                // TODO: tile_function
+                try {
+                    $command = new MakeTiles($image, $filename, $folder);
+                    $this->dispatch($command);
+                } catch (\Exception $e) {
+                    Log::channel("app")->info("Can't create tiles: {$e->getMessage()}", []);
+                }
+    }
+
 
     private function save_images ($path, $filename, $file){
 
         $path = $file->storeAs("public/documents/" . $path, $filename);
         $db_path = substr($path, strpos($path, "/") + 1);
         $this->create_thumb($db_path);
+
         Log::channel("app")->info("File was added to", ["path" => $path]);
         return $db_path;
     }
@@ -603,8 +617,6 @@ class IoController extends Controller
 
         return redirect(route("io.index"))->withErrors("msg", "Deleted");
     }
-
-
 
 
 }
