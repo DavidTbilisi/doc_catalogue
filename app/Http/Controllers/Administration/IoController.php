@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Facades\Perms;
+use App\Jobs\TileImage;
 use App\Models\Document;
 use App\Models\Group;
 use App\Models\Io;
@@ -474,12 +475,20 @@ class IoController extends Controller
 
 
     private function tile_create($image, $filename = null, $folder = null){
-                // TODO: tile_function
+                $folder = pathinfo(base_path("public/storage/tiles/".$folder), PATHINFO_FILENAME);
+
                 try {
-                    $command = new MakeTiles($image, $filename, $folder);
+
+                    $img = storage_path("app/public/".$image);
+                    Log::channel("app")->info("image path to make tiles", ["image"=>$img]);
+
+                    $filename = $folder;
+                    $command = new MakeTiles($img, $filename, $folder);
+
                     $this->dispatch($command);
+
                 } catch (\Exception $e) {
-                    Log::channel("app")->info("Can't create tiles: {$e->getMessage()}", []);
+                    Log::channel("app")->info("Can't create tiles", ["msg"=>$e->getMessage()]);
                 }
     }
 
@@ -489,6 +498,12 @@ class IoController extends Controller
         $path = $file->storeAs("public/documents/" . $path, $filename);
         $db_path = substr($path, strpos($path, "/") + 1);
         $this->create_thumb($db_path);
+
+        $image_size = bytesToMb( Storage::size($path) );
+
+        if ( $image_size > env('MAX_IMAGE_SIZE') ) {
+            $this->tile_create($db_path, $filename, $db_path);
+        }
 
         Log::channel("app")->info("File was added to", ["path" => $path]);
         return $db_path;
@@ -512,6 +527,8 @@ class IoController extends Controller
             $doc->io_id = $io->id;
             $doc->filename = $filename;
             $doc->filepath = $db_path;
+            $doc->size = $file->getSize(); // bytes
+            $doc->checksum = md5($file->getContent());
             $doc->mimetype = $file->getMimeType();
             $doc->save();
         }
@@ -519,61 +536,6 @@ class IoController extends Controller
     }
 
 
-    public function update_old(Request $request, $id)
-    {
-
-
-        $io = Io::findOrFail($id); // If Id not specified return code
-
-        $post = $request->except(["_token"]);
-
-        $io->prefix = $post['prefix'];
-        $io->identifier = $post['identifier'];
-        $io->suffix = $post['suffix'];
-        $io->io_type_id = $post['io_type_id'];
-
-        $io->reference = $this->buildReference($id, $request);
-        $io->level = $this->detectLevel($io->reference);
-
-
-        if ($request->hasFile ("files") ) {
-            foreach ($request->file("files") as $index => $file):
-
-                $doc = Document::where("io_id", $io->id)->orderby('created_at', 'desc')->first();
-
-                if(!$doc){
-                    $doc = new Document();
-                } else {
-                    $name = explode('.', $doc->filename)[0];
-                    $index += substr($name, -1);
-                    $doc = new Document();
-                }
-
-                $file_ext = $file->getClientOriginalExtension();
-                $index++;
-                $path = str_replace("_", "/", substr( $io->reference, 3));
-                $filename = "{$io->reference}_{$index}.{$file_ext}";
-
-                # Save Files
-                $path = $file->storeAs("public/documents/".$path, $filename);
-                $db_path = substr($path, strpos( $path, "/")+1);
-                Log::channel("app")->info("File was added to",["path" => $path] );
-                $doc->io_id = $io->id;
-                $doc->filename = $filename;
-                $doc->filepath = $db_path;
-                $doc->mimetype = $file->getMimeType();
-                $doc->save();
-            endforeach;
-        }
-        $isSaved = $io->save();
-
-
-
-        Log::channel("app")->info("Io Update: ", ['Is Io Saved'=> $isSaved]);
-        if ($isSaved) {
-            return redirect(route("io.show",["id"=>$id]));
-        }
-    }
 
     public function destroy($id)
     {

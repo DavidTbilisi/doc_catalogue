@@ -178,6 +178,7 @@ return [
         Barryvdh\Elfinder\ElfinderServiceProvider::class,
         JildertMiedema\LaravelPlupload\LaravelPluploadServiceProvider::class,
         Jeremytubbs\LaravelDeepzoom\DeepzoomServiceProvider::class,
+        browner12\helpers\HelperServiceProvider::class,
 
     ],
 

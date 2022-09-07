@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Administration;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Models\Io;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Monolog\Logger;
 
 class ViewerController extends Controller
 {
@@ -34,6 +37,8 @@ class ViewerController extends Controller
             $images[] = [
                 'index' => $index,
 //                'path' => $doc->filepath,
+                'size_bytes' => $doc->size,
+                'size_mb' => bytesToMb($doc->size),
                 'mime_type' => $doc->mimetype,
                 'file_base_64' => $base64,
                 'id' => $doc->id,
@@ -52,11 +57,44 @@ class ViewerController extends Controller
 
     public function get_image($document_id)
     {
+
+//        TODO: მესიჯებია მოსაწესრიგებელი
+
         $doc = Document::where("id",$document_id)->first();
+        $max_image_size = env('MAX_IMAGE_SIZE');
+
+        if (bytesToMb($doc->size) > $max_image_size) {
+            if(Storage::exists("public/tiles/".$doc->tileFolder())) {
+                $images = [
+                    'filename' => $doc->filename,
+                    'mime_type' => $doc->mimetype,
+                    'id' => $doc->id,
+                ];
+                $data = [
+                    'data'=>$images,
+                    'result'=>"deepzoom",
+                    'msg'=>"სურათის ზომა აღემატება {$max_image_size}mb-ს",
+                ];
+                return response()->json($data);
+            }
+
+            $data = [
+                'data'=>null,
+                'result'=>"processing",
+                'msg'=>"სურათის ზომა აღემატება {$max_image_size}mb-ს",
+            ];
+
+
+            return response()->json($data);
+        }
+
+
+
         $base64bites = file_get_contents(app_path("../storage/app/public/".$doc->filepath));
         $base64 = base64_encode($base64bites);
 
         $images = [
+            'filename' => $doc->filename,
             'mime_type' => $doc->mimetype,
             'file_base_64' => $base64,
             'id' => $doc->id,

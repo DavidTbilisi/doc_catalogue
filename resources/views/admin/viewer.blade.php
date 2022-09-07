@@ -30,7 +30,35 @@
             padding: 0px;
             margin: 0px;
             overflow-x: hidden;
+
         }
+
+        /*#thumbs li::after {*/
+        /*    content: attr(data-size_mb) "MB";*/
+        /*    display: block;*/
+        /*    width: 100px;*/
+        /*    height: 100px;*/
+        /*    position: relative;*/
+        /*    top: -120px;*/
+        /*    left: -20px;*/
+        /*    color: white;*/
+        /*    text-shadow: 1px 1px black;*/
+        /*    font-size: 20px;*/
+        /*}*/
+
+        #thumbs li {
+            position: relative;
+        }
+
+        #thumbs li span {
+            position: absolute;
+            padding:5px;
+            color: white;
+            text-shadow: 1px 1px black;
+            font-size: 20px;
+        }
+
+
 
         .img-element {
             padding: 10px;
@@ -324,7 +352,9 @@
         // Change Index
         $("#indexID").val(parseInt(index) + 1);
 
-        let urlToGo = 'files/details/' + url;
+        // let urlToGo = 'files/details/' + url;
+        let urlToGo = 'deepzoom/' + url;
+        console.log(url)
 
         // Change URL DEPENDING ON THUMB
         $('#infoButton').attr('url', urlToGo);
@@ -454,8 +484,8 @@
 
     function activateThumb(index){
         // TODO: უნდა დაეწეროს რომ სურათი იტვირთება...
-        // TODO:
-        // აქ ფუნქციით უნდა ჩაიტვირთოს დიდი ზომის სურათი.
+
+        // TODO: აქ ფუნქციით უნდა ჩაიტვირთოს დიდი ზომის სურათი.
         let large_img = ((async () => await get_full_image(index))()); // returns Promise
 
         large_img.then(img_src => {
@@ -518,7 +548,7 @@
 
     function get_full_image(index){
         // Travler
-        "data:image/'+this.mime_type + ';base64,'+ this.file_base_64 +'"
+
         return new Promise((resolve, reject) =>{
             const document_id = $(`#thumb-${index}`).attr("elid");
             $.ajaxSetup({
@@ -537,9 +567,17 @@
                     per_page: per_page
                 },
                 success: function (data){
-                    let mime = data.data.mime_type;
-                    let base64 = data.data.file_base_64;
-                    resolve(`data:image/${mime};base64,${base64}`)
+                    if (data.result === "success") {
+                        let mime = data.data.mime_type;
+                        let base64 = data.data.file_base_64;
+                        resolve(`data:image/${mime};base64,${base64}`)
+
+                    } else if (data.result === "deepzoom") {
+                        let filename = data.data.filename;
+                        let tiles_folder = filename.slice(0,filename.indexOf("."))
+                        $('#infoButton').attr('url', `deepzoom/${tiles_folder}`);
+                        window.open(`/deepzoom/${tiles_folder}`, '_blank');
+                    }
                 },
                 fail: function(reason){
                     reject(reason)
@@ -637,8 +675,9 @@
 
     let appendThumbs = function () {
         $('#thumbs').append(
-            '<li class="img-element" id="thumb-'+this.index+'" index="'+this.index+'" elID="'+this.id+'">'+
-            '<img src="data:image/'+this.mime_type + ';base64,'+ this.file_base_64 +'" />'+
+            `<li class="img-element" id="thumb-${this.index}" index="${this.index}" elID="${this.id}" data-size_mb="${this.size_mb}"> `+
+            `<span>${this.size_mb}MB</span>`+
+            `<img src="data:image/${this.mime_type};base64,${this.file_base_64}" />`+
             '</li>'
         );
     }
@@ -677,7 +716,7 @@
                     $.each(data.data, function() {
                         appendThumbs.call(this)
                     });
-
+                    console.log(data);
                     updateCurrentPage(current_page + 1);
                     setTotal(data)
                 } else {

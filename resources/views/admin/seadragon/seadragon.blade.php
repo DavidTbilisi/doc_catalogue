@@ -8,16 +8,22 @@
     <title>Deepzoom</title>
     <!-- Deepzoom image viewer-->
     <script src="https://cdn.jsdelivr.net/npm/openseadragon@3.1/build/openseadragon/openseadragon.min.js"></script>
-
+    <style>
+        #deepzoom{
+            height: 80vh;
+            width: 100vw;
+        }
+    </style>
 </head>
 <body>
-<div id="deepzoom" style="width: 800px; height: 600px;"></div>
+<div id="deepzoom"></div>
 
 <script>
 
     let viewer = new OpenSeadragon({
         id:"deepzoom",
-            tileSources:   '{{"storage/tiles/kiss/kiss.dzi"}}'
+        tileSources:   '{{asset("storage/tiles/{$path}.dzi")}}',
+        showNavigator: true,
     });
 
 </script>

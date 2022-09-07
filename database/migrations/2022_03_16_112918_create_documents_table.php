@@ -16,6 +16,8 @@ class CreateDocumentsTable extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->string("filename");
+            $table->string("size");
+            $table->string("checksum");
             $table->longText("filepath");
             $table->string("mimetype");
             $table->foreignId("io_id")->constrained("io");

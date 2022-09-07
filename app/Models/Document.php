@@ -14,9 +14,19 @@ class Document extends Model
         "mimetype",
         "io_id",
     ];
+    /**
+     * @var mixed
+     */
+    private $mimetype;
 
     public function io()
     {
         return $this->belongsTo(Io::class);
+    }
+
+
+    public function tileFolder()
+    {
+        return pathinfo($this->filepath, PATHINFO_FILENAME);
     }
 }

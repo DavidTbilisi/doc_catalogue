@@ -79,7 +79,20 @@ class DocumentsController extends Controller
     {
         $docs = Document::where("io_id",$io_id);
         foreach ($docs->get() as $doc):
-            Storage::delete("public/".$doc->filepath);
+
+            $tiles_folder = pathinfo($doc->filepath, PATHINFO_FILENAME);
+
+            $base = trim(preg_replace("/documents/","",pathinfo($doc->filepath, PATHINFO_DIRNAME))); # /1-1-1/GE_1-1-1_1.jpg
+            $base = trim(preg_replace("/.$tiles_folder./","",$base)); # /1-1-1/GE_1-1-1_1.jpg => /1-1-1/
+
+            $tiles = "tiles/". $tiles_folder;
+            $document = "documents".$base;
+            $file = "files".$base;
+            $thumbs = "thumbs/documents".$base;
+
+            foreach([$thumbs, $tiles, $document, $file] as $dir):
+                Storage::deleteDirectory("public/".$dir);
+            endforeach;
         endforeach;
         $docs->delete();
         return redirect(route("io.show", ["id"=>$io_id]));
