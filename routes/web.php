@@ -250,8 +250,9 @@ Route::middleware(['auth', 'perms'])->group(function () {
 
     Route::get('/dashboard',  [IoController::class, 'index'])->name('dashboard');
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
-    Route::get("/deepzoom", function (){
-       return view("admin/seadragon/seadragon");
+    Route::get("/deepzoom/{image_name?}", function ($image_name='test'){
+        $path = "{$image_name}/{$image_name}";
+       return view("admin/seadragon/seadragon", ["path"=>$path]);
     });
 });
 

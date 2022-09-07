@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Facades\Perms;
+use App\Jobs\TileImage;
 use App\Models\Document;
 use App\Models\Group;
 use App\Models\Io;
@@ -475,11 +476,20 @@ class IoController extends Controller
 
     private function tile_create($image, $filename = null, $folder = null){
                 // TODO: tile_function
+                $folder = pathinfo(base_path("public/storage/tiles/".$folder), PATHINFO_FILENAME);
+
                 try {
-                    $command = new MakeTiles($image, $filename, $folder);
+
+                    $img = storage_path("app/public/".$image);
+                    Log::channel("app")->info("image path to make tiles", ["image"=>$img]);
+
+//                    $img = Image::make($img);
+                    $command = new MakeTiles($img, $filename, $folder);
+
                     $this->dispatch($command);
+
                 } catch (\Exception $e) {
-                    Log::channel("app")->info("Can't create tiles: {$e->getMessage()}", []);
+                    Log::channel("app")->info("Can't create tiles", ["msg"=>$e->getMessage()]);
                 }
     }
 
@@ -489,6 +499,7 @@ class IoController extends Controller
         $path = $file->storeAs("public/documents/" . $path, $filename);
         $db_path = substr($path, strpos($path, "/") + 1);
         $this->create_thumb($db_path);
+        $this->tile_create($db_path, $filename, $db_path);
 
         Log::channel("app")->info("File was added to", ["path" => $path]);
         return $db_path;

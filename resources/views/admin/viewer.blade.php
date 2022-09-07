@@ -324,7 +324,9 @@
         // Change Index
         $("#indexID").val(parseInt(index) + 1);
 
-        let urlToGo = 'files/details/' + url;
+        // let urlToGo = 'files/details/' + url;
+        let urlToGo = 'deepzoom/' + url;
+        console.log(url)
 
         // Change URL DEPENDING ON THUMB
         $('#infoButton').attr('url', urlToGo);
@@ -454,8 +456,8 @@
 
     function activateThumb(index){
         // TODO: უნდა დაეწეროს რომ სურათი იტვირთება...
-        // TODO:
-        // აქ ფუნქციით უნდა ჩაიტვირთოს დიდი ზომის სურათი.
+
+        // TODO: აქ ფუნქციით უნდა ჩაიტვირთოს დიდი ზომის სურათი.
         let large_img = ((async () => await get_full_image(index))()); // returns Promise
 
         large_img.then(img_src => {
@@ -518,7 +520,7 @@
 
     function get_full_image(index){
         // Travler
-        "data:image/'+this.mime_type + ';base64,'+ this.file_base_64 +'"
+
         return new Promise((resolve, reject) =>{
             const document_id = $(`#thumb-${index}`).attr("elid");
             $.ajaxSetup({
@@ -677,7 +679,7 @@
                     $.each(data.data, function() {
                         appendThumbs.call(this)
                     });
-
+                    console.log(data);
                     updateCurrentPage(current_page + 1);
                     setTotal(data)
                 } else {

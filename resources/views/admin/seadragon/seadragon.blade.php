@@ -17,7 +17,8 @@
 
     let viewer = new OpenSeadragon({
         id:"deepzoom",
-            tileSources:   '{{"storage/tiles/kiss/kiss.dzi"}}'
+        tileSources:   '{{asset("storage/tiles/{$path}.dzi")}}',
+        showNavigator: true,
     });
 
 </script>

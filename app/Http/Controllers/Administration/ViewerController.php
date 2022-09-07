@@ -57,6 +57,7 @@ class ViewerController extends Controller
         $base64 = base64_encode($base64bites);
 
         $images = [
+            'filename' => $doc->filename,
             'mime_type' => $doc->mimetype,
             'file_base_64' => $base64,
             'id' => $doc->id,
