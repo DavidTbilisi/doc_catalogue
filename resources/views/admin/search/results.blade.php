@@ -12,7 +12,7 @@
                     <h6 class="card-subtitle mb-2 text-muted">საინფორმაციო ობიექტის ID: {{$result->io_id}}</h6>
                     <p class="card-text">
                         @foreach($fields as $field)
-                            {{$result->$field}}
+{{--                            {{$result->$field}}--}}
                         @endforeach
                     </p>
                     <a target="_blank" href="{{route("io.show",["id"=>$result->io_id])}}" class="card-link">გადასვლა</a>

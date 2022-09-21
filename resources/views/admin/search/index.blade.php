@@ -24,16 +24,14 @@
 
             function drawInputs(type = "text", placeholder = "ადგილის დამკავებელი", technical="") {
 
-                let input = `
-  <div class="row" id="${technical}">
-    <div class="col">
-      <input class="dynamic form-control mb-3" type="button" disabled value="${placeholder}">
-    </div>
-    <div class="col">
-        <input class="dynamic dinput form-control mb-3" type="${type}" placeholder="${placeholder}" name="${technical}">
-    </div>
-  </div>
-`
+                let input = `<div class="row" id="${technical}">
+                                <div class="col">
+                                  <input class="dynamic form-control mb-3" type="button" disabled value="${placeholder}">
+                                </div>
+                                <div class="col">
+                                    <input class="dynamic dinput form-control mb-3" type="${type}" placeholder="${placeholder}" name="${technical}">
+                                </div>
+                              </div>`
 
                 let input_count = document.querySelector("form").childElementCount -1
                 let referenceNode = document.querySelector("form").children[input_count]

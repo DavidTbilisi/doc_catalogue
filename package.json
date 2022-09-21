@@ -7,7 +7,7 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "mix --production", 
+        "production": "mix --production",
         "test": "php artisan test",
         "migrate": "php artisan migrate:fresh --seed"
     },
@@ -16,6 +16,8 @@
         "alpinejs": "^2.7.3",
         "autoprefixer": "^10.1.0",
         "axios": "^0.21",
+        "cypress": "^10.8.0",
+        "faker": "^6.6.6",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
         "postcss": "^8.2.1",

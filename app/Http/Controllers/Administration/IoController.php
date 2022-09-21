@@ -280,16 +280,10 @@ class IoController extends Controller
     public function show($id)
     {
 
-//        dump(Perms::list());
-//        dd(Perms::hasPerms(['Edit Object','Delete Object']));
-
-
-
         $hasPerms = Perms::hasPermsIo($id, ["viewObject"]); // ვამოწმებ საინფორმ. ობიექტის უფლებებს.
         if (!$hasPerms) {
             return redirect(route("dashboard"))->withErrors(["msg"=>"წვდომა შეზღუდულია"]);
         }
-
 
         $io_item =  IO::with("type")
             ->with('parent')
@@ -299,7 +293,7 @@ class IoController extends Controller
             ->where('id',$id)
             ->first();
 
-
+        // თარგმის ცხრილის შემოწმება
         $trTable = Io_type::with('translation')->where("id", $io_item->io_type_id)->first();
         $translation = $trTable->translation;
         $translation = json_decode($translation->fields, true);
@@ -519,10 +513,19 @@ class IoController extends Controller
         }
 
         $alreadyInDb = Document::where("filename", $filename)->get()->count();
+
+
         if(!$alreadyInDb){
+            try{
+            $img = Image::make("public/".$db_path);
+            } catch (\Exception $e) {
+                Log::channel("app")->info($e->getMessage());
+            }
             $doc->io_id = $io->id;
             $doc->filename = $filename;
             $doc->filepath = $db_path;
+            $doc->size = Storage::size("public/".$db_path);
+            $doc->checksum = md5(Storage::get("public/".$db_path));
             $doc->mimetype = $file->getMimeType();
             $doc->save();
         }

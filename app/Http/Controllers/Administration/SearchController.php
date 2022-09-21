@@ -29,16 +29,15 @@ class SearchController extends Controller
 
         $builder = DB::table($table);
         $builder->select([
-            "*",
             "io.id as io_id",
             "io_types.name as io_types_name",
-            "reference",
+            "io.reference as reference",
         ]);
         $not_null_fields = [];
         foreach ($fields as $name => $value):
             if ($value) {
                 $not_null_fields[] = $name;
-                $builder->where($name, "like","%{$value}%");
+                $builder->where($table.".".$name, "like","%{$value}%");
             }
         endforeach;
 
