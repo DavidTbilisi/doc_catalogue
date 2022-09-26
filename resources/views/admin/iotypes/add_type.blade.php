@@ -81,7 +81,10 @@
 
         function addInput(event) {
             event.preventDefault();
+            // TODO: add input unique id
             let newField = document.querySelector("#fields .form-group").innerHTML;
+            debugger
+            console.log(newField)
             let fieldGroups = document.querySelector(".inputs");
             fieldGroups.insertAdjacentHTML("beforeEnd", newField)
         }
