@@ -78,13 +78,15 @@
 
 
     <script>
-
+        let incremented = 1;
         function addInput(event) {
             event.preventDefault();
-            // TODO: add input unique id
             let newField = document.querySelector("#fields .form-group").innerHTML;
-            debugger
-            console.log(newField)
+
+            // increment input id
+            incremented ++;
+            newField = newField.replaceAll("field1", "field"+incremented);
+
             let fieldGroups = document.querySelector(".inputs");
             fieldGroups.insertAdjacentHTML("beforeEnd", newField)
         }
