@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import {faker} from "@faker-js/faker/locale/ge";
-
+let io_id;
 describe('IO Manipulations', () => {
 
     const login = ()=>{
@@ -12,29 +12,51 @@ describe('IO Manipulations', () => {
         cy.contains('Log in').click()
     }
 
+    const randomInt = (min, max) => {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    const addIO = () => {
+        cy.get('.add-button > div > a').as("addBtn").click()
+        cy.get('#prefix').type(randomInt(1, 100))
+        cy.get('#identifier').type(randomInt(1, 100));
+        cy.get('#suffix').type(randomInt(1, 100));
+        cy.get('#type').select('დონე ორი');
+        cy.get('input[type=date]').type(`2022-0${randomInt(1,9)}-0${randomInt(1, 9)}`);
+        cy.get('input[type=number]').type(randomInt(2,100)); // ვალიდაცია რიცხვითი სიმბოლოების მაქსიმალური რაოდენობა
+        cy.get('#teqsti').type(randomInt(1, 100));
+        cy.get('.btn-success').click();
+    }
+
     beforeEach(()=>{
         login()
 
     })
 
 
-    it("Add IO", () => {
-        cy.get('.add-button > div > a').as("addBtn").click()
-        cy.get('#prefix').type("1");
-        cy.get('#identifier').type(1);
-        cy.get('#suffix').type(1);
-        cy.get('#type').select('დონე ორი');
-        cy.get('input[type=date]').type("2022-01-01");
-        cy.get('input[type=number]').type(Math.floor(Math.random(0)*100)); // ვალიდაცია რიცხვითი სიმბოლოების მაქსიმალური რაოდენობა
-        cy.get('#teqsti').type(Math.floor(Math.random(0)*100));
-        cy.get('.btn-success').click();
+    it.skip("Add IO", () => {
+        addIO()
+        addIO()
+        addIO()
     })
 
-    it.skip("Edit IO", () => {
+    it("Add sub-io", () => {
+
+        cy.get(':nth-child(1) > :nth-child(5) > .btn-success > .material-icons').click();
+        cy.location().then((loc) => {
+            cy.log(loc.pathname)
+            io_id = loc.pathname.at(-1)
+        })
+
+        // addIO()
+    })
+
+    it("Edit IO", () => {
+
+        cy.log(io_id)
 
 
     })
-
 
 
 })
