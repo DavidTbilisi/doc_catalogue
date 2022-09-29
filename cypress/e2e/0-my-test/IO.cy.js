@@ -52,11 +52,37 @@ describe('IO Manipulations', () => {
     })
 
     it("Edit IO", () => {
+        cy.visit("admin/io/edit/" + io_id)
+        cy.get('#prefix').clear().type("edited_"+randomInt(1, 100))
+        cy.get('#identifier').clear().type(randomInt(1, 100));
+        cy.get('#suffix').clear().type("edited_"+randomInt(1, 100));
+        cy.get('.btn-success').click();
+        cy.get('.btn-danger').click();
+        cy.visit("admin/io/show/" + io_id)
+    })
 
-        cy.log(io_id)
+    it("Edit Data", () => {
+        cy.visit("admin/io/show/" + io_id)
+        cy.contains("მონაცემები").click()
+        cy.get('input[type=date]').clear().type(`2022-0${randomInt(1,9)}-0${randomInt(1, 9)}`);
+        cy.get('input[type=number]').clear().type(randomInt(2,100)); // ვალიდაცია რიცხვითი სიმბოლოების მაქსიმალური რაოდენობა
+        cy.get('#teqsti').clear().type(randomInt(1, 100));
+        cy.get('.btn-success').click();
+        cy.get('.alert').should("contain", "წარმატებით"); // TODO: უკან გადასვლა არ მუშაობს
+    })
+
+
+    it("Permissions", () => {
+        cy.visit("admin/io/permissions/" + io_id)
+        // todo: after changing permissions, it gives me permission to change all permissions
+        cy.get("#viewDocumentEditor").click()
+        cy.get(".btn-success").click()
 
 
     })
 
-
+    it.skip("Delete IO", () => {
+        cy.visit("admin/io/edit/" + io_id)
+        cy.get('.btn-danger').click();
+    })
 })
