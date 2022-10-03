@@ -127,7 +127,7 @@ class IoController extends Controller
         $ioList = Io::with("type")
             ->with("children")
             ->where("parent_id", null)
-            ->get();
+            ->paginate();
         $typesCount = Io_type::all()->count();
 
         $identifiers = [];
@@ -469,7 +469,6 @@ class IoController extends Controller
 
 
     private function tile_create($image, $filename = null, $folder = null){
-                // TODO: tile_function
                 $folder = pathinfo(base_path("public/storage/tiles/".$folder), PATHINFO_FILENAME);
 
                 try {
@@ -533,89 +532,37 @@ class IoController extends Controller
     }
 
 
-    public function update_old(Request $request, $id)
-    {
-
-
-        $io = Io::findOrFail($id); // If Id not specified return code
-
-        $post = $request->except(["_token"]);
-
-        $io->prefix = $post['prefix'];
-        $io->identifier = $post['identifier'];
-        $io->suffix = $post['suffix'];
-        $io->io_type_id = $post['io_type_id'];
-
-        $io->reference = $this->buildReference($id, $request);
-        $io->level = $this->detectLevel($io->reference);
-
-
-        if ($request->hasFile ("files") ) {
-            foreach ($request->file("files") as $index => $file):
-
-                $doc = Document::where("io_id", $io->id)->orderby('created_at', 'desc')->first();
-
-                if(!$doc){
-                    $doc = new Document();
-                } else {
-                    $name = explode('.', $doc->filename)[0];
-                    $index += substr($name, -1);
-                    $doc = new Document();
-                }
-
-                $file_ext = $file->getClientOriginalExtension();
-                $index++;
-                $path = str_replace("_", "/", substr( $io->reference, 3));
-                $filename = "{$io->reference}_{$index}.{$file_ext}";
-
-                # Save Files
-                $path = $file->storeAs("public/documents/".$path, $filename);
-                $db_path = substr($path, strpos( $path, "/")+1);
-                Log::channel("app")->info("File was added to",["path" => $path] );
-                $doc->io_id = $io->id;
-                $doc->filename = $filename;
-                $doc->filepath = $db_path;
-                $doc->mimetype = $file->getMimeType();
-                $doc->save();
-            endforeach;
-        }
-        $isSaved = $io->save();
-
-
-
-        Log::channel("app")->info("Io Update: ", ['Is Io Saved'=> $isSaved]);
-        if ($isSaved) {
-            return redirect(route("io.show",["id"=>$id]));
-        }
-    }
 
     public function destroy($id)
     {
+//        TODO: move sql statements to model?
         echo $id;
         DB::beginTransaction();
         try{
+
+
             $io = Io::findOrFail($id);
             $type = Io_type::findOrFail($io->io_type_id);
-            $type_table = $type->table;
-            $status = DB::table($type_table)->where("id",$io->data_id)->delete();
-            Log::channel("app")->info("'{$type->table}'-{$io->data_id} deletion status", [$status]);
+            $type_table_delete_status = DB::table($type->table)->where("id",$io->data_id)->delete();
+
+            Log::channel("app")->info("'{$type->table}'-{$io->data_id} deletion status", [$type_table_delete_status]);
 
             $io_children = $this->getChildren($io);
 
-            if (count($io_children) > 0){ // todo: დასაზუსტებელია პირობა
+            if (count($io_children) > 0){
                 foreach ($io_children as $infoObject){
 
                     $docs = Document::where("io_id",$infoObject->id);
 
                     foreach($docs->get() as $d) :
-                    Storage::delete("public/".$d->filepath);
+                        Storage::delete("public/".$d->filepath);
                     endforeach;
 
                     IoGroupsPermissions::where("io_id", $io->id)->delete();
 
                     $docs->delete();
-                    $status = $infoObject->delete();
-                    Log::channel("app")->info("'{$io->id}' Deletion status", [$status]);
+                    $io_delete_status = $infoObject->delete();
+                    Log::channel("app")->info("'{$io->id}' Deletion status", [$io_delete_status]);
                 };
             }
 
@@ -625,12 +572,20 @@ class IoController extends Controller
             DB::rollBack();
             Log::channel("app")->info("Deletion status", [$exception->getMessage()]);
 
-            return redirect(route('io.index'))->withErrors("msg", $exception->getMessage());
+            return redirect(route('io.index'))->with([
+                "type"=> "danger",
+                "message"=> "მონაცემის წაშლა ვერ მოხერხდა, რადგანაც მოცემული მონაცემი არ არის ცარიელი"
+            ]);
         }
 
 
-        return redirect(route("io.index"))->withErrors("msg", "Deleted");
+        return redirect(route("io.index"))->with([
+            "type"=> "success",
+            "message"=> "მონაცები წარმატებით წაიშალა"
+        ]);
     }
+
+
 
 
 }

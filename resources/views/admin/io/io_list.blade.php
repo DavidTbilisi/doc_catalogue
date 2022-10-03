@@ -2,7 +2,7 @@
 @section('body')
 
 <div class="container">
-    <x-error-alert></x-error-alert>
+    <x-alert></x-alert>
 </div>
 
 <h2 class="text-center mt-3 mb-4"> შესანახი ობიექტები </h2>
@@ -20,7 +20,7 @@
     <tbody>
 
 @foreach($iolist as $io)
-        <tr>
+        <tr id="row-{{$loop->index}}">
             @hasPerm('viewObject')
             @hasPermsIo($io->id has ['viewObject'])
 
@@ -67,7 +67,7 @@
 @endforeach
     </tbody>
 </table>
-
+    {{$iolist->links()}}
 @hasPerm("addObject")
 @if($ioTypeCount)
 <x-add-button route="{{route('io.add')}}"></x-add-button>

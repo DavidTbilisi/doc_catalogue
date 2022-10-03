@@ -16,7 +16,7 @@
             @endif
             <h2 class="mb-4 mt-4">{{$perms['group']->alias}} </h2>
 
-          <form action="{{route("io_perms.update", ['group_id'=>$perms['group']->id, 'io_id'=>$io->id])}}" method="POST">
+          <form id="form_{{$perms['group']->alias}}" action="{{route("io_perms.update", ['group_id'=>$perms['group']->id, 'io_id'=>$io->id])}}" method="POST">
             @csrf()
         <div class="row">
 
