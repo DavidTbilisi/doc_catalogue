@@ -12,7 +12,25 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.rawgit.com/kimmobrunfeldt/progressbar.js/0.5.6/dist/progressbar.js"></script>
+
     <style>
+
+        #progress-bar  {
+            display: none;
+            height: 100px;
+            top:45%;
+            position: fixed;
+            z-index: 1001;
+            margin: auto;
+        }
+
+        #progress-bar  > svg {
+            height: 100%;
+            display: block;
+            margin:auto;
+        }
+
         #leftSide {
             background-color: white;
             position: fixed;
@@ -266,6 +284,8 @@
     </div>
 
     <div id="middleBox" class="boxed">
+        <div id="progress-bar"></div>
+
         <div id="content_viewer" class="singleView"> </div>
 
         <div id="header">
@@ -484,10 +504,10 @@
 
     function activateThumb(index){
         // TODO: უნდა დაეწეროს რომ სურათი იტვირთება...
-
+        console.log(index)
         // TODO: აქ ფუნქციით უნდა ჩაიტვირთოს დიდი ზომის სურათი.
         let large_img = ((async () => await get_full_image(index))()); // returns Promise
-
+        loading_svg()
         large_img.then(img_src => {
             var html = '';
 
@@ -785,7 +805,24 @@
         }
     }
 
+    const loading_svg = () => {
+        $('middleBox #progress-bar').show()
 
+        var circle = new ProgressBar.Circle('#progress-bar', {
+            color: '#ffffff',
+            strokeWidth: 6,
+            duration: 3000,
+            easing: 'easeInOut'
+        });
+        circle.animate(2);
+
+        setTimeout(function(){
+            $('#progress-bar').fadeIn('slow');
+            delete circle;
+            $('#progress-bar svg').remove()
+        }, 2000);
+
+    }
 
 
 </script>

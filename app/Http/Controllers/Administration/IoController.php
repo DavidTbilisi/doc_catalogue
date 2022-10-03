@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Facades\Perms;
-use App\Jobs\TileImage;
 use App\Models\Document;
 use App\Models\Group;
 use App\Models\Io;
 use App\Models\Io_type;
 use App\Models\IoGroupsPermissions;
-use App\Tutsmake\Tutsmake;
 use FilesystemIterator;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +25,7 @@ use Jeremytubbs\LaravelDeepzoom\Commands\MakeTiles;
 class IoController extends Controller
 {
 
-    use \Illuminate\Foundation\Bus\DispatchesJobs;
+    use DispatchesJobs;
 
     private function detectLevel($reference){
         $referenceArray = explode("_", $reference);
@@ -53,6 +52,7 @@ class IoController extends Controller
             // "GE_1"
             return "_{$identifier}";
         }
+        return null;
     }
 
     private function getRefRequest($request) {
@@ -261,6 +261,7 @@ class IoController extends Controller
             DB::rollback();
             return response()->json(['message' => $exception->getMessage(),], Code::HTTP_BAD_REQUEST);
         }
+        return response()->json(['message' => "Bad Request",], Code::HTTP_BAD_REQUEST);
     }
 
     private function getChildren($io){
@@ -476,8 +477,7 @@ class IoController extends Controller
                     $img = storage_path("app/public/".$image);
                     Log::channel("app")->info("image path to make tiles", ["image"=>$img]);
 
-//                    $img = Image::make($img);
-                    $command = new MakeTiles($img, $filename, $folder);
+                    $command = new MakeTiles($img, $folder, $folder); // there should be a double folder name, that's not a mistake
 
                     $this->dispatch($command);
 

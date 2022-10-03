@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="{{asset('css/viewer.css')}}">
     <link rel="stylesheet" href="{{asset('css/adminlte.min.css')}}">
     <link rel="stylesheet" href="{{asset('fonts/stylesheet.css')}} ">
+    <script src="https://cdn.rawgit.com/kimmobrunfeldt/progressbar.js/0.5.6/dist/progressbar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 
     @yield('css')
 </head>
