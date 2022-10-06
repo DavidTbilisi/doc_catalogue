@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.rawgit.com/kimmobrunfeldt/progressbar.js/0.5.6/dist/progressbar.js"></script>
-
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
 
         #progress-bar  {
@@ -507,7 +507,6 @@
         console.log(index)
         // TODO: აქ ფუნქციით უნდა ჩაიტვირთოს დიდი ზომის სურათი.
         let large_img = ((async () => await get_full_image(index))()); // returns Promise
-        loading_svg()
         large_img.then(img_src => {
             var html = '';
 
@@ -586,7 +585,12 @@
                     current_page: current_page,
                     per_page: per_page
                 },
+                beforeSend(jqXHR, settings) {
+                    loading_svg();
+                },
                 success: function (data){
+                    remove_loading_svg();
+
                     if (data.result === "success") {
                         let mime = data.data.mime_type;
                         let base64 = data.data.file_base_64;
@@ -600,6 +604,7 @@
                     }
                 },
                 fail: function(reason){
+                    remove_loading_svg();
                     reject(reason)
                 }
             });
@@ -694,12 +699,21 @@
     }
 
     let appendThumbs = function () {
-        $('#thumbs').append(
-            `<li class="img-element" id="thumb-${this.index}" index="${this.index}" elID="${this.id}" data-size_mb="${this.size_mb}"> `+
-            `<span>${this.size_mb}MB</span>`+
-            `<img src="data:image/${this.mime_type};base64,${this.file_base_64}" />`+
-            '</li>'
-        );
+        let html = '';
+        html += `<li class="img-element" id="thumb-${this.index}" index="${this.index}" elID="${this.id}" data-size_mb="${this.size_mb}"> `;
+
+            if(this.size_mb > {{env('MAX_IMAGE_SIZE')}}){
+                // open in new (deep zoom) tab
+                html += `<span>${this.size_mb}MB <span class="material-icons md-light">open_in_new</span> </span>`;
+            }else{
+                html += `<span>${this.size_mb}MB </span>`;
+            }
+
+        html += `<img src="data:image/${this.mime_type};base64,${this.file_base_64}" />`;
+        html += '</li>'
+
+        $('#thumbs').append(html);
+
     }
 
     function beforeSend(xhr) {
@@ -811,17 +825,15 @@
         var circle = new ProgressBar.Circle('#progress-bar', {
             color: '#ffffff',
             strokeWidth: 6,
-            duration: 3000,
+            duration: 5000,
             easing: 'easeInOut'
         });
         circle.animate(2);
+    }
 
-        setTimeout(function(){
-            $('#progress-bar').fadeIn('slow');
-            delete circle;
-            $('#progress-bar svg').remove()
-        }, 2000);
-
+    const remove_loading_svg = () => {
+        $('#progress-bar').fadeOut('slow');
+        $('#progress-bar svg').remove()
     }
 
 
