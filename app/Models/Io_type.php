@@ -31,7 +31,7 @@ class Io_type extends Model
 
         $type = Io_type::where('table',$table)->first();
 
-        $all = Io_types_translation::all(); // TODO:testing
+        $all = Io_types_translation::all();
 
         $translation = Io_types_translation::where("io_type_id", $type->id)->first();
         $translation = json_decode($translation->fields, true);

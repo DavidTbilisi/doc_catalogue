@@ -30,18 +30,14 @@ describe('IO Manipulations', () => {
 
     beforeEach(()=>{
         login()
-
     })
 
 
     it("Add IO", () => {
-        // Todo: add pagination to the IO page
-        for (let i = 0; i < 20; i++) {
-            addIO()
-        }
+        addIO()
     })
 
-    it.skip("Add sub-io", () => {
+    it("Add sub-io", () => {
 
         cy.get(':nth-child(1) > :nth-child(5) > .btn-success > .material-icons').click();
         cy.location().then((loc) => {
@@ -52,7 +48,7 @@ describe('IO Manipulations', () => {
         // addIO()
     })
 
-    it.skip("Edit IO", () => {
+    it("Edit IO", () => {
         cy.visit("admin/io/edit/" + io_id)
         cy.get('#prefix').clear().type("edited_"+randomInt(1, 100))
         cy.get('#identifier').clear().type(randomInt(1, 100));
@@ -62,7 +58,7 @@ describe('IO Manipulations', () => {
         cy.visit("admin/io/show/" + io_id)
     })
 
-    it.skip("Edit Data", () => {
+    it("Edit Data", () => {
         cy.visit("admin/io/show/" + io_id)
         cy.contains("მონაცემები").click()
         cy.get('input[type=date]').clear().type(`2022-0${randomInt(1,9)}-0${randomInt(1, 9)}`);
@@ -73,14 +69,20 @@ describe('IO Manipulations', () => {
     })
 
 
-    it.skip("Permissions", () => {
+    it("Permissions", () => {
         cy.visit("admin/io/permissions/" + io_id)
         // todo: after changing permissions, it gives me permission to change all permissions
         cy.get("#form_Editor #viewDocumentEditor").click()
         cy.get("#form_Editor .btn-success").click()
     })
 
-    it.skip("Delete IO", () => {
+    it("Permissions", () => {
+        cy.visit("admin/io/permissions/" + io_id)
+        // todo: after changing permissions, it gives me permission to change all permissions
+        cy.get("#form_Editor #deleteDocumentEditor").should("be.disabled")
+        cy.get("#form_Editor .btn-success").click()
+    })
+    it("Delete IO", () => {
         cy.get("#row-0 form button").click()
         cy.get('.alert').should("contain", "არ არის ცარიელი"); //
         cy.get("#row-1 form button").click()

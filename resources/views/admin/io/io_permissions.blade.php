@@ -6,10 +6,6 @@
     </div>
 
     <h1 class="mt-4">{{$io->reference}} ({{$io->type->name}})</h1>
-
-
-
-
         @foreach($permissions as $index => $perms)
             @if ($perms['group']->name == "admin")
                 @continue
@@ -20,39 +16,21 @@
             @csrf()
         <div class="row">
 
-        @foreach($perms["all"] as $permission)
-            @if(in_array( $permission->const_name, $permissions[$index]['io_permitted'] ))
+            @foreach($perms["all"] as $permission)
 
-                @if ( in_array($permission->const_name, $perms['group_perms']))
-                    {{-- Group Allows To Change --}}
-                    <div class="col-3">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" name="{{$permission->power}}" type="checkbox" role="switch" id="{{$permission->const_name.$perms['group']->alias}}" checked>
-                            <label class="form-check-label" for="{{$permission->const_name.$perms['group']->alias}}">{{$permission->name}} </label>
-                        </div>
-                    </div>
+                @if(in_array( $permission->const_name, $permissions[$index]['io_permitted'] ))
+                    @if ( in_array($permission->const_name, $perms['group_perms']))
+                        {{-- Group Allows To Change --}}
+                        <x-io-permission :permission="$permission" :perms="$perms"></x-io-permission>
+                    @else
+                        {{-- Have No Perm From Groups --}}
+                        <x-io-permission :permission="$permission" :perms="$perms" :disabled="true"></x-io-permission>
+                    @endif
+
                 @else
-                    {{-- Have No Perm From Groups --}}
-                <div class="col-3">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" disabled name="{{$permission->power}}" type="checkbox" role="switch" id="{{$permission->const_name.$perms['group']->alias}}">
-                        <label class="form-check-label"  title="შეზღუდულია ჯგუფებიდან" for="{{$permission->const_name.$perms['group']->alias}}">{{$permission->name}} </label>
-                    </div>
-                </div>
+                        <x-io-permission :permission="$permission" :perms="$perms" :disabled="true"></x-io-permission>
                 @endif
-            @else
-
-                <div class="col-3">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" name="{{$permission->power}}" type="checkbox" role="switch" id="{{$permission->const_name.$perms['group']->alias}}">
-                        <label class="form-check-label" for="{{$permission->const_name.$perms['group']->alias}}">{{$permission->name}}</label>
-                    </div>
-                </div>
-
-            @endif
-
-
-        @endforeach
+            @endforeach
             <div class="col-3">
                 <input type="submit" value="შენახვა" class="btn btn-success">
             </div>

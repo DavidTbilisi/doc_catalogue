@@ -58,8 +58,6 @@ class ViewerController extends Controller
     public function get_image($document_id)
     {
 
-//        TODO: მესიჯებია მოსაწესრიგებელი
-
         $doc = Document::where("id",$document_id)->first();
         $max_image_size = env('MAX_IMAGE_SIZE');
 

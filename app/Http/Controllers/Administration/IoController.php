@@ -535,7 +535,6 @@ class IoController extends Controller
 
     public function destroy($id)
     {
-//        TODO: move sql statements to model?
         echo $id;
         DB::beginTransaction();
         try{
